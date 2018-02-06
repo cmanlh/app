@@ -35,8 +35,8 @@ import org.springframework.util.AntPathMatcher;
 import java.util.Collection;
 import java.util.List;
 
-public class CachingRealm extends AuthorizingRealm {
-    private final static Logger logger = LogManager.getLogger(CachingRealm.class);
+public class BaseRealm extends AuthorizingRealm {
+    private final static Logger logger = LogManager.getLogger(BaseRealm.class);
 
     protected AntPathMatcher pathMatcher = new AntPathMatcher();
 

@@ -27,5 +27,11 @@ public interface AuthService {
      */
     List<String> getPermissions(String principal);
 
+    /**
+     * check the principal is exist or not
+     *
+     * @param principal
+     * @return
+     */
     boolean isExist(String principal);
 }

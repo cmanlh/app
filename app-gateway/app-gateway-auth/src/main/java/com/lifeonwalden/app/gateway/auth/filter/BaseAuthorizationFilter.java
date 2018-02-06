@@ -35,30 +35,38 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
 
         Subject subject = getSubject(request, response);
 
-        String uri = ((HttpServletRequest) request).getRequestURI();
-        String contextPath = ((HttpServletRequest) request).getContextPath();
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String uri = httpServletRequest.getRequestURI();
+        String contextPath = httpServletRequest.getContextPath();
 
         if (StringUtils.startsWithIgnoreCase(uri, contextPath.concat("/").concat("open/"))) {
             logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : OPEN RESOURCE", subject.getPrincipal(),
-                    mappedValue, ((HttpServletRequest) request).getRequestURI());
+                    mappedValue, httpServletRequest.getRequestURI());
 
             return true;
         } else {
             if (null != subject.getPrincipal() && subject.isPermitted(uri)) {
                 logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : TRUE", subject.getPrincipal(), mappedValue,
-                        ((HttpServletRequest) request).getRequestURI());
+                        httpServletRequest.getRequestURI());
 
                 return true;
             } else {
-                logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : FALSE", subject.getPrincipal(), mappedValue,
-                        ((HttpServletRequest) request).getRequestURI());
+                if (ssoRequest(httpServletRequest)) {
+                    return true;
+                }
 
+                logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : FALSE", subject.getPrincipal(), mappedValue,
+                        httpServletRequest.getRequestURI());
                 if (uri.isEmpty() || !StringUtils.containsIgnoreCase(uri, ".do")) {
-                    throw new RuntimeException("无访问权限或者Session已过期。");
+                    throw new RuntimeException("Access denied.");
                 }
 
                 return false;
             }
         }
+    }
+
+    protected boolean ssoRequest(HttpServletRequest request) {
+        return false;
     }
 }
