@@ -7,10 +7,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>app-gateway-controller</artifactId>
+    <artifactId>app-gateway-front</artifactId>
     <packaging>jar</packaging>
 
-    <name>app-gateway-controller</name>
+    <name>app-gateway-front</name>
     <url>http://maven.apache.org</url>
 
     <properties>

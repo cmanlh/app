@@ -14,18 +14,18 @@
  *    limitations under the License.
  */
 
-package com.lifeonwalden.app.gateway.controller;
+package com.lifeonwalden.app.gateway.auth.service;
 
-import com.lifeonwalden.app.gateway.spring.propertyeditor.DatePropertyEditor;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
+import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
+public interface AuthService {
+    /**
+     * get authorized permissions
+     *
+     * @param principal
+     * @return
+     */
+    List<String> getPermissions(String principal);
 
-public class AbstractController {
-    @InitBinder
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder dataBinder) throws Exception {
-        dataBinder.registerCustomEditor(Date.class, new DatePropertyEditor());
-    }
+    boolean isExist(String principal);
 }
