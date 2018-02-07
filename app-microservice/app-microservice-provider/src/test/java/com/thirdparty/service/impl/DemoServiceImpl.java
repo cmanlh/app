@@ -13,15 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.lifeonwalden.service.impl;
+package com.thirdparty.service.impl;
 
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.dubbo.rpc.RpcContext;
-import com.lifeonwalden.service.DemoService;
+import com.thirdparty.service.DemoService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Service
 public class DemoServiceImpl implements DemoService {
 
     public String sayHello(String name) {

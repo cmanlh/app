@@ -13,25 +13,20 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.lifeonwalden.bean;
+package com.thirdparty;
 
-public class Person {
-    private String name;
-    private int age;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-    public String getName() {
-        return name;
+public class Provider {
+
+    public static void main(String[] args) throws Exception {
+        //Prevent to get IPV6 address,this way only work in debug mode
+        //But you can pass use -Djava.net.preferIPv4Stack=true,then it work well whether in debug mode or not
+        System.setProperty("java.net.preferIPv4Stack", "true");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"classpath*:app.xml"});
+        context.start();
+
+        System.in.read(); // press any key to exit
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
 }

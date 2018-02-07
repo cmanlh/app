@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.lifeonwalden.service;
+package com.thirdparty.service;
 
 public interface DemoService {
 
