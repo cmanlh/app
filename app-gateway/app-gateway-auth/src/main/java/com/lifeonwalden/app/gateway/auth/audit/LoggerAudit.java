@@ -17,6 +17,8 @@
 package com.lifeonwalden.app.gateway.auth.audit;
 
 import com.lifeonwalden.app.gateway.auth.bean.AuditBean;
+import com.lifeonwalden.app.util.character.JSON;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,6 +27,6 @@ public class LoggerAudit extends BaseAudit {
 
     @Override
     public void writeLog(AuditBean auditBean) {
-        logger.info("{}@{} AT {} ACCESS {} WITH {}", auditBean.getPrinciple(), auditBean.getHost(), auditBean.getDate(), auditBean.getOperation(), auditBean.getContent());
+        logger.info("{}@{} AT {} ACCESS {} WITH {}", StringUtils.trimToEmpty(auditBean.getPrinciple()), auditBean.getHost(), JSON.log(auditBean.getDate()), auditBean.getOperation(), auditBean.getContent());
     }
 }

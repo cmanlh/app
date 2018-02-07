@@ -9,6 +9,7 @@
         <module>app-gateway</module>
         <module>app-common</module>
         <module>app-example</module>
+        <module>app-microservice</module>
     </modules>
     <packaging>pom</packaging>
     <description>A library to setup application</description>
@@ -34,6 +35,7 @@
         <maven.repository>${user.home}/.m2/repository</maven.repository>
         <spring.version>4.3.10.RELEASE</spring.version>
         <log4j.version>2.10.0</log4j.version>
+        <dubbo.version>2.6.0</dubbo.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -51,6 +53,16 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
                 <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-redis</artifactId>
+                <version>2.0.3.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>2.9.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.shiro</groupId>
@@ -86,6 +98,11 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-slf4j-impl</artifactId>
                 <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
