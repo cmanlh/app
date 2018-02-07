@@ -14,19 +14,29 @@
  *    limitations under the License.
  */
 
-package com.lifeonwalden.app.util.character;
+package com.lifeonwalden.app.gateway.auth.service;
 
-import java.util.UUID;
+/**
+ * Authentication service that supports sso
+ */
+public interface XAuthService extends AuthService {
+    String SSO_SESSION_ID = "ssoSessionId";
 
-public interface IdGenerator {
-    static String getId() {
-        final char[] charBuff = UUID.randomUUID().toString().toCharArray();
-        int pos = 0;
-        for (int i = 0; i < charBuff.length; i++) {
-            if (charBuff[i] != '-') {
-                charBuff[pos++] = charBuff[i];
-            }
-        }
-        return new String(charBuff, 0, pos);
-    }
+    /**
+     * fetch sso principal
+     *
+     * @param remoteAddr
+     * @param ssoSessionId
+     * @return
+     */
+    String getXPrincipal(String remoteAddr, String ssoSessionId);
+
+    /**
+     * generate sso session and save it
+     *
+     * @param remoteAddr
+     * @param principal
+     * @return
+     */
+    String getXSessionId(String remoteAddr, String principal);
 }

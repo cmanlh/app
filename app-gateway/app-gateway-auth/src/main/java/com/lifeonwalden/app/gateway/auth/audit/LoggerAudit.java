@@ -14,19 +14,17 @@
  *    limitations under the License.
  */
 
-package com.lifeonwalden.app.util.character;
+package com.lifeonwalden.app.gateway.auth.audit;
 
-import java.util.UUID;
+import com.lifeonwalden.app.gateway.auth.bean.AuditBean;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public interface IdGenerator {
-    static String getId() {
-        final char[] charBuff = UUID.randomUUID().toString().toCharArray();
-        int pos = 0;
-        for (int i = 0; i < charBuff.length; i++) {
-            if (charBuff[i] != '-') {
-                charBuff[pos++] = charBuff[i];
-            }
-        }
-        return new String(charBuff, 0, pos);
+public class LoggerAudit extends BaseAudit {
+    private final static Logger logger = LogManager.getLogger(LoggerAudit.class);
+
+    @Override
+    public void writeLog(AuditBean auditBean) {
+        logger.info("{}@{} AT {} ACCESS {} WITH {}", auditBean.getPrinciple(), auditBean.getHost(), auditBean.getDate(), auditBean.getOperation(), auditBean.getContent());
     }
 }

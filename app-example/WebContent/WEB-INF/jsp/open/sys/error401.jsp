@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>找不到相应资源</title>
+<title>无权限</title>
 </head>
 <body>
-<div style="margin-left:auto;margin-right:auto;">找不到相应资源</div>
+<div style="margin-left:auto;margin-right:auto;">无权限</div>
 </body>
 </html>

@@ -30,6 +30,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.AntPathMatcher;
 
 import java.util.Collection;
@@ -40,11 +41,8 @@ public class BaseRealm extends AuthorizingRealm {
 
     protected AntPathMatcher pathMatcher = new AntPathMatcher();
 
+    @Autowired
     protected AuthService authService;
-
-    public void setAuthService(AuthService authService) {
-        this.authService = authService;
-    }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {

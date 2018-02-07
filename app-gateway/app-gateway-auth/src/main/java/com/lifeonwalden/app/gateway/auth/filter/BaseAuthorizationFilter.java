@@ -41,13 +41,13 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
 
         if (StringUtils.startsWithIgnoreCase(uri, contextPath.concat("/").concat("open/"))) {
             logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : OPEN RESOURCE", subject.getPrincipal(),
-                    mappedValue, httpServletRequest.getRequestURI());
+                    mappedValue, uri);
 
             return true;
         } else {
             if (null != subject.getPrincipal() && subject.isPermitted(uri)) {
                 logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : TRUE", subject.getPrincipal(), mappedValue,
-                        httpServletRequest.getRequestURI());
+                        uri);
 
                 return true;
             } else {
@@ -56,9 +56,11 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
                 }
 
                 logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : FALSE", subject.getPrincipal(), mappedValue,
-                        httpServletRequest.getRequestURI());
+                        uri);
+
                 if (uri.isEmpty() || !StringUtils.containsIgnoreCase(uri, ".do")) {
-                    throw new RuntimeException("Access denied.");
+                    logger.error("Invalid request : user : {}, mappedValue : {}, resource : {}", subject.getPrincipal(), mappedValue,
+                            uri);
                 }
 
                 return false;

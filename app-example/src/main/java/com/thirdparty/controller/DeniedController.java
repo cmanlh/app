@@ -14,19 +14,23 @@
  *    limitations under the License.
  */
 
-package com.lifeonwalden.app.util.character;
+package com.thirdparty.controller;
 
-import java.util.UUID;
+import com.lifeonwalden.app.gateway.bean.Response;
+import com.lifeonwalden.app.gateway.util.ResponseUtil;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-public interface IdGenerator {
-    static String getId() {
-        final char[] charBuff = UUID.randomUUID().toString().toCharArray();
-        int pos = 0;
-        for (int i = 0; i < charBuff.length; i++) {
-            if (charBuff[i] != '-') {
-                charBuff[pos++] = charBuff[i];
-            }
-        }
-        return new String(charBuff, 0, pos);
+@RestController
+@RequestMapping(value = "/denied/")
+public class DeniedController {
+    @RequestMapping(value = "query")
+    public Response query() {
+        return ResponseUtil.success();
+    }
+
+    @RequestMapping(value = "err")
+    public Response err() {
+        throw new RuntimeException("System error");
     }
 }
