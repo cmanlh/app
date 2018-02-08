@@ -24,4 +24,6 @@
     <dubbo:application name="${dubbo.application.name}"/>
     <dubbo:registry address="${dubbo.register.address}"/>
     <dubbo:annotation package="${dubbo.annotation.package}"/>
+
+    <dubbo:reference interface="com.thirdparty.service.TodoService" id="todoService" check="false"/>
 </beans>

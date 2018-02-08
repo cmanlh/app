@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>com.lifeonwalden</groupId>
-            <artifactId>app-example-service</artifactId>
+            <artifactId>app-example-service-impl</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>

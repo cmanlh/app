@@ -16,10 +16,14 @@
 
 package com.thirdparty.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.lifeonwalden.app.microservice.consumer.service.ServiceLookup;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@RestController
-@RequestMapping(value = "/open/")
-public class OpenController extends AbstractController {
+public class BaseController {
+    @Autowired
+    private ServiceLookup serviceLookup;
+
+    protected <T> T getService(Class<T> clazz) {
+        return serviceLookup.get(clazz);
+    }
 }

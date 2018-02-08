@@ -25,4 +25,6 @@
     <dubbo:registry address="${dubbo.register.address}"/>
     <dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}"/>
     <dubbo:annotation package="${dubbo.annotation.package}"/>
+
+    <dubbo:service interface="com.thirdparty.service.TodoService" ref="todoServiceImpl"/>
 </beans>

@@ -14,12 +14,9 @@
  *    limitations under the License.
  */
 
-package com.thirdparty.controller;
+package com.lifeonwalden.app.microservice.consumer.service;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+public interface ServiceLookup {
 
-@RestController
-@RequestMapping(value = "/open/")
-public class OpenController extends AbstractController {
+    <T> T get(Class<T> clazz);
 }
