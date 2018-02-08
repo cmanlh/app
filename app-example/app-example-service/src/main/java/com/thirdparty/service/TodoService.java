@@ -15,8 +15,17 @@
  */
 package com.thirdparty.service;
 
-public interface DemoService {
+import com.thirdparty.bean.Todo;
 
-    String sayHello(String name);
+import java.util.List;
+import java.util.Map;
 
+public interface TodoService {
+    Todo get(String id);
+
+    boolean updateStatus(Todo todo);
+
+    List<Todo> query(String containsContent);
+
+    Map<Integer, List<Todo>> queryMapping();
 }

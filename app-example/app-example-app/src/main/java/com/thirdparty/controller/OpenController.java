@@ -16,27 +16,10 @@
 
 package com.thirdparty.controller;
 
-import com.alibaba.dubbo.config.annotation.Reference;
-import com.lifeonwalden.app.gateway.bean.Response;
-import com.lifeonwalden.app.gateway.util.ResponseUtil;
-import com.thirdparty.service.DemoService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/open/")
-public class OpenController {
-
-    @Reference
-    private DemoService demoService;
-
-    @RequestMapping(value = "query")
-    public Response query() {
-        return ResponseUtil.success();
-    }
-
-    @RequestMapping(value = "err")
-    public Response err() {
-        throw new RuntimeException("System error");
-    }
+public class OpenController extends AbstractController {
 }
