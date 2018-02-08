@@ -28,27 +28,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/store/")
-public class FieldController {
-    @Reference
-    private StoreService storeService;
+public class FieldController extends BaseController {
 
     @RequestMapping(value = "query")
     public Response query(@ModelAttribute DatabaseFieldParam databaseField) {
-        return ResponseUtil.success(storeService.query(databaseField));
+        return ResponseUtil.success(getService(StoreService.class).query(databaseField));
     }
 
     @RequestMapping(value = "get")
     public Response get(@ModelAttribute DatabaseFieldParam databaseField) {
-        return ResponseUtil.success(storeService.get(databaseField));
+        return ResponseUtil.success(getService(StoreService.class).get(databaseField));
     }
 
     @RequestMapping(value = "queryMapping")
     public Response queryMapping() {
-        return ResponseUtil.success(storeService.queryMapping());
+        return ResponseUtil.success(getService(StoreService.class).queryMapping());
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public Response update(@ModelAttribute DatabaseFieldParam databaseField) {
-        return ResponseUtil.success(storeService.update(databaseField));
+        return ResponseUtil.success(getService(StoreService.class).update(databaseField));
     }
 }

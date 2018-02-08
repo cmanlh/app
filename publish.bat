@@ -8,6 +8,7 @@ if "%1" == "stop" goto stopTomcat
 if "%1" == "restart" goto stopTomcat
 if "%1" == "push" goto pushResources
 if "%1" == "debug" goto debugTomcat
+if "%1" == "clear" goto clearTomcat
 goto publish
 
 :pushResources
@@ -31,5 +32,10 @@ goto end
 
 :debugTomcat
 %TOMCAT%\bin\catalina.bat jpda start
+goto end
+
+:clearTomcat
+rd /S /Q %TOMCAT_WEB%
+md %TOMCAT_WEB%
 
 :end

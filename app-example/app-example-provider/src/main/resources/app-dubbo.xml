@@ -27,4 +27,5 @@
     <dubbo:annotation package="${dubbo.annotation.package}"/>
 
     <dubbo:service interface="com.thirdparty.service.TodoService" ref="todoServiceImpl"/>
+    <dubbo:service interface="com.thirdparty.service.StoreService" ref="storeServiceImpl"/>
 </beans>

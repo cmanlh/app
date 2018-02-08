@@ -21,5 +21,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/open/")
-public class OpenController extends AbstractController {
+public class OpenController extends TodoController {
 }

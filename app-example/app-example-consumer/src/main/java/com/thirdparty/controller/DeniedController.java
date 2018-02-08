@@ -21,5 +21,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/denied/")
-public class DeniedController extends AbstractController {
+public class DeniedController extends TodoController {
 }
