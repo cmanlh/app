@@ -22,6 +22,7 @@ call %TOMCAT%\bin\shutdown.bat
 :publish
 rd /S /Q %TOMCAT_WEB%\%SYS_NAME%
 xcopy /S %SYS_RELEASE%\%SYS_NAME%\* %TOMCAT_WEB%\%SYS_NAME%\
+if "%1" == "pushx" goto end
 if "%1" == "start" goto startTomcat
 if "%1" == "restart" goto startTomcat
 goto end

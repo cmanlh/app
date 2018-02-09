@@ -19,6 +19,7 @@
         <module>app-example-service</module>
         <module>app-example-service-impl</module>
         <module>app-example-app</module>
+        <module>app-example-compacted</module>
     </modules>
 
     <properties>

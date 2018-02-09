@@ -24,7 +24,7 @@ import java.util.List;
 
 @Service
 public class XAuthServiceImpl implements XAuthService {
-    private final String SESSION_ID = XAuthService.SSO_SESSION_ID.concat("Consumer");
+    private final String SESSION_ID = XAuthService.SSO_SESSION_ID.concat("Compacted");
 
     @Override
     public String getXPrincipal(String remoteAddr, String ssoSessionId) {
@@ -45,7 +45,7 @@ public class XAuthServiceImpl implements XAuthService {
 
     @Override
     public List<String> getPermissions(String principal) {
-        return Arrays.asList("/consumer/todo/**", "/consumer/store/**", "/consumer/make/**");
+        return Arrays.asList("/compacted/todo/**", "/compacted/store/**", "/compacted/make/**");
     }
 
     @Override

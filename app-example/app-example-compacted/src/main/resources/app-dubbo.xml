@@ -23,10 +23,11 @@
         http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
     <dubbo:application name="${dubbo.application.name}"/>
     <dubbo:registry address="${dubbo.register.address}"/>
+    <dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}"/>
     <dubbo:annotation package="${dubbo.annotation.package}"/>
 
-    <dubbo:consumer check="false"/>
-    <dubbo:reference interface="com.thirdparty.service.TodoService" id="todoService"/>
-    <dubbo:reference interface="com.thirdparty.service.StoreService" id="storeService"/>
-    <dubbo:reference interface="com.thirdparty.service.MakeService" id="makeService"/>
+    <dubbo:service interface="com.thirdparty.service.MakeService" ref="makeServiceImpl"/>
+
+    <dubbo:reference interface="com.thirdparty.service.TodoService" id="todoService" check="false"/>
+    <dubbo:reference interface="com.thirdparty.service.StoreService" id="storeService" check="false"/>
 </beans>
