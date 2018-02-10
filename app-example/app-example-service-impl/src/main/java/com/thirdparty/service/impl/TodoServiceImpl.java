@@ -20,7 +20,6 @@ import com.lifeonwalden.app.util.date.DateUtil;
 import com.lifeonwalden.app.util.logger.LoggerUtil;
 import com.thirdparty.bean.Todo;
 import com.thirdparty.service.TodoService;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ import java.util.*;
 
 @Service
 public class TodoServiceImpl implements TodoService, InitializingBean {
-    private final static Logger logger = LogManager.getLogger(TodoServiceImpl.class);
+    private final static Logger logger = LoggerUtil.getLogger(TodoServiceImpl.class);
 
     private Map<String, Todo> cache = new HashMap<>();
 

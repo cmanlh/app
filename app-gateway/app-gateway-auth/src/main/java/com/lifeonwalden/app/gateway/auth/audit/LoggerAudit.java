@@ -18,12 +18,12 @@ package com.lifeonwalden.app.gateway.auth.audit;
 
 import com.lifeonwalden.app.gateway.auth.bean.AuditBean;
 import com.lifeonwalden.app.util.character.JSON;
+import com.lifeonwalden.app.util.logger.LoggerUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class LoggerAudit extends BaseAudit {
-    private final static Logger logger = LogManager.getLogger(LoggerAudit.class);
+    private final static Logger logger = LoggerUtil.getLogger(LoggerAudit.class);
 
     @Override
     public void writeLog(AuditBean auditBean) {

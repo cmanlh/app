@@ -20,9 +20,10 @@ import com.lifeonwalden.app.util.logger.LoggerUtil;
 import com.thirdparty.bean.Enable;
 import com.thirdparty.bean.EnableParam;
 import com.thirdparty.service.MakeService;
-import org.apache.logging.log4j.LogManager;
+import com.thirdparty.service.SessionService;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,7 +33,10 @@ import java.util.Map;
 
 @Service
 public class MakeServiceImpl implements MakeService, InitializingBean {
-    private final static Logger logger = LogManager.getLogger(MakeServiceImpl.class);
+    private final static Logger logger = LoggerUtil.getLogger(MakeServiceImpl.class);
+
+    @Autowired
+    private SessionService sessionService;
 
     private Map<String, Enable> cache = new HashMap<>();
 
@@ -40,12 +44,16 @@ public class MakeServiceImpl implements MakeService, InitializingBean {
     public Enable get(EnableParam param) {
         LoggerUtil.debug(logger, "get", param);
 
+        logger.info("current principal : {}", sessionService.getPrincipal());
+
         return this.cache.get(param.getLike1());
     }
 
     @Override
     public boolean update(EnableParam param) {
         LoggerUtil.debug(logger, "update", param);
+
+        logger.info("current principal : {}", sessionService.getPrincipal());
 
         Enable item = this.cache.get(String.valueOf(param.getLike1()));
         if (null != item) {
@@ -59,6 +67,8 @@ public class MakeServiceImpl implements MakeService, InitializingBean {
     @Override
     public List<Enable> query(EnableParam param) {
         LoggerUtil.debug(logger, "query", param);
+
+        logger.info("current principal : {}", sessionService.getPrincipal());
 
         List<Enable> result = new ArrayList<>();
         this.cache.values().forEach(item -> {
@@ -74,6 +84,8 @@ public class MakeServiceImpl implements MakeService, InitializingBean {
     public Map<String, List<Enable>> queryMapping() {
         LoggerUtil.debug(logger, "queryMapping");
         Map<String, List<Enable>> mapping = new HashMap<>();
+
+        logger.info("current principal : {}", sessionService.getPrincipal());
 
         this.cache.values().forEach(item -> {
             List<Enable> list = mapping.get(String.valueOf(item.getLikeFake()));

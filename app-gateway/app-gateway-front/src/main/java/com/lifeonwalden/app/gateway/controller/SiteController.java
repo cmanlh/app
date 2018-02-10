@@ -16,8 +16,8 @@
 
 package com.lifeonwalden.app.gateway.controller;
 
+import com.lifeonwalden.app.util.logger.LoggerUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ import java.io.IOException;
 
 @Controller
 public class SiteController {
-    private final static Logger logger = LogManager.getLogger(SiteController.class);
+    private final static Logger logger = LoggerUtil.getLogger(SiteController.class);
 
     @RequestMapping(path = "/**/*.do")
     public String dispatch(HttpServletRequest request, HttpServletResponse response) {

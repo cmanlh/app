@@ -25,8 +25,9 @@
     <dubbo:registry address="${dubbo.register.address}"/>
     <dubbo:annotation package="${dubbo.annotation.package}"/>
 
-    <dubbo:consumer check="false"/>
+    <dubbo:consumer check="false" filter="principalConsumerFilter"/>
     <dubbo:reference interface="com.thirdparty.service.TodoService" id="todoService"/>
     <dubbo:reference interface="com.thirdparty.service.StoreService" id="storeService"/>
     <dubbo:reference interface="com.thirdparty.service.MakeService" id="makeService"/>
+    <dubbo:reference interface="com.thirdparty.service.AuthService" id="authService"/>
 </beans>

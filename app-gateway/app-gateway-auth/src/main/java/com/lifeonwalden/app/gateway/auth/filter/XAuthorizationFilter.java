@@ -17,8 +17,8 @@
 package com.lifeonwalden.app.gateway.auth.filter;
 
 import com.lifeonwalden.app.gateway.auth.service.XAuthService;
+import com.lifeonwalden.app.util.logger.LoggerUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  * SSO authorization filter
  */
 public class XAuthorizationFilter extends BaseAuthorizationFilter {
-    private final static Logger logger = LogManager.getLogger(XAuthorizationFilter.class);
+    private final static Logger logger = LoggerUtil.getLogger(XAuthorizationFilter.class);
 
     @Autowired
     protected XAuthService xAuthService;

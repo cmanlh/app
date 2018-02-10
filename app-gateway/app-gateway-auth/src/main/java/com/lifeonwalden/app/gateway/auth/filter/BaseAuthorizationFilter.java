@@ -16,8 +16,8 @@
 
 package com.lifeonwalden.app.gateway.auth.filter;
 
+import com.lifeonwalden.app.util.logger.LoggerUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authz.AuthorizationFilter;
@@ -27,7 +27,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 public class BaseAuthorizationFilter extends AuthorizationFilter {
-    private final static Logger logger = LogManager.getLogger(BaseAuthorizationFilter.class);
+    private final static Logger logger = LoggerUtil.getLogger(BaseAuthorizationFilter.class);
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {

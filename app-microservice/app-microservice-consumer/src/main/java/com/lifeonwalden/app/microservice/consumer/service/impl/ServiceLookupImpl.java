@@ -17,7 +17,7 @@
 package com.lifeonwalden.app.microservice.consumer.service.impl;
 
 import com.lifeonwalden.app.microservice.consumer.service.ServiceLookup;
-import org.apache.logging.log4j.LogManager;
+import com.lifeonwalden.app.util.logger.LoggerUtil;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -26,12 +26,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ServiceLookupImpl implements ApplicationContextAware, ServiceLookup {
-    private final static Logger logger = LogManager.getLogger(ServiceLookupImpl.class);
+    private final static Logger logger = LoggerUtil.getLogger(ServiceLookupImpl.class);
 
     private ApplicationContext appCtx;
 
     @Override
     public <T> T get(Class<T> clazz) {
+        logger.debug("get {}", clazz.getName());
+
         return this.appCtx.getBean(clazz);
     }
 

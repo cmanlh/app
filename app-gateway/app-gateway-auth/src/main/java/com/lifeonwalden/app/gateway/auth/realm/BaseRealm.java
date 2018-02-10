@@ -19,7 +19,6 @@ package com.lifeonwalden.app.gateway.auth.realm;
 import com.lifeonwalden.app.gateway.auth.service.AuthService;
 import com.lifeonwalden.app.util.logger.LoggerUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -37,7 +36,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class BaseRealm extends AuthorizingRealm {
-    private final static Logger logger = LogManager.getLogger(BaseRealm.class);
+    private final static Logger logger = LoggerUtil.getLogger(BaseRealm.class);
 
     protected AntPathMatcher pathMatcher = new AntPathMatcher();
 

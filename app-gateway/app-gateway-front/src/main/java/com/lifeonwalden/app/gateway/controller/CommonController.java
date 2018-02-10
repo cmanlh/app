@@ -19,7 +19,7 @@ package com.lifeonwalden.app.gateway.controller;
 import com.lifeonwalden.app.gateway.bean.Response;
 import com.lifeonwalden.app.gateway.spring.propertyeditor.DatePropertyEditor;
 import com.lifeonwalden.app.gateway.util.ResponseUtil;
-import org.apache.logging.log4j.LogManager;
+import com.lifeonwalden.app.util.logger.LoggerUtil;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.FormattedMessage;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -30,7 +30,7 @@ import java.util.Date;
 
 @ControllerAdvice(annotations = RestController.class)
 public class CommonController {
-    private final static Logger logger = LogManager.getLogger(CommonController.class);
+    private final static Logger logger = LoggerUtil.getLogger(CommonController.class);
 
     @InitBinder
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder dataBinder) throws Exception {

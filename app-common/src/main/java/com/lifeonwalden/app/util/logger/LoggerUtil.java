@@ -20,6 +20,11 @@ import com.lifeonwalden.app.util.character.JSON;
 import org.apache.logging.log4j.Logger;
 
 public interface LoggerUtil {
+    static <T> Logger getLogger(Class<T> clazz) {
+        Logger logger = org.apache.logging.log4j.LogManager.getLogger(clazz);
+        return logger;
+    }
+
     static void info(Logger logger, String methodName, Object... params) {
         if (null != params && params.length > 0) {
             logger.info(methodName + " : {} ", JSON.log(params));

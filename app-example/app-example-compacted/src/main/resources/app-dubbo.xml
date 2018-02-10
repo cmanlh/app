@@ -26,8 +26,12 @@
     <dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}"/>
     <dubbo:annotation package="${dubbo.annotation.package}"/>
 
+    <bean class="com.lifeonwalden.app.microservice.provider.service.impl.PrincipalServiceImpl"/>
+    <dubbo:provider filter="principalProviderFilter"/>
+
     <dubbo:service interface="com.thirdparty.service.MakeService" ref="makeServiceImpl"/>
 
     <dubbo:reference interface="com.thirdparty.service.TodoService" id="todoService" check="false"/>
     <dubbo:reference interface="com.thirdparty.service.StoreService" id="storeService" check="false"/>
+    <dubbo:reference interface="com.thirdparty.service.AuthService" id="authService" check="false"/>
 </beans>

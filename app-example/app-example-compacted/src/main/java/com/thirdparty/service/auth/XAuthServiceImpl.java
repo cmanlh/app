@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.thirdparty.controller.auth.service;
+package com.thirdparty.service.auth;
 
 import com.lifeonwalden.app.gateway.auth.service.XAuthService;
 import org.springframework.stereotype.Service;
@@ -24,12 +24,12 @@ import java.util.List;
 
 @Service
 public class XAuthServiceImpl implements XAuthService {
-    private final String SESSION_ID = XAuthService.SSO_SESSION_ID.concat("Consumer");
+    private final String SESSION_ID = XAuthService.SSO_SESSION_ID.concat("Compacted");
 
     @Override
     public String getXPrincipal(String remoteAddr, String ssoSessionId) {
         if ("127.0.0.1".equals(remoteAddr) && SESSION_ID.equals(ssoSessionId)) {
-            return "admin";
+            return "adminCompacted";
         }
 
         return null;
@@ -37,7 +37,7 @@ public class XAuthServiceImpl implements XAuthService {
 
     @Override
     public String getXSessionId(String remoteAddr, String principal) {
-        if ("127.0.0.1".equals(remoteAddr) && "admin".equals(principal)) {
+        if ("127.0.0.1".equals(remoteAddr) && "adminCompacted".equals(principal)) {
             return SESSION_ID;
         }
         return null;
@@ -45,11 +45,11 @@ public class XAuthServiceImpl implements XAuthService {
 
     @Override
     public List<String> getPermissions(String principal) {
-        return Arrays.asList("/consumer/todo/**", "/consumer/store/**", "/consumer/make/**");
+        return Arrays.asList("/compacted/todo/**", "/compacted/store/**", "/compacted/make/**", "/compacted/auth/**");
     }
 
     @Override
     public boolean isExist(String principal) {
-        return "admin".equals(principal);
+        return "adminCompacted".equals(principal);
     }
 }

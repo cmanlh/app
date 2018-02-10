@@ -21,7 +21,6 @@ import com.lifeonwalden.app.util.logger.LoggerUtil;
 import com.thirdparty.bean.DatabaseField;
 import com.thirdparty.bean.DatabaseFieldParam;
 import com.thirdparty.service.StoreService;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,7 @@ import java.util.*;
 
 @Service
 public class StoreServiceImpl implements StoreService, InitializingBean {
-    private final static Logger logger = LogManager.getLogger(StoreServiceImpl.class);
+    private final static Logger logger = LoggerUtil.getLogger(StoreServiceImpl.class);
 
     private Map<String, DatabaseField> cache = new HashMap<>();
 

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.thirdparty.controller.auth.service;
+package com.thirdparty.service.auth;
 
 import com.lifeonwalden.app.gateway.auth.service.XAuthService;
 import org.springframework.stereotype.Service;

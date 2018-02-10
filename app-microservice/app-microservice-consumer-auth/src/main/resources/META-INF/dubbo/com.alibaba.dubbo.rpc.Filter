@@ -1,0 +1,1 @@
+principalConsumerFilter=com.lifeonwalden.app.microservice.consumer.filter.PrincipalConsumerFilter

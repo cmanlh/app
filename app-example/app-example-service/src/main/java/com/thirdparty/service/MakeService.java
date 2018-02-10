@@ -16,8 +16,6 @@
 
 package com.thirdparty.service;
 
-import com.thirdparty.bean.DatabaseField;
-import com.thirdparty.bean.DatabaseFieldParam;
 import com.thirdparty.bean.Enable;
 import com.thirdparty.bean.EnableParam;
 
