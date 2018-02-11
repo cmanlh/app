@@ -16,6 +16,8 @@
 
 package com.thirdparty.service.impl;
 
+import com.lifeonwalden.app.example.common.constant.CacheManager;
+import com.lifeonwalden.app.example.common.constant.CacheName;
 import com.lifeonwalden.app.util.logger.LoggerUtil;
 import com.thirdparty.bean.Enable;
 import com.thirdparty.bean.EnableParam;
@@ -24,6 +26,7 @@ import com.thirdparty.service.SessionService;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ public class MakeServiceImpl implements MakeService, InitializingBean {
     private Map<String, Enable> cache = new HashMap<>();
 
     @Override
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.MAKE, key = "#param.like1")
     public Enable get(EnableParam param) {
         LoggerUtil.debug(logger, "get", param);
 
@@ -65,6 +69,7 @@ public class MakeServiceImpl implements MakeService, InitializingBean {
     }
 
     @Override
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.MAKE_LIST, key = "#param.likeFake")
     public List<Enable> query(EnableParam param) {
         LoggerUtil.debug(logger, "query", param);
 
@@ -81,6 +86,7 @@ public class MakeServiceImpl implements MakeService, InitializingBean {
     }
 
     @Override
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.MAKE_ALL, key = "#root.method.name")
     public Map<String, List<Enable>> queryMapping() {
         LoggerUtil.debug(logger, "queryMapping");
         Map<String, List<Enable>> mapping = new HashMap<>();

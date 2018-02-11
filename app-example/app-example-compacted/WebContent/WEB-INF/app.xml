@@ -17,4 +17,5 @@
     <import resource="classpath*:app-gateway.xml"/>
     <import resource="classpath*:app-dubbo.xml"/>
     <import resource="classpath*:app-auth.xml"/>
+    <import resource="classpath*:app-cache.xml"/>
 </beans>

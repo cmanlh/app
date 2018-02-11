@@ -1,25 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>app-example</artifactId>
+        <artifactId>app</artifactId>
         <groupId>com.lifeonwalden</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>app-example-bean</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>app-cache</artifactId>
+    <packaging>pom</packaging>
 
-    <name>app-example-bean</name>
+    <name>app-cache</name>
     <url>http://maven.apache.org</url>
+    <modules>
+        <module>app-cache-common</module>
+        <module>app-cache-service</module>
+        <module>app-cache-guava</module>
+        <module>app-cache-redis</module>
+        <module>app-cache-caffeine</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>com.lifeonwalden</groupId>
-            <artifactId>forestbatis</artifactId>
-        </dependency>
-    </dependencies>
 </project>

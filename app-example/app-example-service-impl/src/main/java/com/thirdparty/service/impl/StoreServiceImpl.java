@@ -16,6 +16,8 @@
 
 package com.thirdparty.service.impl;
 
+import com.lifeonwalden.app.example.common.constant.CacheManager;
+import com.lifeonwalden.app.example.common.constant.CacheName;
 import com.lifeonwalden.app.util.date.DateUtil;
 import com.lifeonwalden.app.util.logger.LoggerUtil;
 import com.thirdparty.bean.DatabaseField;
@@ -23,6 +25,7 @@ import com.thirdparty.bean.DatabaseFieldParam;
 import com.thirdparty.service.StoreService;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -34,6 +37,7 @@ public class StoreServiceImpl implements StoreService, InitializingBean {
     private Map<String, DatabaseField> cache = new HashMap<>();
 
     @Override
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.DB, key = "#param.requiredField")
     public DatabaseField get(DatabaseFieldParam param) {
         LoggerUtil.debug(logger, "get", param);
 
@@ -55,6 +59,7 @@ public class StoreServiceImpl implements StoreService, InitializingBean {
     }
 
     @Override
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.DB_LIST, key = "#param.createUser")
     public List<DatabaseField> query(DatabaseFieldParam param) {
         LoggerUtil.debug(logger, "query", param);
 
@@ -69,15 +74,16 @@ public class StoreServiceImpl implements StoreService, InitializingBean {
     }
 
     @Override
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.DB_ALL)
     public Map<String, List<DatabaseField>> queryMapping() {
         LoggerUtil.debug(logger, "queryMapping");
         Map<String, List<DatabaseField>> mapping = new HashMap<>();
 
         this.cache.values().forEach(item -> {
-            List<DatabaseField> list = mapping.get(String.valueOf(item.getLogicalDel()));
+            List<DatabaseField> list = mapping.get(item.getCreateUser());
             if (null == list) {
                 list = new ArrayList<>();
-                mapping.put(String.valueOf(item.getLogicalDel()), list);
+                mapping.put(item.getCreateUser(), list);
             }
             list.add(item);
         });

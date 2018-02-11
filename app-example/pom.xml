@@ -20,6 +20,7 @@
         <module>app-example-service-impl</module>
         <module>app-example-app</module>
         <module>app-example-compacted</module>
+        <module>app-example-common</module>
     </modules>
 
     <properties>

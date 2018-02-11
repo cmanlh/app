@@ -16,12 +16,15 @@
 
 package com.thirdparty.service.impl;
 
+import com.lifeonwalden.app.example.common.constant.CacheManager;
+import com.lifeonwalden.app.example.common.constant.CacheName;
 import com.lifeonwalden.app.util.date.DateUtil;
 import com.lifeonwalden.app.util.logger.LoggerUtil;
 import com.thirdparty.bean.Todo;
 import com.thirdparty.service.TodoService;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -33,6 +36,7 @@ public class TodoServiceImpl implements TodoService, InitializingBean {
     private Map<String, Todo> cache = new HashMap<>();
 
     @Override
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO, key = "#id")
     public Todo get(String id) {
         LoggerUtil.debug(logger, "get", id);
 
@@ -53,6 +57,7 @@ public class TodoServiceImpl implements TodoService, InitializingBean {
     }
 
     @Override
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO_LIST, key = "#containsContent")
     public List<Todo> query(String containsContent) {
         LoggerUtil.debug(logger, "query", containsContent);
 
@@ -67,6 +72,7 @@ public class TodoServiceImpl implements TodoService, InitializingBean {
     }
 
     @Override
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO_ALL, key = "#root.methodName")
     public Map<Integer, List<Todo>> queryMapping() {
         LoggerUtil.debug(logger, "queryMapping");
         Map<Integer, List<Todo>> mapping = new HashMap<>();
