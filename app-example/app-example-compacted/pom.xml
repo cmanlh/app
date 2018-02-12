@@ -48,6 +48,11 @@
             <artifactId>app-microservice-provider</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.lifeonwalden</groupId>
+            <artifactId>app-cache-caffeine</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

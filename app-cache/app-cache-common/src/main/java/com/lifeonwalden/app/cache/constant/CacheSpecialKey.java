@@ -14,26 +14,10 @@
  *    limitations under the License.
  */
 
-package com.lifeonwalden.app.example.common.constant;
+package com.lifeonwalden.app.cache.constant;
 
-public interface CacheName {
-    String TODO = "todo";
+public interface CacheSpecialKey {
+    String FULL_CACHE_FETCHING = "'~CACHE~FULL~FETCH~'";
 
-    String TODO_LIST = "todo:list";
-
-    String TODO_ALL = "todo:all";
-
-    String MAKE = "make";
-
-    String MAKE_LIST = "make:list";
-
-    String MAKE_ALL = "make:all";
-
-    String DB = "db";
-
-    String DB_ALL = "db:all";
-
-    String DB_LIST = "db:list";
-
-    String ALL = "'~ALL~'";
+    String CACHE_REFRESHING = "'~CACHE~REFRESH~FETCH~'";
 }

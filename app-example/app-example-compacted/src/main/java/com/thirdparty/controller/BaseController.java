@@ -16,7 +16,7 @@
 
 package com.thirdparty.controller;
 
-import com.lifeonwalden.app.microservice.consumer.service.ServiceLookup;
+import com.lifeonwalden.app.service.ServiceLookup;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class BaseController {

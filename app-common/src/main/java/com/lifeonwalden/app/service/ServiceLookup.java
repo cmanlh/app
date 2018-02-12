@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.lifeonwalden.app.microservice.consumer.service;
+package com.lifeonwalden.app.service;
 
 public interface ServiceLookup {
 

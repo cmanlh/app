@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-package com.lifeonwalden.app.microservice.consumer.service.impl;
+package com.lifeonwalden.app.service.impl;
 
-import com.lifeonwalden.app.microservice.consumer.service.ServiceLookup;
+import com.lifeonwalden.app.service.ServiceLookup;
 import com.lifeonwalden.app.util.logger.LoggerUtil;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;

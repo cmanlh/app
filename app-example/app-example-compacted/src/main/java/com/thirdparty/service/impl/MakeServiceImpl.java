@@ -69,7 +69,7 @@ public class MakeServiceImpl implements MakeService, InitializingBean {
     }
 
     @Override
-    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.MAKE_LIST, key = "#param.likeFake")
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.MAKE_LIST, key = "param.likeFake")
     public List<Enable> query(EnableParam param) {
         LoggerUtil.debug(logger, "query", param);
 
@@ -86,7 +86,7 @@ public class MakeServiceImpl implements MakeService, InitializingBean {
     }
 
     @Override
-    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.MAKE_ALL, key = "#root.method.name")
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.MAKE_ALL, key = CacheName.ALL)
     public Map<String, List<Enable>> queryMapping() {
         LoggerUtil.debug(logger, "queryMapping");
         Map<String, List<Enable>> mapping = new HashMap<>();

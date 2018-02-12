@@ -19,11 +19,11 @@ package com.lifeonwalden.app.util.map;
 import java.util.Map;
 
 public interface MapUtil {
-    static <T extends Map<String, Object>> T shallowCopy(Map<String, Object> src, Class<T> toClass) {
+    static <K, V, T extends Map<K, V>> T shallowCopy(Map<K, V> src, Class<T> toClass) {
         T target = null;
         try {
             target = toClass.newInstance();
-            for (Map.Entry<String, Object> entry : src.entrySet()) {
+            for (Map.Entry<K, V> entry : src.entrySet()) {
                 target.put(entry.getKey(), entry.getValue());
             }
         } catch (InstantiationException | IllegalAccessException e) {
