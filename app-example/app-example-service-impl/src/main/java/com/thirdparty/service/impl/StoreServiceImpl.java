@@ -75,7 +75,7 @@ public class StoreServiceImpl implements StoreService, InitializingBean {
     }
 
     @Override
-    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.DB_LIST, key = CacheSpecialKey.FULL_CACHE_FETCHING)
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, sync = true, cacheNames = CacheName.DB_LIST, key = CacheSpecialKey.FULL_CACHE_FETCHING)
     public Map<String, List<DatabaseField>> queryMapping() {
         LoggerUtil.debug(logger, "queryMapping");
         Map<String, List<DatabaseField>> mapping = new HashMap<>();
