@@ -20,8 +20,6 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.CaffeineSpec;
 import com.lifeonwalden.app.cache.service.CacheService;
-import com.lifeonwalden.app.util.logger.LoggerUtil;
-import org.apache.logging.log4j.Logger;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.util.Assert;
@@ -56,7 +54,6 @@ import java.util.concurrent.TimeUnit;
  * @see AppCaffeineCache
  */
 public class AppCaffeineCacheManager implements CacheManager, CacheService {
-    private final static Logger logger = LoggerUtil.getLogger(AppCaffeineCacheManager.class);
     private final ConcurrentMap<String, Cache> cacheMap = new ConcurrentHashMap<String, Cache>(16);
     private boolean dynamic = true;
     private Caffeine<Object, Object> cacheBuilder = Caffeine.newBuilder();
