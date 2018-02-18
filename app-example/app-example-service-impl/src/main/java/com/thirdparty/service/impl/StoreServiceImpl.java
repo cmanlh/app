@@ -21,11 +21,14 @@ import com.lifeonwalden.app.example.common.constant.CacheManager;
 import com.lifeonwalden.app.example.common.constant.CacheName;
 import com.lifeonwalden.app.util.date.DateUtil;
 import com.lifeonwalden.app.util.logger.LoggerUtil;
+import com.lifeonwalden.app.util.map.MapUtil;
 import com.thirdparty.bean.DatabaseField;
 import com.thirdparty.bean.DatabaseFieldParam;
 import com.thirdparty.service.StoreService;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -46,17 +49,42 @@ public class StoreServiceImpl implements StoreService, InitializingBean {
     }
 
     @Override
+    @CacheEvict(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.DB, key = "#param.requiredField")
+    public boolean delete(DatabaseFieldParam param) {
+        LoggerUtil.debug(logger, "delete", param);
+
+        return null != cache.remove(param.getRequiredField());
+    }
+
+    @Override
+    @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.DB, key = "#param.requiredField")
+    public boolean insert(DatabaseFieldParam param) {
+        LoggerUtil.debug(logger, "insert", param);
+
+        cache.put(param.getRequiredField(), MapUtil.shallowCopy(param, DatabaseField.class));
+        return true;
+    }
+
+    @Override
+    @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.DB, key = "#param.requiredField")
     public boolean update(DatabaseFieldParam param) {
         LoggerUtil.debug(logger, "update", param);
 
         DatabaseField item = this.cache.get(param.getRequiredField());
         if (null != item) {
-            item.setLogicalDel(param.getLogicalDel());
-            item.setUpdateTime(param.getUpdateTime());
+            MapUtil.merge(item, param);
 
             return true;
         }
         return false;
+    }
+
+    @Override
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.DB, key = CacheSpecialKey.FULL_CACHE_FETCHING)
+    public Map<String, DatabaseField> queryAll() {
+        LoggerUtil.debug(logger, "queryAll");
+
+        return cache;
     }
 
     @Override
@@ -90,6 +118,13 @@ public class StoreServiceImpl implements StoreService, InitializingBean {
         });
 
         return mapping;
+    }
+
+    @Override
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, sync = true, cacheNames = CacheName.DB_LIST, key = CacheSpecialKey.CACHE_REFRESHING)
+    public Map<String, List<DatabaseField>> refreshMapping() {
+        LoggerUtil.debug(logger, "refreshMapping");
+        return queryMapping();
     }
 
     @Override

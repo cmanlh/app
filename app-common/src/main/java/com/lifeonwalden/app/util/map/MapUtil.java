@@ -16,9 +16,19 @@
 
 package com.lifeonwalden.app.util.map;
 
-import java.util.Map;
+import java.util.*;
 
 public interface MapUtil {
+    /**
+     * shallow copy the src map to new one
+     *
+     * @param src
+     * @param toClass
+     * @param <K>
+     * @param <V>
+     * @param <T>
+     * @return
+     */
     static <K, V, T extends Map<K, V>> T shallowCopy(Map<K, V> src, Class<T> toClass) {
         T target = null;
         try {
@@ -31,5 +41,121 @@ public interface MapUtil {
         }
 
         return target;
+    }
+
+    /**
+     * merge src mapping key/value that are not exist in origin mapping to origin mapping
+     *
+     * @param origin
+     * @param src
+     * @param allowedNull true allow to copy null value to origin mapping, false is not
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    static <K, V> Map<K, V> merge(Map<K, V> origin, Map<K, V> src, boolean allowedNull) {
+        src.forEach((key, value) -> {
+            if (null == origin.get(key)) {
+                if (allowedNull) {
+                    origin.put(key, value);
+                } else {
+                    if (null != value) {
+                        origin.put(key, value);
+                    }
+                }
+            }
+        });
+
+        return origin;
+    }
+
+    /**
+     * merge src mapping key/value that are not exist in origin mapping to origin mapping
+     *
+     * @param origin
+     * @param src
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    static <K, V> Map<K, V> merge(Map<K, V> origin, Map<K, V> src) {
+        return merge(origin, src, true);
+    }
+
+
+    /**
+     * merge src mapping key/value that are not exist in origin mapping to origin mapping without some keys
+     *
+     * @param origin
+     * @param src
+     * @param allowedNull    true allow to copy null value to origin mapping, false is not
+     * @param withoutKeyList
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    static <K, V> Map<K, V> mergeWithout(Map<K, V> origin, Map<K, V> src, boolean allowedNull, List<K> withoutKeyList) {
+        Set<K> withoutKeySet = new TreeSet<>();
+        withoutKeySet.addAll(withoutKeyList);
+
+        src.forEach((key, value) -> {
+            if (withoutKeySet.contains(key)) {
+                return;
+            }
+            if (null == origin.get(key)) {
+                if (allowedNull) {
+                    origin.put(key, value);
+                } else {
+                    if (null != value) {
+                        origin.put(key, value);
+                    }
+                }
+            }
+        });
+
+        return origin;
+    }
+
+    /**
+     * merge src mapping key/value that are not exist in origin mapping to origin mapping without some keys
+     *
+     * @param origin
+     * @param src
+     * @param allowedNull true allow to copy null value to origin mapping, false is not
+     * @param withoutKeys
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    static <K, V> Map<K, V> mergeWithout(Map<K, V> origin, Map<K, V> src, boolean allowedNull, K... withoutKeys) {
+        return mergeWithout(origin, src, allowedNull, Arrays.asList(withoutKeys));
+    }
+
+    /**
+     * merge src mapping key/value that are not exist in origin mapping to origin mapping without some keys
+     *
+     * @param origin
+     * @param src
+     * @param withoutKeyList
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    static <K, V> Map<K, V> mergeWithout(Map<K, V> origin, Map<K, V> src, List<K> withoutKeyList) {
+        return mergeWithout(origin, src, true, withoutKeyList);
+    }
+
+    /**
+     * merge src mapping key/value that are not exist in origin mapping to origin mapping without some keys
+     *
+     * @param origin
+     * @param src
+     * @param withoutKeys
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    static <K, V> Map<K, V> mergeWithout(Map<K, V> origin, Map<K, V> src, K... withoutKeys) {
+        return mergeWithout(origin, src, true, Arrays.asList(withoutKeys));
     }
 }

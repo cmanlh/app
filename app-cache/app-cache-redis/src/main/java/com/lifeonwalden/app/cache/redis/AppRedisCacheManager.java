@@ -13,15 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.lifeonwadlen.app.cache.redis;
+package com.lifeonwalden.app.cache.redis;
 
+import com.lifeonwalden.app.cache.service.CacheService;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -29,8 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author CManLH
  */
-public class RedisCacheManager implements CacheManager {
-    private final RedisCacheWriter cacheWriter;
+public class AppRedisCacheManager implements CacheManager, CacheService {
+    private final AppRedisCacheWriter cacheWriter;
     private final AppRedisCacheConfiguration defaultCacheConfig;
     private final Map<String, Cache> cacheMap = new ConcurrentHashMap<>(16);
     private boolean dynamic = true;
@@ -40,7 +39,7 @@ public class RedisCacheManager implements CacheManager {
      * @param cacheWriter
      * @param defaultCacheConfiguration
      */
-    public RedisCacheManager(RedisCacheWriter cacheWriter, AppRedisCacheConfiguration defaultCacheConfiguration) {
+    public AppRedisCacheManager(AppRedisCacheWriter cacheWriter, AppRedisCacheConfiguration defaultCacheConfiguration) {
         Assert.notNull(cacheWriter, "CacheWriter must not be null!");
         Assert.notNull(defaultCacheConfiguration, "DefaultCacheConfiguration must not be null!");
 
@@ -77,5 +76,29 @@ public class RedisCacheManager implements CacheManager {
     @Override
     public Collection<String> getCacheNames() {
         return Collections.unmodifiableSet(this.cacheMap.keySet());
+    }
+
+    @Override
+    public List<String> listCache() {
+        return new ArrayList<>(getCacheNames());
+    }
+
+    @Override
+    public List<String> listKey(String name) {
+        return ((AppRedisCache) getCache(name)).listKey();
+    }
+
+    @Override
+    public boolean evict(String name, String key) {
+        getCache(name).evict(key);
+
+        return true;
+    }
+
+    @Override
+    public boolean clear(String name) {
+        getCache(name).clear();
+
+        return true;
     }
 }

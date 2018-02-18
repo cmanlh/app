@@ -14,28 +14,20 @@
  *    limitations under the License.
  */
 
-package com.thirdparty.service;
+package com.lifeonwalden.app.cache.redis.serialization.impl;
 
-import com.thirdparty.bean.DatabaseField;
-import com.thirdparty.bean.DatabaseFieldParam;
+import com.lifeonwalden.app.cache.redis.serialization.SerializationPair;
 
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
 
-public interface StoreService {
-    DatabaseField get(DatabaseFieldParam param);
+public class KeySerializationPair implements SerializationPair<String> {
+    @Override
+    public byte[] serialize(String target) {
+        return target.getBytes(StandardCharsets.UTF_8);
+    }
 
-    boolean delete(DatabaseFieldParam param);
-
-    boolean insert(DatabaseFieldParam param);
-
-    boolean update(DatabaseFieldParam param);
-
-    Map<String, DatabaseField> queryAll();
-
-    List<DatabaseField> query(DatabaseFieldParam param);
-
-    Map<String, List<DatabaseField>> queryMapping();
-
-    Map<String, List<DatabaseField>> refreshMapping();
+    @Override
+    public String deserialize(byte[] target) {
+        return new String(target, StandardCharsets.UTF_8);
+    }
 }

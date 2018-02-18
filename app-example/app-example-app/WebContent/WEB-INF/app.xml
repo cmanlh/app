@@ -16,5 +16,6 @@
     </bean>
     <import resource="classpath*:app-gateway.xml"/>
     <import resource="classpath*:app-auth.xml"/>
+    <import resource="classpath*:app-redis.xml"/>
     <import resource="classpath*:app-cache.xml"/>
 </beans>

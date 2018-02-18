@@ -71,7 +71,6 @@ public class AppCaffeineCache extends AbstractValueAdaptingCache {
      */
     public AppCaffeineCache(String name, com.github.benmanes.caffeine.cache.Cache<Object, Object> cache,
                             boolean allowNullValues) {
-
         super(allowNullValues);
         Assert.notNull(name, "Name must not be null");
         Assert.notNull(cache, "Cache must not be null");
@@ -103,18 +102,16 @@ public class AppCaffeineCache extends AbstractValueAdaptingCache {
     @Override
     public <T> T get(Object key, final Callable<T> valueLoader) {
         if (_CacheSpecialKey.FULL_CACHE_FETCHING.equals(key) || _CacheSpecialKey.CACHE_REFRESHING.equals(key)) {
-            if (this.cache.estimatedSize() > 0 && _CacheSpecialKey.FULL_CACHE_FETCHING.equals(key)) {
-                return (T) fromStoreValue(MapUtil.shallowCopy(this.cache.asMap(), HashMap.class));
-            } else {
+            if (cache.estimatedSize() <= 0 || _CacheSpecialKey.CACHE_REFRESHING.equals(key)) {
                 try {
                     this.put(key, valueLoader.call());
-                    return (T) fromStoreValue(MapUtil.shallowCopy(this.cache.asMap(), HashMap.class));
                 } catch (Exception ex) {
-                    logger.error("unexpected cache lookup.", ex);
+                    logger.error("Failed to load cache data.", ex);
 
                     throw new ValueRetrievalException(key, valueLoader, ex);
                 }
             }
+            return (T) fromStoreValue(MapUtil.shallowCopy(this.cache.asMap(), HashMap.class));
         } else {
             return (T) fromStoreValue(this.cache.get(key, new AppCaffeineCache.LoadFunction(valueLoader)));
         }

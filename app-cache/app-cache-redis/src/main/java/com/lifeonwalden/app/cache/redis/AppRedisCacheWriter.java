@@ -13,23 +13,23 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.lifeonwadlen.app.cache.redis;
+package com.lifeonwalden.app.cache.redis;
 
 import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * {@link RedisCacheWriter} provides low level access to Redis commands ({@code SET, SETNX, GET, EXPIRE,...}) used for
+ * {@link AppRedisCacheWriter} provides low level access to Redis commands ({@code SET, SETNX, GET, EXPIRE,...}) used for
  * caching. <br />
- * The {@link RedisCacheWriter} may be shared by multiple cache implementations and is responsible for writing / reading
+ * The {@link AppRedisCacheWriter} may be shared by multiple cache implementations and is responsible for writing / reading
  * binary data to / from Redis. The implementation honors potential cache lock flags that might be set.
  *
  * @author Christoph Strobl
  * @author Mark Paluch
  * @author CManLH
  */
-public interface RedisCacheWriter {
+public interface AppRedisCacheWriter {
 
     /**
      * Write the given key/value pair to Redis an set the expiration time if defined.
@@ -110,4 +110,20 @@ public interface RedisCacheWriter {
      * @return
      */
     Set<byte[]> listKey(byte[] name);
+
+    /**
+     * Returns the approximate number of entries in this cache.
+     *
+     * @param name
+     * @return
+     */
+    long estimatedSize(byte[] name);
+
+    /**
+     * check the cache is exist
+     *
+     * @param name
+     * @return
+     */
+    boolean exist(byte[] name);
 }

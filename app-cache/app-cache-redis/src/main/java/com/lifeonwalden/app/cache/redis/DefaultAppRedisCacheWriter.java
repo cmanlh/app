@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.lifeonwadlen.app.cache.redis;
+package com.lifeonwalden.app.cache.redis;
 
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -30,12 +30,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * {@link RedisCacheWriter} implementation capable of reading/writing binary data from/to Redis in {@literal standalone}
+ * {@link AppRedisCacheWriter} implementation capable of reading/writing binary data from/to Redis in {@literal standalone}
  * and {@literal cluster} environments. Works upon a given {@link RedisConnectionFactory} to obtain the actual
  * {@link RedisConnection}. <br />
- * {@link DefaultRedisCacheWriter} can be used in
- * {@link RedisCacheWriter# locking} or
- * {@link RedisCacheWriter# non-locking} mode. While
+ * {@link DefaultAppRedisCacheWriter} can be used in
+ * {@link AppRedisCacheWriter# locking} or
+ * {@link AppRedisCacheWriter# non-locking} mode. While
  * {@literal non-locking} aims for maximum performance it may result in overlapping, non atomic, command execution for
  * operations spanning multiple Redis interactions like {@code putIfAbsent}. The {@literal locking} counterpart prevents
  * command overlap by setting an explicit lock key and checking against presence of this key which leads to additional
@@ -45,7 +45,7 @@ import java.util.function.Function;
  * @author Mark Paluch
  * @author CManLH
  */
-public class DefaultRedisCacheWriter implements RedisCacheWriter {
+public class DefaultAppRedisCacheWriter implements AppRedisCacheWriter {
     private final RedisConnectionFactory connectionFactory;
     private final Duration sleepTime;
     private final byte[] REDIS_LOCK_HOLDER = "~~CACHE~LOCK~~".getBytes(StandardCharsets.UTF_8);
@@ -53,7 +53,7 @@ public class DefaultRedisCacheWriter implements RedisCacheWriter {
     /**
      * @param connectionFactory must not be {@literal null}.
      */
-    DefaultRedisCacheWriter(RedisConnectionFactory connectionFactory) {
+    DefaultAppRedisCacheWriter(RedisConnectionFactory connectionFactory) {
         this(connectionFactory, 0, TimeUnit.MILLISECONDS.toString());
     }
 
@@ -62,7 +62,7 @@ public class DefaultRedisCacheWriter implements RedisCacheWriter {
      * @param sleepTime         sleep time between lock request attempts. Must not be {@literal null}. Use {@link Duration#ZERO}
      *                          to disable locking.
      */
-    DefaultRedisCacheWriter(RedisConnectionFactory connectionFactory, long sleepTime, String timeUnit) {
+    DefaultAppRedisCacheWriter(RedisConnectionFactory connectionFactory, long sleepTime, String timeUnit) {
         Assert.notNull(connectionFactory, "ConnectionFactory must not be null!");
         Assert.notNull(sleepTime, "SleepTime must not be null!");
 
@@ -213,6 +213,16 @@ public class DefaultRedisCacheWriter implements RedisCacheWriter {
 
     }
 
+    @Override
+    public long estimatedSize(byte[] name) {
+        return execute(name, connection -> connection.hLen(name));
+    }
+
+    @Override
+    public boolean exist(byte[] name) {
+        return execute(name, connection -> connection.exists(name));
+    }
+
     /**
      * Explicitly set a write lock on a cache.
      *
@@ -244,7 +254,7 @@ public class DefaultRedisCacheWriter implements RedisCacheWriter {
     }
 
     /**
-     * @return {@literal true} if {@link RedisCacheWriter} uses locks.
+     * @return {@literal true} if {@link AppRedisCacheWriter} uses locks.
      */
     private boolean isLockingCacheWriter() {
         return !sleepTime.isZero() && !sleepTime.isNegative();

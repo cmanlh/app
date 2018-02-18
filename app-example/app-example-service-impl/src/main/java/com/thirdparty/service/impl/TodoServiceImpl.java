@@ -24,6 +24,8 @@ import com.thirdparty.bean.Todo;
 import com.thirdparty.service.TodoService;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,23 @@ public class TodoServiceImpl implements TodoService, InitializingBean {
     private Map<String, Todo> cache = new HashMap<>();
 
     @Override
+    @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO, key = "#todo.id")
+    public boolean insert(Todo todo) {
+        LoggerUtil.debug(logger, "insert", todo);
+
+        cache.put(todo.getId(), todo);
+        return true;
+    }
+
+    @Override
+    @CacheEvict(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO, key = "#id")
+    public boolean delete(String id) {
+        LoggerUtil.debug(logger, "insert", id);
+
+        return null != cache.remove(id);
+    }
+
+    @Override
     @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO, key = "#id")
     public Todo get(String id) {
         LoggerUtil.debug(logger, "get", id);
@@ -44,6 +63,7 @@ public class TodoServiceImpl implements TodoService, InitializingBean {
     }
 
     @Override
+    @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO, key = "#todo.id")
     public boolean updateStatus(Todo todo) {
         LoggerUtil.debug(logger, "updateStatus", todo);
 
@@ -54,6 +74,13 @@ public class TodoServiceImpl implements TodoService, InitializingBean {
             return true;
         }
         return false;
+    }
+
+    @Override
+    @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO, key = "#todo.id")
+    public Map<String, Todo> queryAll() {
+        LoggerUtil.debug(logger, "queryAll");
+        return cache;
     }
 
     @Override
@@ -72,9 +99,10 @@ public class TodoServiceImpl implements TodoService, InitializingBean {
     }
 
     @Override
-    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO_ALL, key = "#root.methodName")
+    @Cacheable(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO_ALL, key = "#root.method.name")
     public Map<Integer, List<Todo>> queryMapping() {
         LoggerUtil.debug(logger, "queryMapping");
+
         Map<Integer, List<Todo>> mapping = new HashMap<>();
 
         this.cache.values().forEach(todo -> {

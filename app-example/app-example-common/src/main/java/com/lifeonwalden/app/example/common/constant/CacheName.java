@@ -27,13 +27,7 @@ public interface CacheName {
 
     String MAKE_LIST = "make:list";
 
-    String MAKE_ALL = "make:all";
-
     String DB = "db";
 
-    String DB_ALL = "db:all";
-
     String DB_LIST = "db:list";
-
-    String ALL = "'~ALL~'";
 }

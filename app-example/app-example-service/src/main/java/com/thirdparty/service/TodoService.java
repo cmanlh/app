@@ -21,11 +21,18 @@ import java.util.List;
 import java.util.Map;
 
 public interface TodoService {
+    boolean insert(Todo todo);
+
+    boolean delete(String id);
+
     Todo get(String id);
 
     boolean updateStatus(Todo todo);
 
+    Map<String, Todo> queryAll();
+
     List<Todo> query(String containsContent);
 
     Map<Integer, List<Todo>> queryMapping();
+
 }
