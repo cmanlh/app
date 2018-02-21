@@ -20,6 +20,7 @@ import com.lifeonwalden.app.cache.constant.CacheSpecialKey;
 import com.lifeonwalden.app.example.common.constant.CacheManager;
 import com.lifeonwalden.app.example.common.constant.CacheName;
 import com.lifeonwalden.app.util.logger.LoggerUtil;
+import com.lifeonwalden.app.util.map.MapUtil;
 import com.thirdparty.bean.Enable;
 import com.thirdparty.bean.EnableParam;
 import com.thirdparty.service.MakeService;
@@ -57,18 +58,22 @@ public class MakeServiceImpl implements MakeService, InitializingBean {
 
     @Override
     @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.MAKE, key = "#param.like1")
-    public boolean update(EnableParam param) {
+    public Enable update(EnableParam param) {
         LoggerUtil.debug(logger, "update", param);
 
         logger.info("current principal : {}", sessionService.getPrincipal());
 
         Enable item = this.cache.get(String.valueOf(param.getLike1()));
         if (null != item) {
-            item.setLikeFake(param.getLikeFake());
+            MapUtil.merge(item, param);
 
-            return true;
+            return item;
+        } else {
+            Enable newOne = MapUtil.shallowCopy(param, Enable.class);
+            cache.put(newOne.getLike1(), newOne);
+
+            return newOne;
         }
-        return false;
     }
 
     @Override

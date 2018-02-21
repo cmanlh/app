@@ -17,17 +17,38 @@
 package com.lifeonwalden.app.cache.redis.serialization.impl;
 
 import com.lifeonwalden.app.cache.redis.serialization.SerializationPair;
+import com.lifeonwalden.app.util.logger.LoggerUtil;
+import org.apache.logging.log4j.Logger;
 
-import java.nio.charset.StandardCharsets;
+import java.io.*;
 
-public class KeySerializationPair implements SerializationPair<String> {
+public class KeySerializationPair implements SerializationPair<Object> {
+    private final static Logger logger = LoggerUtil.getLogger(ValueSerializationPair.class);
+
     @Override
-    public byte[] serialize(String target) {
-        return target.getBytes(StandardCharsets.UTF_8);
+    public byte[] serialize(Object target) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(target);
+            oos.flush();
+        } catch (IOException e) {
+            logger.error("Failed to serialize object", e);
+
+            throw new RuntimeException(e);
+        }
+
+        return baos.toByteArray();
     }
 
     @Override
-    public String deserialize(byte[] target) {
-        return new String(target, StandardCharsets.UTF_8);
+    public Object deserialize(byte[] target) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(target);
+        try (ObjectInputStream ois = new ObjectInputStream(bais)) {
+            return ois.readObject();
+        } catch (IOException | SecurityException | ClassNotFoundException e) {
+            logger.error("Failed to deserialize object", e);
+
+            throw new RuntimeException(e);
+        }
     }
 }

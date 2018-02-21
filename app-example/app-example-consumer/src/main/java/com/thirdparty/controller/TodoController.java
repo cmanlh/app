@@ -42,9 +42,24 @@ public class TodoController extends BaseController {
         return ResponseUtil.success(getService(TodoService.class).queryMapping());
     }
 
+    @RequestMapping(value = "queryAll")
+    public Response queryAll() {
+        return ResponseUtil.success(getService(TodoService.class).queryAll());
+    }
+
     @RequestMapping(value = "updateStatus", method = RequestMethod.POST)
     public Response updateStatus(@ModelAttribute Todo todo) {
         return ResponseUtil.success(getService(TodoService.class).updateStatus(todo));
+    }
+
+    @RequestMapping(value = "insert", method = RequestMethod.POST)
+    public Response insert(@ModelAttribute Todo todo) {
+        return ResponseUtil.success(getService(TodoService.class).insert(todo));
+    }
+
+    @RequestMapping(value = "delete")
+    public Response delete(@RequestParam("id") String id) {
+        return ResponseUtil.success(getService(TodoService.class).delete(id));
     }
 
     @RequestMapping(value = "err")

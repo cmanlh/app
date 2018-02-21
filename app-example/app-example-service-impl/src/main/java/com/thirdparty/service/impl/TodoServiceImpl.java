@@ -16,6 +16,7 @@
 
 package com.thirdparty.service.impl;
 
+import com.lifeonwalden.app.cache.constant.CacheSpecialKey;
 import com.lifeonwalden.app.example.common.constant.CacheManager;
 import com.lifeonwalden.app.example.common.constant.CacheName;
 import com.lifeonwalden.app.util.date.DateUtil;
@@ -39,11 +40,12 @@ public class TodoServiceImpl implements TodoService, InitializingBean {
 
     @Override
     @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO, key = "#todo.id")
-    public boolean insert(Todo todo) {
+    public Todo insert(Todo todo) {
         LoggerUtil.debug(logger, "insert", todo);
 
         cache.put(todo.getId(), todo);
-        return true;
+
+        return todo;
     }
 
     @Override
@@ -64,20 +66,22 @@ public class TodoServiceImpl implements TodoService, InitializingBean {
 
     @Override
     @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO, key = "#todo.id")
-    public boolean updateStatus(Todo todo) {
+    public Todo updateStatus(Todo todo) {
         LoggerUtil.debug(logger, "updateStatus", todo);
 
         Todo item = this.cache.get(todo.getId());
         if (null != item) {
             item.setStatus(todo.getStatus());
 
-            return true;
+            return item;
+        } else {
+            cache.put(todo.getId(), todo);
+            return todo;
         }
-        return false;
     }
 
     @Override
-    @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO, key = "#todo.id")
+    @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.TODO, key = CacheSpecialKey.FULL_CACHE_FETCHING)
     public Map<String, Todo> queryAll() {
         LoggerUtil.debug(logger, "queryAll");
         return cache;

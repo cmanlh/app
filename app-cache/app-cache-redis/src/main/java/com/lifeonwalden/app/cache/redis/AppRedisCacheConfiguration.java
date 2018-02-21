@@ -34,11 +34,11 @@ public class AppRedisCacheConfiguration {
     private final Duration ttl;
     private final boolean cacheNullValues;
 
-    private final SerializationPair<String> keySerializationPair;
+    private final SerializationPair<Object> keySerializationPair;
     private final SerializationPair<Object> valueSerializationPair;
 
     public AppRedisCacheConfiguration(long duration, String timeUnit, Boolean cacheNullValues,
-                                      SerializationPair<String> keySerializationPair, SerializationPair<Object> valueSerializationPair) {
+                                      SerializationPair<Object> keySerializationPair, SerializationPair<Object> valueSerializationPair) {
         this.ttl = Duration.ofMillis(TimeUnit.valueOf(timeUnit.toUpperCase()).toMillis(duration));
         this.cacheNullValues = cacheNullValues;
         this.keySerializationPair = keySerializationPair;
@@ -59,7 +59,7 @@ public class AppRedisCacheConfiguration {
     /**
      * @return never {@literal null}.
      */
-    public SerializationPair<String> getKeySerializationPair() {
+    public SerializationPair<Object> getKeySerializationPair() {
         return keySerializationPair;
     }
 

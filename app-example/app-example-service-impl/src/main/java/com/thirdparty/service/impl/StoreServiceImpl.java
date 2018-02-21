@@ -58,25 +58,30 @@ public class StoreServiceImpl implements StoreService, InitializingBean {
 
     @Override
     @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.DB, key = "#param.requiredField")
-    public boolean insert(DatabaseFieldParam param) {
+    public DatabaseField insert(DatabaseFieldParam param) {
         LoggerUtil.debug(logger, "insert", param);
 
         cache.put(param.getRequiredField(), MapUtil.shallowCopy(param, DatabaseField.class));
-        return true;
+        return cache.get(param.getRequiredField());
     }
 
     @Override
     @CachePut(cacheManager = CacheManager.CACHE_MANAGER, cacheNames = CacheName.DB, key = "#param.requiredField")
-    public boolean update(DatabaseFieldParam param) {
+    public DatabaseField update(DatabaseFieldParam param) {
         LoggerUtil.debug(logger, "update", param);
 
         DatabaseField item = this.cache.get(param.getRequiredField());
         if (null != item) {
             MapUtil.merge(item, param);
 
-            return true;
+            return cache.get(param.getRequiredField());
+        } else {
+            DatabaseField newOne = MapUtil.shallowCopy(param, DatabaseField.class);
+
+            cache.put(newOne.getRequiredField(), newOne);
+
+            return newOne;
         }
-        return false;
     }
 
     @Override

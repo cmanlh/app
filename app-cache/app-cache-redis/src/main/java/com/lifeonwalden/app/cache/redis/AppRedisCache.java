@@ -86,7 +86,7 @@ public class AppRedisCache extends AbstractValueAdaptingCache {
                 return null;
             }
 
-            Map<String, Object> mapping = new HashMap<>();
+            Map<Object, Object> mapping = new HashMap<>();
             cacheWriter.get(name).forEach((_key, _value) -> mapping.put(deserializeKey(_key), deserializeValue(_value)));
             return mapping;
         } else {
@@ -102,7 +102,7 @@ public class AppRedisCache extends AbstractValueAdaptingCache {
 
     @Override
     public String getName() {
-        return deserializeKey(name);
+        return String.valueOf(deserializeKey(name));
     }
 
     @Override
@@ -123,7 +123,7 @@ public class AppRedisCache extends AbstractValueAdaptingCache {
                 }
 
             }
-            Map<String, Object> mapping = new HashMap<>();
+            Map<Object, Object> mapping = new HashMap<>();
             cacheWriter.get(name).forEach((_key, _value) -> mapping.put(deserializeKey(_key), deserializeValue(_value)));
             return (T) fromStoreValue(mapping);
         } else {
@@ -163,7 +163,7 @@ public class AppRedisCache extends AbstractValueAdaptingCache {
                 return null;
             } else {
                 this.put(key, value);
-                Map<String, Object> mapping = new HashMap<>();
+                Map<Object, Object> mapping = new HashMap<>();
                 cacheWriter.get(name).forEach((_key, _value) -> mapping.put(deserializeKey(_key), deserializeValue(_value)));
 
                 return toValueWrapper(mapping);
@@ -221,7 +221,7 @@ public class AppRedisCache extends AbstractValueAdaptingCache {
         return this.cacheConfig.getKeySerializationPair().serialize(key);
     }
 
-    protected String deserializeKey(byte[] key) {
+    protected Object deserializeKey(byte[] key) {
         return this.cacheConfig.getKeySerializationPair().deserialize(key);
     }
 
@@ -243,7 +243,7 @@ public class AppRedisCache extends AbstractValueAdaptingCache {
 
     public List<String> listKey() {
         List<String> keyList = new ArrayList<>();
-        getNativeCache().listKey(name).forEach(key -> keyList.add(deserializeKey(key)));
+        getNativeCache().listKey(name).forEach(key -> keyList.add(String.valueOf(deserializeKey(key))));
 
         return keyList;
     }

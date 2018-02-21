@@ -27,9 +27,9 @@ public interface StoreService {
 
     boolean delete(DatabaseFieldParam param);
 
-    boolean insert(DatabaseFieldParam param);
+    DatabaseField insert(DatabaseFieldParam param);
 
-    boolean update(DatabaseFieldParam param);
+    DatabaseField update(DatabaseFieldParam param);
 
     Map<String, DatabaseField> queryAll();
 

@@ -13,26 +13,26 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.thirdparty.service;
 
-import com.thirdparty.bean.Todo;
+package com.lifeonwalden.app.cache.compacted;
 
 import java.util.List;
-import java.util.Map;
+import java.util.function.Function;
 
-public interface TodoService {
-    Todo insert(Todo todo);
+public interface NativeCache {
+    Object fetchAll();
 
-    boolean delete(String id);
+    Object get(Object key);
 
-    Todo get(String id);
+    Object get(Object key, Function<Object, Object> mappingFunction);
 
-    Todo updateStatus(Todo todo);
+    void put(Object key, Object value);
 
-    Map<String, Todo> queryAll();
+    void remove(Object key);
 
-    List<Todo> query(String containsContent);
+    void clean();
 
-    Map<Integer, List<Todo>> queryMapping();
+    long estimatedSize();
 
+    List<String> listKeys();
 }

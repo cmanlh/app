@@ -27,7 +27,7 @@
             <bean class="com.lifeonwalden.app.gateway.auth.audit.LoggerAudit"/>
         </mvc:interceptor>
     </mvc:interceptors>
-    
+
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
         <property name="filterChainDefinitions" value="/** = authorizationFilter"/>

@@ -15,9 +15,9 @@
     <modules>
         <module>app-cache-common</module>
         <module>app-cache-service</module>
-        <module>app-cache-guava</module>
         <module>app-cache-redis</module>
         <module>app-cache-caffeine</module>
+        <module>app-cache-compacted</module>
     </modules>
 
     <properties>

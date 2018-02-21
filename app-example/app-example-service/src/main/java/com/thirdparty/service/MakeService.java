@@ -25,7 +25,7 @@ import java.util.Map;
 public interface MakeService {
     Enable get(EnableParam param);
 
-    boolean update(EnableParam param);
+    Enable update(EnableParam param);
 
     List<Enable> query(EnableParam param);
 
