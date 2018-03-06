@@ -11,6 +11,7 @@
         <module>app-example</module>
         <module>app-microservice</module>
         <module>app-cache</module>
+        <module>app-mq</module>
     </modules>
     <packaging>pom</packaging>
     <description>A library to setup application</description>
@@ -129,6 +130,11 @@
                 <groupId>com.lifeonwalden</groupId>
                 <artifactId>forestbatis</artifactId>
                 <version>0.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>4.2.0</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
