@@ -37,16 +37,25 @@ public interface MapBeanUtil {
     }
 
     static <T> T get(Map<String, Object> map, String key, Class<T> clazz, T defaultValue) {
-        if (null == map) {
-            return defaultValue;
-        }
+        T value = get(map, key, clazz);
+        return null == value ? defaultValue : value;
+    }
 
+    static Boolean getBoolean(Map<String, Object> map, String key) {
+        if (null == map) {
+            return null;
+        }
         Object value = map.get(key);
         if (null != value) {
-            return (T) value;
+            return value instanceof Boolean ? (Boolean) value : Boolean.valueOf(value.toString());
         }
 
-        return defaultValue;
+        return null;
+    }
+
+    static Boolean getBoolean(Map<String, Object> map, String key, Boolean defaultValue) {
+        Boolean value = getBoolean(map, key);
+        return null == value ? defaultValue : value;
     }
 
     static Date getDate(Map<String, Object> map, String key) {
@@ -71,24 +80,8 @@ public interface MapBeanUtil {
     }
 
     static Date getDate(Map<String, Object> map, String key, Date defaultValue) {
-        if (null == map) {
-            return defaultValue;
-        }
-
-        Object value = map.get(key);
-        if (null != value) {
-            if (value.getClass().isPrimitive() || value instanceof Long) {
-                return new Date((long) value);
-            } else if (value instanceof String) {
-                return DateUtil.parseDate((String) value, DateUtil.FULL_VIEW_DATE);
-            } else if (value instanceof Date) {
-                return (Date) value;
-            } else {
-                throw new RuntimeException("invalid parameter type.");
-            }
-        }
-
-        return defaultValue;
+        Date value = getDate(map, key);
+        return null == value ? defaultValue : value;
     }
 
     static BigDecimal getBigDecimal(Map<String, Object> map, String key) {
@@ -112,5 +105,10 @@ public interface MapBeanUtil {
         }
 
         return null;
+    }
+
+    static BigDecimal getBigDecimal(Map<String, Object> map, String key, BigDecimal defaultValue) {
+        BigDecimal value = getBigDecimal(map, key);
+        return null == value ? defaultValue : value;
     }
 }
