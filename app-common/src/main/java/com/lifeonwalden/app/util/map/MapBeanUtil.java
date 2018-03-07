@@ -58,6 +58,125 @@ public interface MapBeanUtil {
         return null == value ? defaultValue : value;
     }
 
+    static Integer getInt(Map<String, Object> map, String key) {
+        if (null == map) {
+            return null;
+        }
+        Object value = map.get(key);
+        if (null != value) {
+            return value instanceof Integer ? (int) value : Integer.valueOf(value.toString());
+        }
+
+        return null;
+    }
+
+    static Integer getInt(Map<String, Object> map, String key, int defaultValue) {
+        Integer value = getInt(map, key);
+        return null == value ? defaultValue : value;
+    }
+
+    static Long getLong(Map<String, Object> map, String key) {
+        if (null == map) {
+            return null;
+        }
+        Object value = map.get(key);
+        if (null != value) {
+            return value instanceof Long ? (long) value : Long.valueOf(value.toString());
+        }
+
+        return null;
+    }
+
+    static Long getLong(Map<String, Object> map, String key, long defaultValue) {
+        Long value = getLong(map, key);
+        return null == value ? defaultValue : value;
+    }
+
+    static Float getFloat(Map<String, Object> map, String key) {
+        if (null == map) {
+            return null;
+        }
+        Object value = map.get(key);
+        if (null != value) {
+            return value instanceof Float ? (float) value : Float.valueOf(value.toString());
+        }
+
+        return null;
+    }
+
+    static Float getFloat(Map<String, Object> map, String key, float defaultValue) {
+        Float value = getFloat(map, key);
+        return null == value ? defaultValue : value;
+    }
+
+    static Double getDouble(Map<String, Object> map, String key) {
+        if (null == map) {
+            return null;
+        }
+        Object value = map.get(key);
+        if (null != value) {
+            return value instanceof Double ? (double) value : Double.valueOf(value.toString());
+        }
+
+        return null;
+    }
+
+    static Double getDouble(Map<String, Object> map, String key, double defaultValue) {
+        Double value = getDouble(map, key);
+        return null == value ? defaultValue : value;
+    }
+
+    static Byte getByte(Map<String, Object> map, String key) {
+        if (null == map) {
+            return null;
+        }
+        Object value = map.get(key);
+        if (null != value) {
+            return value instanceof Byte ? (byte) value : Byte.valueOf(value.toString());
+        }
+
+        return null;
+    }
+
+    static Byte getByte(Map<String, Object> map, String key, byte defaultValue) {
+        Byte value = getByte(map, key);
+        return null == value ? defaultValue : value;
+    }
+
+    static Short getShort(Map<String, Object> map, String key) {
+        if (null == map) {
+            return null;
+        }
+        Object value = map.get(key);
+        if (null != value) {
+            return value instanceof Short ? (short) value : Short.valueOf(value.toString());
+        }
+
+        return null;
+    }
+
+    static Short getShort(Map<String, Object> map, String key, short defaultValue) {
+        Short value = getShort(map, key);
+        return null == value ? defaultValue : value;
+    }
+
+    static String getString(Map<String, Object> map, String key) {
+        if (null == map) {
+            return null;
+        }
+        Object value = map.get(key);
+        if (null != value) {
+            return value instanceof String ? (String) value : value.toString();
+        }
+
+        return null;
+    }
+
+    static String getString(Map<String, Object> map, String key, String defaultValue) {
+        String value = getString(map, key);
+        return null == value ? defaultValue : value;
+    }
+
     static Date getDate(Map<String, Object> map, String key) {
         if (null == map) {
             return null;

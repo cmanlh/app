@@ -14,8 +14,16 @@
  *    limitations under the License.
  */
 
-package com.lifeonwalden.app.jms.constant;
+package com.lifeonwalden;
 
-public interface JmsHeaders extends org.springframework.jms.support.JmsHeaders {
-    String DELIVERY_TIME = PREFIX + "deliveryTime";
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+        System.out.println( "Hello World!" );
+    }
 }
