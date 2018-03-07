@@ -14,16 +14,26 @@
  *    limitations under the License.
  */
 
-package com.lifeonwalden;
+package com.lifeonwalden.app.jms.bean;
 
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+public class CrossMsg {
+    private Class<?> clazz;
+
+    private String data;
+
+    public Class<?> getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(Class<?> clazz) {
+        this.clazz = clazz;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }
