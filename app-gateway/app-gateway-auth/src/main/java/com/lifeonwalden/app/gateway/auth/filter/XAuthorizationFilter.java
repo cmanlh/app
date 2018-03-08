@@ -17,6 +17,7 @@
 package com.lifeonwalden.app.gateway.auth.filter;
 
 import com.lifeonwalden.app.gateway.auth.service.XAuthService;
+import com.lifeonwalden.app.gateway.auth.util.RemoteAddressUtil;
 import com.lifeonwalden.app.util.logger.LoggerUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
@@ -42,12 +43,13 @@ public class XAuthorizationFilter extends BaseAuthorizationFilter {
             return false;
         }
 
-        String principal = this.xAuthService.getXPrincipal(request.getRemoteAddr(), ssoSessionId);
+        String ip = RemoteAddressUtil.getIpAddr(request);
+        String principal = this.xAuthService.getXPrincipal(ip, ssoSessionId);
         if (StringUtils.isEmpty(principal)) {
             return false;
         }
 
-        SecurityUtils.getSubject().login(new UsernamePasswordToken(principal, "", request.getRemoteAddr()));
+        SecurityUtils.getSubject().login(new UsernamePasswordToken(principal, "", ip));
         if (SecurityUtils.getSubject().isPermitted(request.getRequestURI())) {
             return true;
         }
