@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,23 +38,27 @@ public class XAuthorizationFilter extends BaseAuthorizationFilter {
     protected XAuthService xAuthService;
 
     @Override
-    protected boolean ssoRequest(HttpServletRequest request) {
-        String ssoSessionId = request.getParameter(XAuthService.SSO_SESSION_ID);
-        if (StringUtils.isEmpty(ssoSessionId)) {
-            return false;
+    protected void ssoPreLogin(HttpServletRequest request) {
+        String ssoSrcSysId = request.getParameter(XAuthService.SSO_SRC_SYS_ID);
+        if (StringUtils.isEmpty(ssoSrcSysId)) {
+            return;
         }
 
         String ip = RemoteAddressUtil.getIpAddr(request);
-        String principal = this.xAuthService.getXPrincipal(ip, ssoSessionId);
+        String principal = this.xAuthService.getXPrincipal(ip, ssoSrcSysId);
         if (StringUtils.isEmpty(principal)) {
-            return false;
+            return;
         }
 
         SecurityUtils.getSubject().login(new UsernamePasswordToken(principal, "", ip));
-        if (SecurityUtils.getSubject().isPermitted(request.getRequestURI())) {
-            return true;
-        }
+        SecurityUtils.getSubject().getSession().setAttribute(XAuthService.SSO_PRE_LOGIN_PASSED, false);
+    }
 
-        return false;
+    @Override
+    protected boolean isPermitted(Subject subject, String uri) {
+        if (null == subject.getPrincipal()) {
+            return false;
+        }
+        return null != subject && xAuthService.isPermitted() && subject.isPermitted(uri);
     }
 }

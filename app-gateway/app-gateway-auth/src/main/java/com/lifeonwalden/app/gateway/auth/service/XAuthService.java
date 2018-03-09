@@ -20,7 +20,8 @@ package com.lifeonwalden.app.gateway.auth.service;
  * Authentication service that supports sso
  */
 public interface XAuthService extends AuthService {
-    String SSO_SESSION_ID = "ssoSessionId";
+    String SSO_SRC_SYS_ID = "ssoSrcSysId";
+    String SSO_PRE_LOGIN_PASSED = "ssoPreLoginPassed";
 
     /**
      * fetch sso principal
@@ -32,11 +33,18 @@ public interface XAuthService extends AuthService {
     String getXPrincipal(String remoteAddr, String ssoSessionId);
 
     /**
-     * generate sso session and save it
+     * generate sso request id and save it
      *
      * @param remoteAddr
      * @param principal
      * @return
      */
-    String getXSessionId(String remoteAddr, String principal);
+    String getXRequestId(String remoteAddr, String principal);
+
+    /**
+     * is permitted to do x request
+     *
+     * @return
+     */
+    boolean isPermitted();
 }

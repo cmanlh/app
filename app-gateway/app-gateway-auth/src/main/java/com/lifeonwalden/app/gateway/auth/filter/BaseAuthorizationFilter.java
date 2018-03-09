@@ -39,22 +39,22 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
         String uri = httpServletRequest.getRequestURI();
         String contextPath = httpServletRequest.getContextPath();
 
-        if (StringUtils.startsWithIgnoreCase(uri, contextPath.concat("/").concat("open/"))) {
+        if (StringUtils.startsWithIgnoreCase(uri, contextPath.concat("/open/"))) {
             logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : OPEN RESOURCE", subject.getPrincipal(),
                     mappedValue, uri);
 
+            if (StringUtils.equalsIgnoreCase(uri, contextPath.concat("/open/sso/preLogin"))) {
+                ssoPreLogin(httpServletRequest);
+            }
+
             return true;
         } else {
-            if (null != subject.getPrincipal() && subject.isPermitted(uri)) {
+            if (isPermitted(subject, uri)) {
                 logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : TRUE", subject.getPrincipal(), mappedValue,
                         uri);
 
                 return true;
             } else {
-                if (ssoRequest(httpServletRequest)) {
-                    return true;
-                }
-
                 logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : FALSE", subject.getPrincipal(), mappedValue,
                         uri);
 
@@ -68,7 +68,10 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
         }
     }
 
-    protected boolean ssoRequest(HttpServletRequest request) {
-        return false;
+    protected void ssoPreLogin(HttpServletRequest request) {
+    }
+
+    protected boolean isPermitted(Subject subject, String uri) {
+        return null != subject.getPrincipal() && subject.isPermitted(uri);
     }
 }

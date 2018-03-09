@@ -24,7 +24,7 @@ import java.util.List;
 
 @Service
 public class XAuthServiceImpl implements XAuthService {
-    private final String SESSION_ID = XAuthService.SSO_SESSION_ID.concat("Consumer");
+    private final String SESSION_ID = XAuthService.SSO_SRC_SYS_ID.concat("Consumer");
 
     @Override
     public String getXPrincipal(String remoteAddr, String ssoSessionId) {
@@ -36,7 +36,7 @@ public class XAuthServiceImpl implements XAuthService {
     }
 
     @Override
-    public String getXSessionId(String remoteAddr, String principal) {
+    public String getXRequestId(String remoteAddr, String principal) {
         if ("127.0.0.1".equals(remoteAddr) && "adminConsumer".equals(principal)) {
             return SESSION_ID;
         }
