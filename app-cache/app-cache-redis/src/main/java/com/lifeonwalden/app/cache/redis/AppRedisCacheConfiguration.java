@@ -22,14 +22,6 @@ import com.lifeonwalden.app.cache.redis.serialization.impl.ValueSerializationPai
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Immutable {@link AppRedisCacheConfiguration} helps customizing {@link AppRedisCache} behaviour such as caching
- * {@literal null} values, cache key prefixes and binary serialize. <br />
- *
- * @author Christoph Strobl
- * @author Mark Paluch
- * @author CManLH
- */
 public class AppRedisCacheConfiguration {
     private final Duration ttl;
     private final boolean cacheNullValues;
@@ -49,30 +41,18 @@ public class AppRedisCacheConfiguration {
         this(duration, timeUnit, true, new KeySerializationPair(), new ValueSerializationPair());
     }
 
-    /**
-     * @return {@literal true} if caching {@literal null} is allowed.
-     */
     public boolean getAllowCacheNullValues() {
         return cacheNullValues;
     }
 
-    /**
-     * @return never {@literal null}.
-     */
     public SerializationPair<Object> getKeySerializationPair() {
         return keySerializationPair;
     }
 
-    /**
-     * @return never {@literal null}.
-     */
     public SerializationPair<Object> getValueSerializationPair() {
         return valueSerializationPair;
     }
 
-    /**
-     * @return The expiration time (ttl) for cache entries. Never {@literal null}.
-     */
     public Duration getTtl() {
         return ttl;
     }

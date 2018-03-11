@@ -29,39 +29,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-/**
- * {@link AppRedisCacheWriter} implementation capable of reading/writing binary data from/to Redis in {@literal standalone}
- * and {@literal cluster} environments. Works upon a given {@link RedisConnectionFactory} to obtain the actual
- * {@link RedisConnection}. <br />
- * {@link DefaultAppRedisCacheWriter} can be used in
- * {@link AppRedisCacheWriter# locking} or
- * {@link AppRedisCacheWriter# non-locking} mode. While
- * {@literal non-locking} aims for maximum performance it may result in overlapping, non atomic, command execution for
- * operations spanning multiple Redis interactions like {@code putIfAbsent}. The {@literal locking} counterpart prevents
- * command overlap by setting an explicit lock key and checking against presence of this key which leads to additional
- * requests and potential command wait times.
- *
- * @author Christoph Strobl
- * @author Mark Paluch
- * @author CManLH
- */
 public class DefaultAppRedisCacheWriter implements AppRedisCacheWriter {
     private final RedisConnectionFactory connectionFactory;
     private final Duration sleepTime;
     private final byte[] REDIS_LOCK_HOLDER = "~~CACHE~LOCK~~".getBytes(StandardCharsets.UTF_8);
 
-    /**
-     * @param connectionFactory must not be {@literal null}.
-     */
     DefaultAppRedisCacheWriter(RedisConnectionFactory connectionFactory) {
         this(connectionFactory, 0, TimeUnit.MILLISECONDS.toString());
     }
 
-    /**
-     * @param connectionFactory must not be {@literal null}.
-     * @param sleepTime         sleep time between lock request attempts. Must not be {@literal null}. Use {@link Duration#ZERO}
-     *                          to disable locking.
-     */
     DefaultAppRedisCacheWriter(RedisConnectionFactory connectionFactory, long sleepTime, String timeUnit) {
         Assert.notNull(connectionFactory, "ConnectionFactory must not be null!");
         Assert.notNull(sleepTime, "SleepTime must not be null!");
@@ -223,20 +199,10 @@ public class DefaultAppRedisCacheWriter implements AppRedisCacheWriter {
         return execute(name, connection -> connection.exists(name));
     }
 
-    /**
-     * Explicitly set a write lock on a cache.
-     *
-     * @param name the name of the cache to lock.
-     */
     void lock(byte[] name) {
         execute(name, connection -> doLock(name, connection));
     }
 
-    /**
-     * Explicitly remove a write lock from a cache.
-     *
-     * @param name the name of the cache to unlock.
-     */
     void unlock(byte[] name) {
         executeLockFree(connection -> doUnlock(name, connection));
     }
@@ -253,9 +219,6 @@ public class DefaultAppRedisCacheWriter implements AppRedisCacheWriter {
         return connection.hExists(REDIS_LOCK_HOLDER, name);
     }
 
-    /**
-     * @return {@literal true} if {@link AppRedisCacheWriter} uses locks.
-     */
     private boolean isLockingCacheWriter() {
         return !sleepTime.isZero() && !sleepTime.isNegative();
     }

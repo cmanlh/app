@@ -31,17 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-/**
- * {@link org.springframework.cache.Cache} implementation using for Redis as underlying store.
- * <p/>
- * Use {@link AppRedisCacheManager} to create {@link AppRedisCache} instances.
- *
- * @author Christoph Strobl
- * @author Mark Paluch
- * @author CManLH
- * @see AppRedisCacheConfiguration
- * @see AppRedisCacheWriter
- */
 public class AppRedisCache extends AbstractValueAdaptingCache {
     private final static Logger logger = LoggerUtil.getLogger(AppRedisCache.class);
 
@@ -51,13 +40,6 @@ public class AppRedisCache extends AbstractValueAdaptingCache {
     private final AppRedisCacheWriter cacheWriter;
     private final AppRedisCacheConfiguration cacheConfig;
 
-    /**
-     * Create new {@link AppRedisCache}.
-     *
-     * @param name        must not be {@literal null}.
-     * @param cacheWriter must not be {@literal null}.
-     * @param cacheConfig must not be {@literal null}.
-     */
     public AppRedisCache(String name, AppRedisCacheWriter cacheWriter, AppRedisCacheConfiguration cacheConfig) {
         super(cacheConfig.getAllowCacheNullValues());
         Assert.notNull(name, "Name must not be null!");
@@ -193,22 +175,10 @@ public class AppRedisCache extends AbstractValueAdaptingCache {
         cacheWriter.clean(name);
     }
 
-    /**
-     * Get {@link AppRedisCacheConfiguration} used.
-     *
-     * @return immutable {@link AppRedisCacheConfiguration}. Never {@literal null}.
-     */
     public AppRedisCacheConfiguration getCacheConfiguration() {
         return cacheConfig;
     }
 
-    /**
-     * Customization hook called before passing object to
-     * {@link org.springframework.data.redis.serializer.RedisSerializer}.
-     *
-     * @param value can be {@literal null}.
-     * @return preprocessed value. Can be {@literal null}.
-     */
     protected Object preProcessCacheValue(Object value) {
         if (value != null) {
             return value;

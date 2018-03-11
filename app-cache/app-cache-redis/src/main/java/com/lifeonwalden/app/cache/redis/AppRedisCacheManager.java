@@ -35,10 +35,6 @@ public class AppRedisCacheManager implements CacheManager, CacheService {
     private boolean dynamic = true;
 
 
-    /**
-     * @param cacheWriter
-     * @param defaultCacheConfiguration
-     */
     public AppRedisCacheManager(AppRedisCacheWriter cacheWriter, AppRedisCacheConfiguration defaultCacheConfiguration) {
         Assert.notNull(cacheWriter, "CacheWriter must not be null!");
         Assert.notNull(defaultCacheConfiguration, "DefaultCacheConfiguration must not be null!");
@@ -47,13 +43,6 @@ public class AppRedisCacheManager implements CacheManager, CacheService {
         this.defaultCacheConfig = defaultCacheConfiguration;
     }
 
-    /**
-     * Configuration hook for creating {@link AppRedisCache} with given name and {@code cacheConfig}.
-     *
-     * @param name        must not be {@literal null}.
-     * @param cacheConfig can be {@literal null}.
-     * @return never {@literal null}.
-     */
     protected AppRedisCache createRedisCache(String name, AppRedisCacheConfiguration cacheConfig) {
         return new AppRedisCache(name, cacheWriter, cacheConfig != null ? cacheConfig : defaultCacheConfig);
     }
