@@ -2,7 +2,7 @@
     <parent>
         <artifactId>app-example</artifactId>
         <groupId>com.lifeonwalden</groupId>
-        <version>1.0.3</version>
+        <version>1.0.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,22 +20,22 @@
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-common</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-cache-compacted</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-example-common</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-example-service</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
