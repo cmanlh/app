@@ -2,7 +2,7 @@
     <parent>
         <artifactId>app-cache</artifactId>
         <groupId>com.lifeonwalden</groupId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-cache-common</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.2</version>
         </dependency>
     </dependencies>
 </project>
