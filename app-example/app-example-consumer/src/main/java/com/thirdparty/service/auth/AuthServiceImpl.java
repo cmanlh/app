@@ -14,18 +14,22 @@
  *    limitations under the License.
  */
 
-package com.thirdparty.service;
+package com.thirdparty.service.auth;
 
-public interface AuthService {
-    String getPrincipal();
+import com.lifeonwalden.app.gateway.auth.service.AuthService;
 
-    String getPreLoginCode(String principal);
+import java.util.Arrays;
+import java.util.List;
 
-    void notifyPreLoginAccepted(String acceptedCode);
+public class AuthServiceImpl implements AuthService {
 
-    String getXPrincipal(String preLoginCode);
+    @Override
+    public List<String> getPermissions(String principal) {
+        return Arrays.asList("/consumer/**");
+    }
 
-    String getAcceptedCode();
-
-    boolean isPermitted(String acceptedCode);
+    @Override
+    public boolean isExist(String principal) {
+        return "admin".equals(principal);
+    }
 }

@@ -23,7 +23,7 @@
         http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
     <dubbo:application name="${dubbo.application.name}"/>
     <dubbo:registry address="${dubbo.register.address}"/>
-    <dubbo:annotation package="${dubbo.annotation.package}"/>
+    <!--<dubbo:annotation package="${dubbo.annotation.package}"/>-->
 
     <dubbo:consumer check="false" filter="principalConsumerFilter"/>
     <dubbo:reference interface="com.thirdparty.service.TodoService" id="todoService"/>

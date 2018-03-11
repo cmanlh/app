@@ -21,30 +21,6 @@ package com.lifeonwalden.app.gateway.auth.service;
  */
 public interface XAuthService extends AuthService {
     String SSO_SRC_SYS_ID = "ssoSrcSysId";
-    String SSO_PRE_LOGIN_PASSED = "ssoPreLoginPassed";
-
-    /**
-     * fetch sso principal
-     *
-     * @param remoteAddr
-     * @param ssoSessionId
-     * @return
-     */
-    String getXPrincipal(String remoteAddr, String ssoSessionId);
-
-    /**
-     * generate sso request id and save it
-     *
-     * @param remoteAddr
-     * @param principal
-     * @return
-     */
-    String getXRequestId(String remoteAddr, String principal);
-
-    /**
-     * is permitted to do x request
-     *
-     * @return
-     */
-    boolean isPermitted();
+    String SSO_PRE_LOGIN_CODE = "ssoPreLoginCode";
+    String SSO_PRE_LOGIN_ACCEPTED_CODE = "ssoPreLoginAcceptedCode";
 }

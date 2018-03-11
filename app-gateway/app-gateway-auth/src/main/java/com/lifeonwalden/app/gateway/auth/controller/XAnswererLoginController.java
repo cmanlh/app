@@ -14,18 +14,17 @@
  *    limitations under the License.
  */
 
-package com.thirdparty.service;
+package com.lifeonwalden.app.gateway.auth.controller;
 
-public interface AuthService {
-    String getPrincipal();
+import com.lifeonwalden.app.gateway.auth.service.XAuthService;
+import com.lifeonwalden.app.gateway.bean.Response;
+import com.lifeonwalden.app.gateway.util.ResponseUtil;
+import org.apache.shiro.SecurityUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-    String getPreLoginCode(String principal);
-
-    void notifyPreLoginAccepted(String acceptedCode);
-
-    String getXPrincipal(String preLoginCode);
-
-    String getAcceptedCode();
-
-    boolean isPermitted(String acceptedCode);
+public class XAnswererLoginController extends BaseLoginController {
+    @RequestMapping(path = "open/sso/preLogin")
+    public Response preLogin() {
+        return ResponseUtil.success(SecurityUtils.getSubject().getSession().getAttribute(XAuthService.SSO_PRE_LOGIN_ACCEPTED_CODE));
+    }
 }

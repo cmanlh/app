@@ -14,18 +14,29 @@
  *    limitations under the License.
  */
 
-package com.thirdparty.service;
+package com.lifeonwalden.app.gateway.auth.service;
 
-public interface AuthService {
-    String getPrincipal();
+public interface XAuthAnswsererService extends XAuthService {
 
-    String getPreLoginCode(String principal);
-
-    void notifyPreLoginAccepted(String acceptedCode);
-
+    /**
+     * fetch pre login principal
+     *
+     * @param preLoginCode
+     * @return
+     */
     String getXPrincipal(String preLoginCode);
 
+    /**
+     * fetch code for accepting pre login
+     *
+     * @return
+     */
     String getAcceptedCode();
 
-    boolean isPermitted(String acceptedCode);
+    /**
+     * is permitted to do x request
+     *
+     * @return
+     */
+    boolean isPermitted();
 }

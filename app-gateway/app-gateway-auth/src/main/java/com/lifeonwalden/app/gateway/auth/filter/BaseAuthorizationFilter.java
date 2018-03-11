@@ -40,7 +40,7 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
         String contextPath = httpServletRequest.getContextPath();
 
         if (StringUtils.startsWithIgnoreCase(uri, contextPath.concat("/open/"))) {
-            logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : OPEN RESOURCE", subject.getPrincipal(),
+            logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : Open Resource", subject.getPrincipal(),
                     mappedValue, uri);
 
             if (StringUtils.equalsIgnoreCase(uri, contextPath.concat("/open/sso/preLogin"))) {
@@ -50,12 +50,12 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
             return true;
         } else {
             if (isPermitted(subject, uri)) {
-                logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : TRUE", subject.getPrincipal(), mappedValue,
+                logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : True", subject.getPrincipal(), mappedValue,
                         uri);
 
                 return true;
             } else {
-                logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : FALSE", subject.getPrincipal(), mappedValue,
+                logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : False", subject.getPrincipal(), mappedValue,
                         uri);
 
                 if (uri.isEmpty() || !StringUtils.containsIgnoreCase(uri, ".do")) {

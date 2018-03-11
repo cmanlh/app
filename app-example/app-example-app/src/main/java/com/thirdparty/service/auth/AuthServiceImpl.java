@@ -16,40 +16,22 @@
 
 package com.thirdparty.service.auth;
 
-import com.lifeonwalden.app.gateway.auth.service.XAuthService;
+import com.lifeonwalden.app.gateway.auth.service.AuthService;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class XAuthServiceImpl implements XAuthService {
-    private final String SESSION_ID = XAuthService.SSO_SRC_SYS_ID.concat("Consumer");
-
-    @Override
-    public String getXPrincipal(String remoteAddr, String ssoSessionId) {
-        if ("127.0.0.1".equals(remoteAddr) && SESSION_ID.equals(ssoSessionId)) {
-            return "adminConsumer";
-        }
-
-        return null;
-    }
-
-    @Override
-    public String getXRequestId(String remoteAddr, String principal) {
-        if ("127.0.0.1".equals(remoteAddr) && "adminConsumer".equals(principal)) {
-            return SESSION_ID;
-        }
-        return null;
-    }
+public class AuthServiceImpl implements AuthService {
 
     @Override
     public List<String> getPermissions(String principal) {
-        return Arrays.asList("/consumer/todo/**", "/consumer/store/**", "/consumer/make/**", "/consumer/auth/**");
+        return Arrays.asList("/app/**");
     }
 
     @Override
     public boolean isExist(String principal) {
-        return "adminConsumer".equals(principal);
+        return "admin".equals(principal);
     }
 }

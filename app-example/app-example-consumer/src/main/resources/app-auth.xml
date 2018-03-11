@@ -27,7 +27,7 @@
             <bean class="com.lifeonwalden.app.gateway.auth.audit.LoggerAudit"/>
         </mvc:interceptor>
     </mvc:interceptors>
-    
+
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
         <property name="filterChainDefinitions" value="/** = authorizationFilter"/>
@@ -37,7 +37,7 @@
         <property name="realm" ref="cachingRealm"/>
     </bean>
 
-    <bean id="authorizationFilter" class="com.lifeonwalden.app.gateway.auth.filter.XAuthorizationFilter">
+    <bean id="authorizationFilter" class="com.lifeonwalden.app.gateway.auth.filter.BaseAuthorizationFilter">
         <property name="unauthorizedUrl" value="${auth.unauthorizedUrl}"/>
         <property name="loginUrl" value="${auth.loginUrl}"/>
     </bean>

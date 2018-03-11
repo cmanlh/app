@@ -17,7 +17,7 @@
 package com.lifeonwalden.app.cache.constant;
 
 public interface CacheSpecialKey {
-    String FULL_CACHE_FETCHING = "'~CACHE~FULL~FETCH~'";
+    String FULL_CACHE_FETCHING = "'_CACHE_FULL_FETCH_'";
 
-    String CACHE_REFRESHING = "'~CACHE~REFRESH~FETCH~'";
+    String CACHE_REFRESHING = "'_CACHE_REFRESH_FETCH~'";
 }

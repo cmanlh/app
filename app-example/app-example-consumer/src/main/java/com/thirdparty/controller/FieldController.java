@@ -20,6 +20,7 @@ import com.lifeonwalden.app.gateway.bean.Response;
 import com.lifeonwalden.app.gateway.util.ResponseUtil;
 import com.thirdparty.bean.DatabaseFieldParam;
 import com.thirdparty.service.StoreService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,43 +30,46 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/store/")
 public class FieldController extends BaseController {
 
+    @Autowired
+    private StoreService storeService;
+
     @RequestMapping(value = "queryAll")
     public Response queryAll() {
-        return ResponseUtil.success(getService(StoreService.class).queryAll());
+        return ResponseUtil.success(storeService.queryAll());
     }
 
     @RequestMapping(value = "query")
     public Response query(@ModelAttribute DatabaseFieldParam databaseField) {
-        return ResponseUtil.success(getService(StoreService.class).query(databaseField));
+        return ResponseUtil.success(storeService.query(databaseField));
     }
 
     @RequestMapping(value = "get")
     public Response get(@ModelAttribute DatabaseFieldParam databaseField) {
-        return ResponseUtil.success(getService(StoreService.class).get(databaseField));
+        return ResponseUtil.success(storeService.get(databaseField));
     }
 
     @RequestMapping(value = "delete")
     public Response delete(@ModelAttribute DatabaseFieldParam databaseField) {
-        return ResponseUtil.success(getService(StoreService.class).delete(databaseField));
+        return ResponseUtil.success(storeService.delete(databaseField));
     }
 
     @RequestMapping(value = "insert", method = RequestMethod.POST)
     public Response insert(@ModelAttribute DatabaseFieldParam databaseField) {
-        return ResponseUtil.success(getService(StoreService.class).insert(databaseField));
+        return ResponseUtil.success(storeService.insert(databaseField));
     }
 
     @RequestMapping(value = "queryMapping")
     public Response queryMapping() {
-        return ResponseUtil.success(getService(StoreService.class).queryMapping());
+        return ResponseUtil.success(storeService.queryMapping());
     }
 
     @RequestMapping(value = "refreshMapping")
     public Response refreshMapping() {
-        return ResponseUtil.success(getService(StoreService.class).refreshMapping());
+        return ResponseUtil.success(storeService.refreshMapping());
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public Response update(@ModelAttribute DatabaseFieldParam databaseField) {
-        return ResponseUtil.success(getService(StoreService.class).update(databaseField));
+        return ResponseUtil.success(storeService.update(databaseField));
     }
 }

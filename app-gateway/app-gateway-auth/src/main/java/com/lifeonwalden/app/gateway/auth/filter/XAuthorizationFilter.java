@@ -16,6 +16,7 @@
 
 package com.lifeonwalden.app.gateway.auth.filter;
 
+import com.lifeonwalden.app.gateway.auth.service.XAuthAnswsererService;
 import com.lifeonwalden.app.gateway.auth.service.XAuthService;
 import com.lifeonwalden.app.gateway.auth.util.RemoteAddressUtil;
 import com.lifeonwalden.app.util.logger.LoggerUtil;
@@ -35,23 +36,22 @@ public class XAuthorizationFilter extends BaseAuthorizationFilter {
     private final static Logger logger = LoggerUtil.getLogger(XAuthorizationFilter.class);
 
     @Autowired
-    protected XAuthService xAuthService;
+    protected XAuthAnswsererService xAuthService;
 
     @Override
     protected void ssoPreLogin(HttpServletRequest request) {
-        String ssoSrcSysId = request.getParameter(XAuthService.SSO_SRC_SYS_ID);
-        if (StringUtils.isEmpty(ssoSrcSysId)) {
+        String ssoPreLoginCode = request.getParameter(XAuthService.SSO_PRE_LOGIN_CODE);
+        if (StringUtils.isEmpty(ssoPreLoginCode)) {
             return;
         }
 
-        String ip = RemoteAddressUtil.getIpAddr(request);
-        String principal = this.xAuthService.getXPrincipal(ip, ssoSrcSysId);
+        String principal = this.xAuthService.getXPrincipal(ssoPreLoginCode);
         if (StringUtils.isEmpty(principal)) {
             return;
         }
 
-        SecurityUtils.getSubject().login(new UsernamePasswordToken(principal, "", ip));
-        SecurityUtils.getSubject().getSession().setAttribute(XAuthService.SSO_PRE_LOGIN_PASSED, false);
+        SecurityUtils.getSubject().login(new UsernamePasswordToken(principal, "", RemoteAddressUtil.getIpAddr(request)));
+        SecurityUtils.getSubject().getSession().setAttribute(XAuthService.SSO_PRE_LOGIN_ACCEPTED_CODE, xAuthService.getAcceptedCode());
     }
 
     @Override
