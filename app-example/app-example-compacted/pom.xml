@@ -2,7 +2,7 @@
     <parent>
         <artifactId>app-example</artifactId>
         <groupId>com.lifeonwalden</groupId>
-        <version>1.0.5</version>
+        <version>1.0.6-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,37 +20,37 @@
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-gateway-front</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-gateway-auth</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-example-common</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-example-service</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-microservice-consumer-auth</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-microservice-provider</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lifeonwalden</groupId>
             <artifactId>app-cache-compacted</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
