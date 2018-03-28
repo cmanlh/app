@@ -49,7 +49,7 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
 
             return true;
         } else {
-            if (isPermitted(subject, uri)) {
+            if (isPermitted(subject, uri, httpServletRequest)) {
                 logger.debug("isAccessAllowed : user : {}, mappedValue : {}, resource : {}, isAllowed : True", subject.getPrincipal(), mappedValue,
                         uri);
 
@@ -71,7 +71,7 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
     protected void ssoPreLogin(HttpServletRequest request) {
     }
 
-    protected boolean isPermitted(Subject subject, String uri) {
+    protected boolean isPermitted(Subject subject, String uri, HttpServletRequest request) {
         return null != subject.getPrincipal() && subject.isPermitted(uri);
     }
 }

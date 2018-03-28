@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class JSON {
+    public final static ObjectMapper mobileMapper = new ObjectMapper();
     public final static ObjectMapper defaultMapper = new ObjectMapper();
     public final static ObjectMapper loggerMapper = new ObjectMapper();
 
@@ -54,6 +55,25 @@ public class JSON {
         });
         defaultMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         defaultMapper.registerModule(module);
+
+        SimpleModule mobileModule = new SimpleModule("DateFormat");
+        mobileModule.addSerializer(Date.class, new StdSerializer<Date>(Date.class) {
+            private static final long serialVersionUID = -209783685850606761L;
+
+            @Override
+            public void serialize(Date value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+                gen.writeString(DateUtil.formatDate(value, DateUtil.FULL_VIEW_DATE));
+            }
+        });
+        mobileModule.addSerializer(BigDecimal.class, new StdSerializer<BigDecimal>(BigDecimal.class) {
+            private static final long serialVersionUID = -1232767766775708212L;
+
+            @Override
+            public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+                gen.writeString(value.toPlainString());
+            }
+        });
+        defaultMapper.registerModule(mobileModule);
 
 
         SimpleModule logModule = new SimpleModule("logModule");

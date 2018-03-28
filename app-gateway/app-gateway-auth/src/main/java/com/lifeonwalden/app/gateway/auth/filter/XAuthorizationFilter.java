@@ -55,7 +55,7 @@ public class XAuthorizationFilter extends BaseAuthorizationFilter {
     }
 
     @Override
-    protected boolean isPermitted(Subject subject, String uri) {
+    protected boolean isPermitted(Subject subject, String uri, HttpServletRequest request) {
         if (null == subject.getPrincipal()) {
             return false;
         }
