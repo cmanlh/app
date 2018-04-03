@@ -66,15 +66,15 @@ public interface ResponseUtil {
     }
 
     static Response fail(String msg) {
-        return success(msg, null);
+        return fail(msg, null);
     }
 
     static Response fail(Object result) {
-        return success(null, result);
+        return fail(null, result);
     }
 
     static Response fail() {
-        return success(null, null);
+        return fail(null, null);
     }
 
     static Response anyone(String code, String msg, Object result) {
