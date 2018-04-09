@@ -73,7 +73,7 @@ public class JSON {
                 gen.writeString(value.toPlainString());
             }
         });
-        defaultMapper.registerModule(mobileModule);
+        mobileMapper.registerModule(mobileModule);
 
 
         SimpleModule logModule = new SimpleModule("logModule");
