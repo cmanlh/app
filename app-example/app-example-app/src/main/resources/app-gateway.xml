@@ -33,7 +33,7 @@
             </bean>
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <constructor-arg name="objectMapper">
-                    <util:constant static-field="com.lifeonwalden.app.util.character.JSON.defaultMapper"/>
+                    <util:constant static-field="com.lifeonwalden.app.util.character.JSON.mobileMapper"/>
                 </constructor-arg>
                 <property name="supportedMediaTypes">
                     <list>

@@ -1,0 +1,134 @@
+.jqcMenu {
+    font-size: 14px;
+    background-color: white;
+    box-shadow: 0 0 5px rgba(223, 220, 220, 0.8);
+}
+
+.jqcMenuBox {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0;
+    cursor: pointer;
+    width: 100%;
+    background-color: white;
+}
+
+.jqcMenuBox>li {
+    padding: 5px 1em 5px .5em;
+}
+
+.jqcMenuItem {
+    position: relative;
+}
+
+.jqcMenuItem>ul,
+.jqcMenu {
+    border: 1px solid #DEDEDE;
+    border-radius: 5px;
+}
+
+.jqcMenuItem>ul {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+}
+
+.jqcMenuItem:hover {
+    background-image: url('images/expand-right.png');
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    background-position: right center;
+}
+
+.jqcMenuLeaf:hover,
+.jqcMenuConfigLeaf:hover {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 2px;
+}
+
+.jqcMenuSetting {
+    border-bottom: 1px solid #DEDEDE;
+    display: flex;
+    justify-content: flex-end;
+    padding: 5px;
+}
+
+.jqcMenuSetting>span {
+    background-image: url('images/setting.png');
+    height: 16px;
+    width: 16px;
+    cursor: pointer;
+}
+
+.jqcMenuSettingPanel {
+    display: flex;
+    flex-flow: row wrap;
+    color: #333;
+    font-size: 12px;
+}
+.jqcMenuSettingPanel input[type=checkbox] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    position: absolute;
+    top: 3px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    z-index: 1;
+    opacity: 0;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+.jqcMenuSettingPanel input[type=checkbox]:checked + span {
+    background-image: url('./images/ui-icons_555555_256x240.png');
+    background-position: -66px -147px;
+}
+
+.jqcMenuConfigItem {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+}
+
+.jqcMenuSettingPanel>ul {
+    padding: 15px 8px;
+}
+
+.jqcMenuSettingPanel>ul>li>div {
+    font-size: 14px;
+}
+
+.jqcMenuConfigItem>ul {
+    padding-left: 12px;
+}
+
+.jqcMenuConfigItem>div,
+.jqcMenuConfigLeaf>div {
+    padding: 0 6px;
+}
+
+.jqcMenuConfigLeaf {
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.jqcMenuSettingPanel li div{
+    position: relative;
+    line-height: 30px;
+}
+
+.jqcMenuSettingPanel li div span{
+    position: absolute;
+    top: 7px;
+    right: 10px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #777;
+    border-radius: 2px;
+    background: #fff;
+}

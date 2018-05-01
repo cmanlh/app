@@ -17,6 +17,8 @@
 package com.thirdparty.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 public class Todo implements Serializable {
@@ -29,6 +31,8 @@ public class Todo implements Serializable {
     private int status;
 
     private String id;
+
+    private BigDecimal test = new BigDecimal(123.45).setScale(2, RoundingMode.HALF_UP);
 
     public String getId() {
         return id;
@@ -60,5 +64,13 @@ public class Todo implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public BigDecimal getTest() {
+        return test;
+    }
+
+    public void setTest(BigDecimal test) {
+        this.test = test;
     }
 }
