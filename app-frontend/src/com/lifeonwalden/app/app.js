@@ -12,8 +12,9 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['apisBox']));;
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['menu', 'formUtil', 'msg', 'tab'])
+    .importComponents('com.lifeonwalden.jqc', ['menu', 'formUtil', 'msg', 'tab', 'formToolBar'])
     .execute(function () {
+        var pageWidth = window.innerWidth;
         var menuData = [{
                 id: '11',
                 label: '亚当斯密'
@@ -46,9 +47,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             }]
         }];
 
-        var menu = new $.jqcMenu({
+        var menus = new $.jqcMenu({
             data: menuData,
-            top: 33,
+            top: 40,
             left: 0,
             autoSkip: true,
             allowedConfig: true,
@@ -57,11 +58,36 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             configurableMenuData: allMenuData,
             onSelect: function (menu) {
                 console.log(menu);
+                tab.add({
+                    id: Math.round(Math.random() * 1000),
+                    title: "Title".concat(Math.round(Math.random() * 1000)),
+                    content: '<span>'.concat('content ').concat(Math.round(Math.random() * 1000)).concat('</span>')
+                });
             },
             onResettingMenu: function (menu) {
                 console.log(menu);
             }
         });
+        // show or hide menu
+        var menuDisplayed = false;
+        var $tab = $('.app-tab');
+        $('.app-menu-switch').click(function () {
+            if (menuDisplayed) {
+                menus.hide();
+                $tab.animate({
+                    'padding-left': 0
+                }, 200);
+                $(this).text("Menu >>");
+            } else {
+                menus.show();
+                $tab.animate({
+                    'padding-left': 155
+                }, 200);
+                $(this).text('Menu <<');
+            }
+            menuDisplayed = !menuDisplayed;
+        });
+
         var tab = new $.jqcTab({
             element: $('.app-tab'),
             position: 'absolute'
@@ -71,6 +97,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             title: "Title".concat(Math.round(Math.random() * 1000)),
             content: '<span>'.concat('content ').concat(Math.round(Math.random() * 1000)).concat('</span>')
         });
+
         var msg = new $.jqcMsg({
             element: $('.app-msg'),
             data: [{
@@ -99,5 +126,4 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 callback(true);
             }
         });
-
     });
