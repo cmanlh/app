@@ -2,8 +2,10 @@ var json = [{"note":"","statusChgDate":"1521791192970","institutionId":32,"funds
 
 var data = [];
 
-for (let index = 0; index < 50; index++) {
-    data = data.concat(json);
+for (let index = 0; index < 1000; index++) {
+    var _i = (Math.random() * 24) | 0;
+    var obj = Object.assign({}, json[_i], {id: index});
+    data.push(obj);
 }
 
 $('#div1').dxDataGrid(mergeDataGridConfigure({
