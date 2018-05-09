@@ -130,6 +130,7 @@
                     _this.container.append(_this.setting);
                 }
                 _this.hasMenuId = _this.options.data[0].hasOwnProperty(_this.options.adapter.id);
+                this.menuIndex = new Map();
                 _this.mainMenu = renderMenuBox.call(_this, _this.options.data);
                 _this.container.append(_this.mainMenu);
 
@@ -138,7 +139,6 @@
 
             function renderMenuBox(data) {
                 var _this = this;
-                this.menuIndex = new Map();
                 var menuBox = $('<ul>').addClass('jqcMenuBox');
                 data.forEach(function (value, index, array) {
                     var id = value[_this.options.adapter.id];
@@ -280,6 +280,7 @@
 
             function reRender(realRerender) {
                 var _this = this;
+                this.menuIndex = new Map();
                 var data = this.options.configurableMenuData;
                 var input = this.settingPanel.find('input');
                 this.snapshot = {};
