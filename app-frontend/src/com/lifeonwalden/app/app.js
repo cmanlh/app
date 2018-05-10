@@ -9,18 +9,28 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['contextmenu'])
         .registerComponents(['loading'])
         .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
-        .registerComponents(['apisBox']));;
+        .registerComponents(['apisBox']));
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['menu', 'formUtil', 'msg', 'tab', 'formToolBar'])
+    .importComponents('com.lifeonwalden.jqc', ['menu', 'formUtil', 'msg', 'tab', 'formToolBar', 'contextmenu', 'toolkit', 'loading'])
+    // dx组件
+    .importScript('./js/dx/jszip.js')
+    .importScript('./js/dx/dx.web.debug.js')
+    .importScript('./js/dx/dx.messages.cn.js')
+    .importCss('./css/dx/dx.common.css')
+    .importCss('./css/dx/dx.light.css')
+    // 全局配置
+    .importScript('./js/config/config.js')
+    // core
+    .importScript('./js/common/common.core.js')
     .execute(function () {
         var pageWidth = window.innerWidth;
         var menuData = [{
-                id: '11',
+                id: 'form1',
                 label: '亚当斯密'
             },
             {
-                id: '21',
+                id: 'form3',
                 label: '力与反作用力'
             }
         ];
@@ -29,20 +39,20 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             id: '1',
             label: '经济学',
             child: [{
-                id: '11',
+                id: 'form1',
                 label: '亚当斯密'
             }, {
-                id: '12',
+                id: 'form2',
                 label: '国富论'
             }]
         }, {
             id: '2',
             label: '物理学',
             child: [{
-                id: '21',
+                id: 'form3',
                 label: '力与反作用力'
             }, {
-                id: '22',
+                id: 'form4',
                 label: '浮力'
             }]
         }];
@@ -57,17 +67,21 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             configBoxWidth: 500,
             configurableMenuData: allMenuData,
             onSelect: function (menu) {
-                console.log(menu);
-                tab.add({
-                    id: Math.round(Math.random() * 1000),
-                    title: "Title".concat(Math.round(Math.random() * 1000)),
-                    content: '<span>'.concat('content ').concat(Math.round(Math.random() * 1000)).concat('</span>')
-                });
+                var _menu = {
+                    id: menu.id,
+                    text: menu.label
+                };
+                $.addForm(_menu, tab);
             },
             onResettingMenu: function (menu) {
                 console.log(menu);
             }
         });
+
+        setTimeout(function () {
+            $('.jqcMenuLeaf').eq(0).trigger('click');
+        }, 0);
+
         // show or hide menu
         var menuDisplayed = false;
         var $tab = $('.app-tab');
@@ -91,11 +105,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         var tab = new $.jqcTab({
             element: $('.app-tab'),
             position: 'absolute'
-        });
-        tab.add({
-            id: Math.round(Math.random() * 1000),
-            title: "Title".concat(Math.round(Math.random() * 1000)),
-            content: '<span>'.concat('content ').concat(Math.round(Math.random() * 1000)).concat('</span>')
         });
 
         var msg = new $.jqcMsg({
