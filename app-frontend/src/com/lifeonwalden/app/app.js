@@ -77,7 +77,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 console.log(menu);
             }
         });
-
+        // 触发第一个menu的点击事件
         setTimeout(function () {
             $('.jqcMenuLeaf').eq(0).trigger('click');
         }, 0);

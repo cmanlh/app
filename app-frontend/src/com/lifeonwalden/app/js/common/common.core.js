@@ -139,6 +139,11 @@
         var _this = this;
         if (this.config.contextmenu && this.config.contextmenu.menus && this.config.contextmenu.menus.length) {
             this.contextmenu = new $.jqcContextMenu(_this.config.contextmenu);
+            setTimeout(function () {
+                $(document).on('mousewheel.FormPage', function () {
+                    _this.contextmenu.box.hide();
+                });
+            }, 0);
         }
     };
 
