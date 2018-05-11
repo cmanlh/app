@@ -141,7 +141,7 @@
             this.contextmenu = new $.jqcContextMenu(_this.config.contextmenu);
             setTimeout(function () {
                 $(document).on('mousewheel.FormPage', function () {
-                    _this.contextmenu.box.hide();
+                    _this.contextmenu.box && _this.contextmenu.box.hide();
                 });
             }, 0);
         }
