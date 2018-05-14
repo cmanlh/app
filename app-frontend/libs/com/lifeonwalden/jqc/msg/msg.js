@@ -116,18 +116,14 @@
                     this.frame -= 1;
                     if (this.frame <= -1 * this.scrollBox.outerWidth()) {
                         this.frame = this.scrollBox.outerWidth() / 2;
-                        this.scrollBox.css('left', _this.frame);
-
-                        return;
-                    } else {
-                        var firstMsgBox = this.scrollBox.find('.jqcMsg-item').first();
-                        if (Math.abs(this.scrollBox.position().left) > firstMsgBox.outerWidth()) {
-                            this.scrollBox.append(firstMsgBox);
-                            this.frame += firstMsgBox.outerWidth();
-                        }
                     }
-                    this.lastTimeStamp = timestamp;
+                    var firstMsgBox = this.scrollBox.find('.jqcMsg-item').first();
+                    if (Math.abs(this.scrollBox.position().left) > firstMsgBox.outerWidth()) {
+                        this.frame += firstMsgBox.outerWidth();
+                        this.scrollBox.append(firstMsgBox);
+                    }
                     this.scrollBox.css('left', _this.frame);
+                    this.lastTimeStamp = timestamp;
                 }
                 _this.aid = window.requestAnimationFrame(_this.animate);
             }

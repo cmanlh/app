@@ -1,0 +1,100 @@
+@charset 'utf-8';
+@font-face {
+    font-family: 'dfzq-fzlt';
+    src: 'font/FZLTHJW.TTF';
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 14px;
+    font-family: 'dfzq-fzlt', '新宋体', 'Microsoft YaHei', sans-serif;
+}
+
+body {
+    position: relative
+}
+
+.app-header {
+    /*display: grid;*/
+    /*grid-template-columns: 256px 1fr 128px;*/
+    display: flex;
+    justify-content: space-between;
+    line-height: 40px;
+}
+
+.app-header-left {
+    flex-shrink: 0;
+    display: flex;
+}
+
+.app-menu-switch {
+    width: 70px;
+    height: 40px;
+    cursor: pointer;
+    background: #888;
+    font-size: 14px;
+    color: #fff;
+    text-align: center;
+    border-right: 1px solid #888;
+    font-weight: 900;
+}
+
+.app-menu-logo {
+    padding-right: 5px;
+    background-color: #C4161C;
+    color: #FFF;
+    font-size: 20px;
+    font-weight: 500;
+    flex-shrink: 0;
+    height: 40px;
+}
+
+.app-menu-logo::before {
+    content: '';
+    width: 30px;
+    height: 30px;
+    float: left;
+    margin: 5px;
+    background: url('images/logo.png') no-repeat;
+    background-size: 113px;
+}
+
+.app-msg {
+    position: relative;
+}
+
+.app-ctrl {
+    padding: 0 8px 0 18px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.app-logout {
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.app-logout:hover {
+    cursor: pointer;
+    color: red;
+}
+
+.app-tab {
+    top: 40px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.jqcTabPanel {
+    position: static!important;
+    height: calc(100vh - 70px);
+}
+
+.jqcTabMoreContainer {
+    z-index: 2!important;
+    background-color: #fff;
+}

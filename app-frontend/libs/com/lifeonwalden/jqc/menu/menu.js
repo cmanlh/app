@@ -50,7 +50,7 @@
                 this.typeName = 'jqcMenu';
                 this.elementId = 'jqc'.concat($.jqcUniqueKey.fetchIntradayKey());
                 if (this.options.allowedConfig) {
-                    if (!this.options.data[0].hasOwnProperty(this.options.adapter.id)) {
+                    if (!this.options.configurableMenuData[0].hasOwnProperty(this.options.adapter.id)) {
                         throw new Error("Configuration menu require [id] property in the menu object.");
                     }
                     this.snapshot = null;
@@ -98,11 +98,8 @@
                 });
 
                 if (_this.options.allowedConfig) {
-                    _this.settingBtn.off();
                     _this.settingBtn.on('click.jqcMenu', function (e) {
                         if (_this.isSetting) {
-                            _this.settingDialog.close();
-                            e.stopPropagation();
                             return;
                         }
                         _this.isSetting = true;
@@ -129,8 +126,11 @@
                     _this.setting.append(_this.settingBtn);
                     _this.container.append(_this.setting);
                 }
-                _this.hasMenuId = _this.options.data[0].hasOwnProperty(_this.options.adapter.id);
-                this.menuIndex = new Map();
+                if (this.options.allowedConfig) {
+                    _this.hasMenuId = _this.options.configurableMenuData[0].hasOwnProperty(_this.options.adapter.id);
+                } else {
+                    _this.hasMenuId = _this.options.data[0].hasOwnProperty(_this.options.adapter.id);
+                }
                 _this.mainMenu = renderMenuBox.call(_this, _this.options.data);
                 _this.container.append(_this.mainMenu);
 
@@ -139,6 +139,7 @@
 
             function renderMenuBox(data) {
                 var _this = this;
+                this.menuIndex = new Map();
                 var menuBox = $('<ul>').addClass('jqcMenuBox');
                 data.forEach(function (value, index, array) {
                     var id = value[_this.options.adapter.id];
@@ -231,7 +232,6 @@
                 });
                 _this.settingDialog.open();
 
-                _this.settingPanel.off();
                 _this.settingPanel.on('click.jqcMenu', '.jqcMenuConfigLeaf', function (e) {
                     if (e.target.tagName == 'INPUT') {
                         e.stopPropagation();
@@ -280,7 +280,6 @@
 
             function reRender(realRerender) {
                 var _this = this;
-                this.menuIndex = new Map();
                 var data = this.options.configurableMenuData;
                 var input = this.settingPanel.find('input');
                 this.snapshot = {};
