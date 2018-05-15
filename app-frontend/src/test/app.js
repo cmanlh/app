@@ -1,4 +1,5 @@
 const LIB_ROOT_PATH = '../../libs/';
+const APP_ROOT_PATH = './';
 
 $JqcLoader.importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/common.js'))
     .execute(function() {
@@ -6,12 +7,12 @@ $JqcLoader.importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/common.js'
         var menuData = [{
             id: 'form1',
             label: '亚当斯密',
-            form: 'form/form1.js'
+            form: 'form/form1/form1.js'
 
         }, {
             id: 'form3',
             label: '力与反作用力',
-            form: 'form/form2.js'
+            form: 'form/form2/form2.js'
         }];
 
         var allMenuData = [{
@@ -20,11 +21,11 @@ $JqcLoader.importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/common.js'
             child: [{
                 id: 'form1',
                 label: '亚当斯密',
-                form: 'form/form1.js'
+                form: 'form/form1/form1.js'
             }, {
                 id: 'form2',
                 label: '国富论',
-                form: 'form/form3.js'
+                form: 'form/form3/form3.js'
             }]
         }, {
             id: '2',
@@ -32,11 +33,11 @@ $JqcLoader.importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/common.js'
             child: [{
                 id: 'form3',
                 label: '力与反作用力',
-                form: 'form/form2.js'
+                form: 'form/form2/form2.js'
             }, {
                 id: 'form4',
                 label: '浮力',
-                form: 'form/form4.js'
+                form: 'form/form4/form4.js'
             }]
         }];
 

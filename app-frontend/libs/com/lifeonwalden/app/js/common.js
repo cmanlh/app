@@ -60,7 +60,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.createContextMenu();
             // 是否存在网页模板
             if (this.config.templateUrl) {
-                getHtml(_this.config.templateUrl).then(res => {
+                getHtml(_this.config.location, _this.config.templateUrl).then(res => {
                     var html = $(res);
                     _this.conditionHtml = html.find(`.${config.conditionHtmlClassName}`);
                     _this.controlHtml = html.find(`.${config.controlHtmlClassName}`);
@@ -161,9 +161,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             }
         };
 
-        function getHtml(url) {
+        function getHtml(location, url) {
             return new Promise((resolve, reject) => {
-                $.ajax(url, {
+                $.ajax(location.substr(0, location.lastIndexOf('/') + 1).concat(url), {
                     success: function(res) {
                         resolve(res);
                     },
@@ -189,7 +189,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             if (!$.formCacheHas(uid)) {
                 $._globalCacheId = uid;
                 $JqcLoader
-                    .importScript(menu.url)
+                    .importScript(APP_ROOT_PATH.concat(menu.url))
                     .execute(function() {
                         addTabAndCreatePage();
                     });
