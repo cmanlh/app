@@ -78,7 +78,7 @@ public class AppCaffeineCacheManager implements CacheManager, CacheService {
      * @param timeUnit
      */
     public AppCaffeineCacheManager(long duration, String timeUnit) {
-        this.setCaffeine(Caffeine.newBuilder().expireAfterWrite(duration, TimeUnit.valueOf(timeUnit)));
+        this.setCaffeine(Caffeine.newBuilder().expireAfterWrite(duration, TimeUnit.valueOf(timeUnit.toUpperCase())));
     }
 
     /**
