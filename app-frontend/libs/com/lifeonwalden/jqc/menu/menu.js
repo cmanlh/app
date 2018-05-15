@@ -98,8 +98,11 @@
                 });
 
                 if (_this.options.allowedConfig) {
+                    _this.settingBtn.off();
                     _this.settingBtn.on('click.jqcMenu', function (e) {
                         if (_this.isSetting) {
+                            _this.settingDialog.close();
+                            e.stopPropagation();
                             return;
                         }
                         _this.isSetting = true;
@@ -131,6 +134,10 @@
                 } else {
                     _this.hasMenuId = _this.options.data[0].hasOwnProperty(_this.options.adapter.id);
                 }
+<<<<<<< HEAD
+                this.menuIndex = new Map();
+=======
+>>>>>>> 1c47d001f08a091291e9e320e0494c86c817acb0
                 _this.mainMenu = renderMenuBox.call(_this, _this.options.data);
                 _this.container.append(_this.mainMenu);
 
@@ -139,7 +146,6 @@
 
             function renderMenuBox(data) {
                 var _this = this;
-                this.menuIndex = new Map();
                 var menuBox = $('<ul>').addClass('jqcMenuBox');
                 data.forEach(function (value, index, array) {
                     var id = value[_this.options.adapter.id];
@@ -165,7 +171,6 @@
                 }
                 var id = _data[_this.options.adapter.id];
                 item.attr('menuId', id);
-
                 var _child = _this.options.adapter.child;
                 if (_data.hasOwnProperty(_child) && Array.isArray(_data[_child]) && _data[_child].length > 0) {
                     if (_data[_child].length === 1 && _this.options.autoSkip) {
@@ -176,13 +181,11 @@
                     } else {
                         item.addClass('jqcMenuItem');
                         item.append(renderMenuBox.call(_this, _data[_child]));
-
                     }
                 } else {
                     item.addClass('jqcMenuLeaf');
                 }
                 _this.menuIndex.set(id, _data);
-
                 return item;
             }
 
@@ -232,6 +235,7 @@
                 });
                 _this.settingDialog.open();
 
+                _this.settingPanel.off();
                 _this.settingPanel.on('click.jqcMenu', '.jqcMenuConfigLeaf', function (e) {
                     if (e.target.tagName == 'INPUT') {
                         e.stopPropagation();
@@ -280,6 +284,7 @@
 
             function reRender(realRerender) {
                 var _this = this;
+                this.menuIndex = new Map();
                 var data = this.options.configurableMenuData;
                 var input = this.settingPanel.find('input');
                 this.snapshot = {};
