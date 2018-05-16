@@ -61,7 +61,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             // 是否存在网页模板
             if (this.config.templateUrl) {
                 getHtml(_this.config.location, _this.config.templateUrl).then(res => {
-                    var html = $(res);
+                    var html = $('<div>').append($(res));
                     _this.conditionHtml = html.find(`.${config.conditionHtmlClassName}`);
                     _this.controlHtml = html.find(`.${config.controlHtmlClassName}`);
                     _this.contentHtml = html.find(`.${config.contentHtmlClassName}`);
