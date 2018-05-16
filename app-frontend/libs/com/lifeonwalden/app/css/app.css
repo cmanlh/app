@@ -98,3 +98,46 @@ body {
     z-index: 2!important;
     background-color: #fff;
 }
+
+input,
+select,
+textarea {
+    outline: 0;
+    border: 1px solid #D1D2D4;
+    border-radius: 2px;
+    font-size: 12px !important;
+}
+
+input {
+    padding: 3px 5px 3px 5px;
+}
+
+select {
+    padding: 3px 0px 3px 5px;
+}
+
+button {
+    outline: 0;
+}
+
+a:FOCUS {
+    outline: 0;
+}
+
+label {
+    font-size: 12px;
+    padding: 0 5px;
+}
+
+.inputBox,
+.inputNumber {
+    width: 92%
+}
+
+.inputArticle {
+    width: 98.5%
+}
+
+.inputNumber {
+    text-align: right;
+}

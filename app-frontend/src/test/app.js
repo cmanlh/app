@@ -1,5 +1,6 @@
 const LIB_ROOT_PATH = '../../libs/';
 const APP_ROOT_PATH = './';
+const OPS_APP_PATH = 'http://localhost:8080/ops/';
 
 $JqcLoader.importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/common.js'))
     .execute(function() {
