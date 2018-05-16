@@ -20,6 +20,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .importCss(LIB_ROOT_PATH.concat('com/devexpress/css/dx.light.css'))
     // 全局配置
     .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/app.css'))
+    .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/grid.css'))
     .importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/config.js'))
     .execute(function() {
         const formCache = new Map();
