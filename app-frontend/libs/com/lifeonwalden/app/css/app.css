@@ -98,3 +98,41 @@ body {
     z-index: 2!important;
     background-color: #fff;
 }
+
+/*global style*/
+
+input,
+button {
+    box-sizing: border-box;
+    height: 30px;
+    line-height: 28px;
+    border-radius: 4px;
+    margin: 0;
+}
+input {
+    padding: 0 10px;
+    border: 1px solid #ccc;
+}
+button {
+    background: #ed1c24;
+    color: #fff;
+    border: none;
+    padding: 0 10px;
+}
+.toolbar-left,
+.toolbar-right {
+    padding: 0 10px;
+}
+.formGroup{
+    overflow: hidden;
+    width: calc(100% - 100px);
+}
+.formGroup label {
+    float: left;
+    display: flex;
+    height: 36px;
+    align-items: center;
+}
+.formGroup label span{
+    margin: 0 10px;
+}
