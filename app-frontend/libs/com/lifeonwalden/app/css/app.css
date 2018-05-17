@@ -141,6 +141,7 @@ textarea {
     border: 1px solid #D1D2D4;
     border-radius: 2px;
     font-size: 12px !important;
+    box-sizing: border-box;
 }
 
 input {
@@ -153,6 +154,7 @@ select {
 
 button {
     outline: 0;
+    cursor: pointer;
 }
 
 a:FOCUS {
@@ -177,7 +179,37 @@ label {
     text-align: right;
 }
 
+
+/*flex class*/
+.flex_center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.align_items_center {
+    display: flex;
+    align-items: center;
+}
+
+.justify_content_between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.justify_content_around {
+    display: flex;
+    justify-content: space-around;
+}
 /*form styte*/
+.form_group {
+    padding: 5px 0;
+}
+
+.form_group div{
+    margin-left: 10px;
+}
+
 .btn {
     box-sizing: border-box;
     height: 26px;
@@ -187,13 +219,31 @@ label {
     border-radius: 4px;
     border: none;
     line-height: 26px;
+    cursor: pointer;
+}
+
+input.smail {
+    width: 80px;
+}
+
+input.large {
+    width: 200px;
 }
 
 .btn:hover {
-    background: #ed1c24;
+    background: #ed1c50;
 }
 
 .jqcTabPanel input {
     height: 26px;
     box-sizing: border-box;
+}
+
+.jqcDialogContent input,
+.jqcDialogContent textarea {
+    width: 100%;
+}
+
+.jqcDialogContent textarea {
+    height: 50px;
 }

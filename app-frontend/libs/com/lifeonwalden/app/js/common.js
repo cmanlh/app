@@ -132,8 +132,8 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         $.FormPage.prototype.renderDxDataGrid = function() {
             var _this = this;
             var _dxConfig = JSON.parse(JSON.stringify(_this.config.dxDataGrid));
-            _dxConfig.columns.unshift(dxDataGridDefaultConfig.columns[0]);
-            var dxConfig = Object.assign({}, dxDataGridDefaultConfig, _dxConfig);
+            var _columns = [].concat(dxDataGridDefaultConfig.columns, _this.config.dxDataGrid);
+            var dxConfig = Object.assign({}, dxDataGridDefaultConfig, _dxConfig, {columns: _columns});
             if (this.contextmenu) {
                 dxConfig.onContextMenuPreparing = function(e) {
                     e.jQueryEvent.preventDefault();
