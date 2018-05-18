@@ -201,6 +201,11 @@ label {
     display: flex;
     justify-content: space-around;
 }
+
+.justify_content_end {
+    display: flex;
+    justify-content: flex-end;
+}
 /*form styte*/
 .form_group {
     padding: 5px 0;
@@ -235,6 +240,11 @@ input.large {
 }
 
 .jqcTabPanel input {
+    height: 26px;
+    box-sizing: border-box;
+}
+
+.jqcTabPanel select {
     height: 26px;
     box-sizing: border-box;
 }
