@@ -62,7 +62,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             // 是否存在网页模板
             if (this.config.templateUrl) {
                 getHtml(_this.config.location, _this.config.templateUrl).then(res => {
-                    var html = $(res);
+                    var html = $('<div>').append($(res));
                     _this.conditionHtml = html.find(`.${config.conditionHtmlClassName}`);
                     _this.controlHtml = html.find(`.${config.controlHtmlClassName}`);
                     _this.contentHtml = html.find(`.${config.contentHtmlClassName}`);
@@ -131,8 +131,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
 
         $.FormPage.prototype.renderDxDataGrid = function() {
             var _this = this;
-            this.config.dxDataGrid.columns.unshift(dxDataGridDefaultConfig.columns[0]);
-            var dxConfig = Object.assign({}, dxDataGridDefaultConfig, _this.config.dxDataGrid);
+            var _dxConfig = JSON.parse(JSON.stringify(_this.config.dxDataGrid));
+            var _columns = [].concat(dxDataGridDefaultConfig.columns, _this.config.dxDataGrid);
+            var dxConfig = Object.assign({}, dxDataGridDefaultConfig, _dxConfig, {columns: _columns});
             if (this.contextmenu) {
                 dxConfig.onContextMenuPreparing = function(e) {
                     e.jQueryEvent.preventDefault();
