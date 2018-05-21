@@ -35,13 +35,16 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _path = APP_ROOT_PATH.concat(menu.url);
             // 第一次点击menu
             if (!$.formCacheHas(uid)) {
-                $._globalCacheId = uid;
-                $JqcLoader
-                    .importScript(_path)
-                    .execute(function() {
-                        addTabAndCreatePage(_path);
-                    });
-                return;
+                $.ajax(_path).then(res => {
+                    $._globalCacheId = uid;
+                    $JqcLoader
+                        .importScript(_path)
+                        .execute(function() {
+                            addTabAndCreatePage(_path);
+                        });
+                }).catch(err => {
+                    console.error(err);
+                });
             } else {
                 // 关闭后再次点击menu
                 addTabAndCreatePage(_path);
@@ -254,5 +257,22 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 _this.afterRender && _this.afterRender();
                 _this.loading.hide();
             }, 0);
+        };
+        $.App.prototype.insertTest = function (params) {
+            var _this = this;
+            var _dialog;
+            this.getFile(params.templatePath).then(res => {
+                var _template = $(res);
+                _dialog = new $.jqcDialog({
+                    title: params.title || 'title',
+                    content: _template,
+                    width: 1080,
+                    afterClose: function () {
+                        params.afterClose && params.afterClose();    
+                    }
+                });
+                params.defaultData && $.formUtil.fill(_template, params.defaultData);
+                _dialog.open();
+            });
         };
     });
