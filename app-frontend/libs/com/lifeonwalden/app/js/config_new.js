@@ -69,7 +69,7 @@
         var _this = this;
         return $.ajax({
             url: _this.host + api,
-            mothed: 'POST',
+            method: 'POST',
             data: params
         });
     }
