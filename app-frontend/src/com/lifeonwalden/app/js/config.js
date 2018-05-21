@@ -1,7 +1,7 @@
 ;
 (function($) {
     // 模板文件功能区域对应的类名
-    const templateClassNameSetting = {
+    const templateClassNameMap = {
         conditionHtmlClassName: 'toolbar-left', //toolbar左侧
         controlHtmlClassName: 'toolbar-right', //toobar右侧
         contentHtmlClassName: 'content' //自定义内容
@@ -35,13 +35,12 @@
             }
         }]
     };
-    $.getTempLatePathMap = function() {
-        return templatePathMap || {};
+
+    const globalConfig = {
+        templateClassNameMap,
+        dxDataGridDefaultConfig
     };
-    $.getTemplateClassNameSetting = function() {
-        return templateClassNameSetting || {};
-    };
-    $.getDxDataGridDefaultConfig = function() {
-        return dxDataGridDefaultConfig || {};
+    $.getGlobalConfig = function() {
+        return globalConfig || {};
     };
 })(jQuery);

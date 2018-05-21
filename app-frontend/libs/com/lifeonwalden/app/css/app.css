@@ -235,10 +235,6 @@ input.large {
     width: 200px;
 }
 
-.btn:hover {
-    background: #ed1c50;
-}
-
 .jqcTabPanel input {
     height: 26px;
     box-sizing: border-box;

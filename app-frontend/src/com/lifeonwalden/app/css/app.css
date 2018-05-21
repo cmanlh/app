@@ -98,3 +98,158 @@ body {
     z-index: 2!important;
     background-color: #fff;
 }
+/*global style*/
+/*input,
+button {
+    box-sizing: border-box;
+    height: 30px;
+    line-height: 28px;
+    border-radius: 4px;
+    margin: 0;
+}
+input {
+    padding: 0 10px;
+    border: 1px solid #ccc;
+}
+button {
+    background: #ed1c24;
+    color: #fff;
+    border: none;
+    padding: 0 10px;
+}
+.toolbar-left,
+.toolbar-right {
+    padding: 0 10px;
+}
+.formGroup{
+    overflow: hidden;
+    width: calc(100% - 100px);
+}
+.formGroup label {
+    float: left;
+    display: flex;
+    height: 36px;
+    align-items: center;
+}
+.formGroup label span{
+    margin: 0 10px;
+}*/
+input,
+select,
+textarea {
+    outline: 0;
+    border: 1px solid #D1D2D4;
+    border-radius: 2px;
+    font-size: 12px !important;
+    box-sizing: border-box;
+}
+
+input {
+    padding: 3px 5px 3px 5px;
+}
+
+select {
+    padding: 3px 0px 3px 5px;
+}
+
+button {
+    outline: 0;
+    cursor: pointer;
+}
+
+a:FOCUS {
+    outline: 0;
+}
+
+label {
+    font-size: 12px;
+    padding: 0 5px;
+}
+
+.inputBox,
+.inputNumber {
+    width: 92%
+}
+
+.inputArticle {
+    width: 98.5%
+}
+
+.inputNumber {
+    text-align: right;
+}
+
+
+/*flex class*/
+.flex_center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.align_items_center {
+    display: flex;
+    align-items: center;
+}
+
+.justify_content_between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.justify_content_around {
+    display: flex;
+    justify-content: space-around;
+}
+
+.justify_content_end {
+    display: flex;
+    justify-content: flex-end;
+}
+/*form styte*/
+.form_group {
+    padding: 5px 0;
+}
+
+.form_group div{
+    margin-left: 10px;
+}
+
+.btn {
+    box-sizing: border-box;
+    height: 26px;
+    color: #fff;
+    background: #ed1c24;
+    padding: 0 10px;
+    border-radius: 4px;
+    border: none;
+    line-height: 26px;
+    cursor: pointer;
+}
+
+input.smail {
+    width: 80px;
+}
+
+input.large {
+    width: 200px;
+}
+
+.jqcTabPanel input {
+    height: 26px;
+    box-sizing: border-box;
+}
+
+.jqcTabPanel select {
+    height: 26px;
+    box-sizing: border-box;
+}
+
+.jqcDialogContent input,
+.jqcDialogContent textarea {
+    width: 100%;
+}
+
+.jqcDialogContent textarea {
+    height: 50px;
+}

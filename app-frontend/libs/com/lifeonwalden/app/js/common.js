@@ -23,14 +23,50 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/grid.css'))
     .importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/config.js'))
     .execute(function() {
-        const formCache = new Map();
         const T = $.jqcToolkit;
-        // set cache
-        $.renderForm = function(data) {
-            if (data && data.config) {
-                formCache.set($._globalCacheId, data);
+        $.addForm = function(menu, tab) {
+            var uid = menu.id;
+            var text = menu.text;
+            // tab内存在
+            if (tab.index.has(uid)) {
+                tab.add({ id: uid });
+                return;
+            }
+            var _path = APP_ROOT_PATH.concat(menu.url);
+            // 第一次点击menu
+            if (!$.formCacheHas(uid)) {
+                $._globalCacheId = uid;
+                $JqcLoader
+                    .importScript(_path)
+                    .execute(function() {
+                        addTabAndCreatePage(_path);
+                    });
+                return;
             } else {
-                throw new Error('$.renderForm: must has property "config".');
+                // 关闭后再次点击menu
+                addTabAndCreatePage(_path);
+            }
+            function addTabAndCreatePage(path) {
+                tab.add({
+                    id: uid,
+                    title: text,
+                    content: `<div data-tabid=${uid} data-path=${path}></div>`
+                });
+                setTimeout(function() {
+                    $.getFormCache(uid).__mount($('div[data-tabid=' + uid + ']'));
+                }, 0);
+            }
+        };
+        // 缓存新加载的js文件数据
+        const formCache = new Map();
+        // set cache
+        $.setupApp = function(App) {
+            if (typeof App === 'function') {
+                var _App = new App();
+                _App._path = $._filePath;
+                formCache.set($._globalCacheId, _App);
+            } else {
+                throw new Error('$.renderForm: arguments expect a construcotr function.');
             }
         };
         // get cache
@@ -41,176 +77,182 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         $.formCacheHas = function(uid) {
             return formCache.has(uid);
         };
-
-        const config = $.getTemplateClassNameSetting();
-        const dxDataGridDefaultConfig = $.getDxDataGridDefaultConfig();
-        const loading = new $.jqcLoading();
-        $.FormPage = function(box, params) {
-            this.box = box;
-            this.config = params.config;
-            this.html = '';
-            this._afterRender = params.afterRender;
-            this.beforeDestroy = params.beforeDestroy;
-            this.dxDataGridConfig = params.config.dxDataGrid;
-            this.contextmenuConfig = params.config.contextmenu;
-            this.init();
+        // App页面核心
+        $.App = function () {
+            this.host = API_HOST;
+            this._root = null; //容器页面根节点
+            this._path = ''; //js文件路径
+            this._config = $.getGlobalConfig(); //config.js文件中的配置
+            this.loading = new $.jqcLoading();
+            this.pinyinParser = new $.jqcPinyin();
+            this.templatePath = ''; //模板文件相对路径
+            this.contextmenu = null;
+            this.dxDataGrid = null;
+            this.root = null; //暴露给afterRender的容器根节点
         };
-
-        $.FormPage.prototype.init = function() {
+        $.App.prototype.__mount = function (root) {
             var _this = this;
-            this.createContextMenu();
-            // 是否存在网页模板
-            if (this.config.templateUrl) {
-                getHtml(_this.config.location, _this.config.templateUrl).then(res => {
-                    var html = $('<div>').append($(res));
-                    _this.conditionHtml = html.find(`.${config.conditionHtmlClassName}`);
-                    _this.controlHtml = html.find(`.${config.controlHtmlClassName}`);
-                    _this.contentHtml = html.find(`.${config.contentHtmlClassName}`);
-                    // 是否渲染toolbar
-                    if (_this.conditionHtml.length || _this.controlHtml.length) {
-                        _this.box.prepend(_this.createToolbarBox());
-                        new $.jqcFormToolBar({
-                            element: _this.toolBarBox,
-                            conditionHtml: _this.conditionHtml[0] || '',
-                            controlHtml: _this.controlHtml[0] || ''
-                        });
-                    }
-                    if (_this.contentHtml.length && _this.contentHtml[0].childNodes.length) {
-                        _this.box.append(_this.contentHtml);
-                    }
-                    // 是否生成dxDataGrid
-                    if (this.config.dxDataGrid && this.config.dxDataGrid.columns) {
-                        _this.box.append(_this.createDxDataGridBox());
-                        _this.renderDxDataGrid();
-                    }
-                    // 导出
-                    var dx = _this.getDxDataGrid();
-                    if (dx && _this.config.dxDataGrid && typeof(_this.config.dxDataGrid.exportProxyClassName) === 'string') {
-                        _this.box.find(`.${_this.config.dxDataGrid.exportProxyClassName}`).click(function(e) {
-                            e.stopPropagation();
-                            dx.exportToExcel(false);
-                        });
-                    }
-                    // 搜索
-                    if (dx && _this.config.dxDataGrid && typeof(_this.config.dxDataGrid.searchProxyClassName) === 'string') {
-                        _this.box.find(`.${_this.config.dxDataGrid.searchProxyClassName}`).keyup(function(e) {
-                            e.stopPropagation();
-                            var val = $(this).val();
-                            dx.searchByText(val);
-                        });
-                    }
-                    _this.afterRender();
-                }).catch(res => {
-                    loading.hide();
-                });
-            } else {
-                // 是否生成dxDataGrid
-                if (this.config.dxDataGrid && this.config.dxDataGrid.columns) {
-                    _this.box.append(_this.createDxDataGridBox());
-                    _this.renderDxDataGrid();
-                }
-                _this.afterRender();
-            }
-        };
-        $.FormPage.prototype.afterRender = function() {
-                var _this = this;
-                loading.hide();
-                this._afterRender && this._afterRender(_this.box, _this.getDxDataGrid());
-            },
-            $.FormPage.prototype.createToolbarBox = function() {
-                var _this = this;
-                this.toolBarBox = $('<div>');
-                return this.toolBarBox;
-            };
-
-        $.FormPage.prototype.createDxDataGridBox = function() {
-            var _this = this;
-            this.dxDataGridBox = $('<div>').text(456);
-            return this.dxDataGridBox;
-        };
-
-        $.FormPage.prototype.renderDxDataGrid = function() {
-            var _this = this;
-            var _dxConfig = JSON.parse(JSON.stringify(_this.config.dxDataGrid));
-            var _columns = [].concat(dxDataGridDefaultConfig.columns, _this.config.dxDataGrid);
-            var dxConfig = Object.assign({}, dxDataGridDefaultConfig, _dxConfig, {columns: _columns});
+            this._root = root;
+            this.root = root;
+            this._path = root.attr('data-path');
+            this.loading.show();
+            // 生命周期-装载之前
+            this.beforeMount && this.beforeMount();
             if (this.contextmenu) {
-                dxConfig.onContextMenuPreparing = function(e) {
-                    e.jQueryEvent.preventDefault();
-                    if (e.row.rowType !== 'data') {
-                        return;
-                    }
-                    _this.contextmenu.show(e.row.data);
+                this.__renderContextMenu();
+            }
+            if (this.templatePath) {
+                this.__getTemplateAndRender();
+            } else {
+                if (this.dxDataGrid) {
+                    this.__renderDxDataGrid();
                 }
+                // 生命周期-渲染之后
+                this.__afterRender();
             }
-            this.dxDataGridBox.dxDataGrid(dxConfig);
-            return this.dxDataGridBox;
         };
-
-        $.FormPage.prototype.getDxDataGrid = function() {
-            return this.dxDataGridBox ? this.dxDataGridBox.dxDataGrid('instance') : null;
-        };
-
-        $.FormPage.prototype.createContextMenu = function() {
+        $.App.prototype.requestGet = function (api, params) {
             var _this = this;
-            if (this.config.contextmenu && this.config.contextmenu.menus && this.config.contextmenu.menus.length) {
-                this.contextmenu = new $.jqcContextMenu(_this.config.contextmenu);
-                setTimeout(function() {
-                    $(document).on('mousewheel.FormPage', function() {
-                        _this.contextmenu.box && _this.contextmenu.box.hide();
-                    });
-                }, 0);
-            }
-        };
-
-        function getHtml(location, url) {
-            return new Promise((resolve, reject) => {
-                $.ajax(location.substr(0, location.lastIndexOf('/') + 1).concat(url), {
-                    success: function(res) {
-                        resolve(res);
-                    },
-                    error: function(res) {
-                        reject(res);
+            var _params;
+            if (params) {
+                _params = JSON.parse(JSON.stringify(params));
+                var _keys = Object.keys(_params);
+                _keys.forEach(_key => {
+                    if (_params[_key] === '' || _params[_key] === undefined || _params[_key] === null || _params[_key] === '*') {
+                        delete _params[_key];
                     }
                 });
+            }
+            return $.ajax({
+                url: _this.host + api,
+                data: _params
+            });
+        };
+        $.App.prototype.requestPost = function (api, params) {
+            var _this = this;
+            return $.ajax({
+                url: _this.host + api,
+                method: 'POST',
+                data: params
             });
         }
-
-        $.addForm = function(menu, tab) {
-            loading.show();
-            var uid = menu.id;
-            var text = menu.text;
-
-            // tab内存在
-            if (tab.index.has(uid)) {
-                loading.hide();
-                tab.add({ id: uid });
-                return;
+        $.App.prototype.getFile = function (relativePath) {
+            var _this = this;
+            return $.ajax(_this.__getAbsolutePath(relativePath));
+        };
+        $.App.prototype.__getAbsolutePath = function (relativePath) {
+            var _this = this;
+            var _pathArr = this._path.split('/')
+            _pathArr.pop();
+            var _relativePath = relativePath.split('/');
+            _relativePath.forEach(function(item) {
+                if (item == '.') {
+                    return;
+                } else if (item == '..') {
+                    _pathArr.pop();
+                } else {
+                    _pathArr.push(item);
+                }
+            });
+            return _pathArr.join('/');
+        };
+        $.App.prototype.__getTemplateAndRender = function () {
+            var _this = this;
+            this.getFile(_this.templatePath).then(res => {
+                var _fakeBox = $('<div>').append($(res));
+                _this._conditionHtml = _fakeBox.find(`.${_this._config.templateClassNameMap.conditionHtmlClassName}`);
+                _this._controlHtml = _fakeBox.find(`.${_this._config.templateClassNameMap.controlHtmlClassName}`);
+                _this._contentHtml = _fakeBox.find(`.${_this._config.templateClassNameMap.contentHtmlClassName}`);
+                // toolbar
+                if (_this._conditionHtml.length || _this.conditionHtml.length) {
+                    _this.__renderToolBar();
+                }
+                // content
+                if (_this._contentHtml) {
+                    _this._root.append(_this._contentHtml);
+                }
+                // dx表格
+                if (_this.dxDataGrid) {
+                    _this.__renderDxDataGrid();
+                    _this.__afterRender();
+                }
+            });
+        };
+        $.App.prototype.__renderToolBar = function () {
+            var _this = this;
+            this._toolBar = $('<div>');
+            this._root.prepend(_this._toolBar);
+            new $.jqcFormToolBar({
+                element: _this._toolBar,
+                conditionHtml: _this._conditionHtml[0] || '',
+                controlHtml: _this._controlHtml[0] || ''
+            });
+        };
+        $.App.prototype.__renderDxDataGrid = function () {
+            var _this = this;
+            this._dxDataGrid = $('<div data-dx="a">');
+            this._root.append(_this._dxDataGrid);
+            var _dxConfig = JSON.parse(JSON.stringify(_this.dxDataGrid));
+            var _columns = [].concat(_this._config.dxDataGridDefaultConfig.columns, _this.dxDataGrid.columns);
+            var dxConfig = Object.assign({}, _this._config.dxDataGridDefaultConfig, _dxConfig, {columns: _columns});
+            if (this._contextmenu) {
+                dxConfig.onContextMenuPreparing = function(e) {
+                    e.jQueryEvent.preventDefault();
+                    if (!e.row || e.row.rowType !== 'data') {
+                        return;
+                    }
+                    _this._contextmenu.show(e.row.data);
+                }
             }
-            // 第一次点击menu
-            if (!$.formCacheHas(uid)) {
-                $._globalCacheId = uid;
-                $JqcLoader
-                    .importScript(APP_ROOT_PATH.concat(menu.url))
-                    .execute(function() {
-                        addTabAndCreatePage();
+            this._dxDataGrid.dxDataGrid(dxConfig);
+            var dx = this.getDxDataGrid();
+            // 导出事件绑定
+            if (dx && this.dxDataGrid.exportProxyClassName) {
+                this.root.find(`.${_this.dxDataGrid.exportProxyClassName}`)
+                    .click(function(e) {
+                        e.stopPropagation();
+                        dx.exportToExcel(false);
                     });
-                return;
-            } else {
-                // 关闭后再次点击menu
-                addTabAndCreatePage();
             }
-
-            function addTabAndCreatePage() {
-                tab.add({
-                    id: uid,
-                    title: text,
-                    content: `<div data-tabid=${uid}></div>`
+            // 搜索事件绑定
+            if (dx && this.dxDataGrid.searchProxyClassName) {
+                this.root.find(`.${_this.dxDataGrid.searchProxyClassName}`)
+                    .keyup(function(e) {
+                        e.stopPropagation();
+                        var val = $(this).val();
+                        dx.searchByText(val);
+                    });
+            }
+        };
+        $.App.prototype.fillDxDataGrid = function (data) {
+            var _this = this;
+            this._dxDataGrid && this.getDxDataGrid().option('dataSource', data);
+        };
+        $.App.prototype.getDxDataGrid = function () {
+            return this._dxDataGrid ? this._dxDataGrid.dxDataGrid('instance') : undefined;
+        };
+        $.App.prototype.fetchDataAndFillDxDataGrid = function (api, params) {
+            var _this = this;
+            this.loading.show();
+            this.requestGet(api, params).then(res => {
+                _this.fillDxDataGrid(res.result);
+                _this.loading.hide();
+            });
+        };
+        $.App.prototype.__renderContextMenu = function () {
+            var _this = this;
+            this._contextmenu = new $.jqcContextMenu(_this.contextmenu);
+            setTimeout(function () {
+                $(document).on('mousewheel.$App', function () {
+                    _this._contextmenu.box && _this._contextmenu.box.remove();
                 });
-                setTimeout(function() {
-                    new $.FormPage($('div[data-tabid=' + uid + ']'), $.getFormCache(uid));
-                }, 0);
-
-            }
+            }, 0);
+        };
+        $.App.prototype.__afterRender = function () {
+            var _this = this;
+            setTimeout(function () {
+                _this.afterRender && _this.afterRender();
+                _this.loading.hide();
+            }, 0);
         };
     });
