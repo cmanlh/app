@@ -40,20 +40,20 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     $JqcLoader
                         .importScript(_path)
                         .execute(function() {
-                            addTabAndCreatePage(_path);
+                            addTabAndCreatePage(_path, text);
                         });
                 }).catch(err => {
                     console.error(err);
                 });
             } else {
                 // 关闭后再次点击menu
-                addTabAndCreatePage(_path);
+                addTabAndCreatePage(_path, text);
             }
-            function addTabAndCreatePage(path) {
+            function addTabAndCreatePage(path, text) {
                 tab.add({
                     id: uid,
                     title: text,
-                    content: `<div data-tabid=${uid} data-path=${path}></div>`
+                    content: `<div data-tabid=${uid} data-path=${path} data-name=${text}></div>`
                 });
                 setTimeout(function() {
                     $.getFormCache(uid).__mount($('div[data-tabid=' + uid + ']'));
@@ -98,6 +98,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._root = root;
             this.root = root;
             this._path = root.attr('data-path');
+            this._name = root.attr('data-name');
             this.loading.show();
             // 生命周期-装载之前
             this.beforeMount && this.beforeMount();
@@ -258,21 +259,64 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 _this.loading.hide();
             }, 0);
         };
-        $.App.prototype.insertTest = function (params) {
+        /**
+         * templatePath 模板路径
+         * title dialog title
+         * dafaultData 默认填充数据
+         * type insert添加 copy复制 update更新 detail详情
+         * api 更新 添加的api
+         * disabled Array databind属性的值
+         */
+        $.App.prototype.loadTemplateAndFillDialog = function (params, type, title) {
             var _this = this;
             var _dialog;
             this.getFile(params.templatePath).then(res => {
                 var _template = $(res);
+                var $btn = _template.find('button');
                 _dialog = new $.jqcDialog({
-                    title: params.title || 'title',
+                    title: title || '',
                     content: _template,
                     width: 1080,
                     afterClose: function () {
                         params.afterClose && params.afterClose();    
                     }
                 });
-                params.defaultData && $.formUtil.fill(_template, params.defaultData);
+                if (params.disabled && Array.isArray(params.disabled)) {
+                    params.disabled.forEach(item => {
+                        _template.find(`[databind=${item}]`).attr('disabled', 'disabled');
+                    });
+                }
+                setTimeout(function () {
+                    params.afterRender && params.afterRender(_template);
+                    params.defaultData && $.formUtil.fill(_template, params.defaultData);
+                }, 0);
+                if (type === 'detail') {
+                    _template.find('[databind]').attr('disabled', 'disabled');
+                    _template.find('.btn').hide();
+                }
                 _dialog.open();
+                $btn.click(function () {
+                    var _data = $.formUtil.fetch(_template);
+                    if (type === 'update') {
+                        _data = Object.assign({}, params.defaultData, _data);
+                    }
+                    _this.requestPost(params.api, _data).then(res => {
+                        _dialog.close();
+                        params.success && params.success(res);
+                    });
+                })
             });
+        };
+        $.App.prototype.insert = function (params) {
+            this.loadTemplateAndFillDialog(params, 'insert', `${this._name} - 新增`);
+        };
+        $.App.prototype.update = function (params) {
+            this.loadTemplateAndFillDialog(params, 'update', `${this._name} - 更新`);
+        };
+        $.App.prototype.copy = function (params) {
+            this.loadTemplateAndFillDialog(params, 'copy', `${this._name} - 复制`);
+        };
+        $.App.prototype.detail = function (params) {
+            this.loadTemplateAndFillDialog(params, 'detail', `${this._name} - 详情`);
         };
     });
