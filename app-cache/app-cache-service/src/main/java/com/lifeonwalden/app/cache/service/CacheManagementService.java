@@ -22,5 +22,13 @@ import java.util.List;
 
 public interface CacheManagementService {
 
-    List<CacheManagementBean> listCache();
+    List<CacheManagementBean> listCacheManagement();
+
+    List<String> listCache(String cacheManagementId);
+
+    List<String> listKey(String cacheManagementId, String cacheName);
+
+    boolean evict(String cacheManagementId, String cacheName, String key);
+
+    boolean clear(String cacheManagementId, String cacheName);
 }
