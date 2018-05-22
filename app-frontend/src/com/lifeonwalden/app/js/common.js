@@ -65,8 +65,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         // set cache
         $.setupApp = function(App) {
             if (typeof App === 'function') {
+                var _prototype = App.prototype;
+                App.prototype = new $.App();
+                App.prototype.constructor = App;
+                Object.assign(App.prototype, _prototype);
                 var _App = new App();
-                _App._path = $._filePath;
                 formCache.set($._globalCacheId, _App);
             } else {
                 throw new Error('$.renderForm: arguments expect a construcotr function.');
