@@ -194,6 +194,12 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 conditionHtml: _this._conditionHtml[0] || '',
                 controlHtml: _this._controlHtml[0] || ''
             });
+            setTimeout(function () {
+                _this._toolBar.find('.toolbar-left button.queryBtn').click(function () {
+                    var _data = $.formUtil.fetch(_this._toolBar);
+                    _this.fillDxDataGrid(_data);
+                });
+            }, 0);
         };
         $.App.prototype.__renderDxDataGrid = function () {
             var _this = this;
@@ -231,18 +237,18 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     });
             }
         };
-        $.App.prototype.fillDxDataGrid = function (data) {
+        $.App.prototype.fillDxDataGridByData = function (data) {
             var _this = this;
             this._dxDataGrid && this.getDxDataGrid().option('dataSource', data);
         };
         $.App.prototype.getDxDataGrid = function () {
             return this._dxDataGrid ? this._dxDataGrid.dxDataGrid('instance') : undefined;
         };
-        $.App.prototype.fetchDataAndFillDxDataGrid = function (api, params) {
+        $.App.prototype.fillDxDataGrid = function (params) {
             var _this = this;
             this.loading.show();
-            this.requestGet(api, params).then(res => {
-                _this.fillDxDataGrid(res.result);
+            this.requestGet(_this.dxDataGrid.fetchDataApi, params).then(res => {
+                _this.fillDxDataGridByData(res.result);
                 _this.loading.hide();
             });
         };
@@ -266,60 +272,62 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
          * templatePath 模板路径
          * title dialog title
          * dafaultData 默认填充数据
-         * type insert添加 copy复制 update更新 detail详情
+         * readOnly  Boolean 只读，全部设置disabled
+         * dataMerge Boolean 数据合并 绑定数据与defaultData合并,有则覆盖。用于数据更新、关联。
          * api 更新 添加的api
-         * disabled Array databind属性的值
+         * disabled Array databind属性的值 ['*'] 等同于 readOnly = true;
          */
-        $.App.prototype.loadTemplateAndFillDialog = function (params, type, title) {
+        $.App.prototype.dialog = function (params) {
             var _this = this;
             var _dialog;
+            // 没有模板
+            if (!params.templatePath) {
+
+                return;
+            }
             this.getFile(params.templatePath).then(res => {
                 var _template = $(res);
-                var $btn = _template.find('button');
+                var $btn = _template.find('button.done');
                 _dialog = new $.jqcDialog({
-                    title: title || '',
+                    title: params.title || '',
                     content: _template,
-                    width: 1080,
+                    width: params.width || 1080,
                     afterClose: function () {
                         params.afterClose && params.afterClose();    
                     }
                 });
-                if (params.disabled && Array.isArray(params.disabled)) {
-                    params.disabled.forEach(item => {
-                        _template.find(`[databind=${item}]`).attr('disabled', 'disabled');
-                    });
+                if (Array.isArray(params.disabled)) {
+                    if (params.disabled.length === 1 && params.disabled[0] === '*') {
+                        _template.find('[databind]').attr('disabled', 'disabled');                        
+                    } else {
+                        params.disabled.forEach(item => {
+                            _template.find(`[databind=${item}]`).attr('disabled', 'disabled');
+                        });
+                    }
                 }
                 setTimeout(function () {
                     params.afterRender && params.afterRender(_template, _dialog);
                     params.defaultData && $.formUtil.fill(_template, params.defaultData);
                 }, 0);
-                if (type === 'detail') {
+                if (params.readOnly) {
                     _template.find('[databind]').attr('disabled', 'disabled');
-                    _template.find('.btn').hide();
+                    _template.find('button').hide();
                 }
                 _dialog.open();
                 $btn.click(function () {
                     var _data = $.formUtil.fetch(_template);
-                    if (type === 'update') {
+                    if (params.dataMerge) {
                         _data = Object.assign({}, params.defaultData, _data);
                     }
                     _this.requestPost(params.api, _data).then(res => {
                         _dialog.close();
+                        _this.triggerQuery();
                         params.success && params.success(res);
                     });
                 })
             });
         };
-        $.App.prototype.insert = function (params) {
-            this.loadTemplateAndFillDialog(params, 'insert', `${this._name} - 新增`);
-        };
-        $.App.prototype.update = function (params) {
-            this.loadTemplateAndFillDialog(params, 'update', `${this._name} - 更新`);
-        };
-        $.App.prototype.copy = function (params) {
-            this.loadTemplateAndFillDialog(params, 'copy', `${this._name} - 复制`);
-        };
-        $.App.prototype.detail = function (params) {
-            this.loadTemplateAndFillDialog(params, 'detail', `${this._name} - 详情`);
-        };
+        $.App.prototype.triggerQuery = function () {
+            this._toolBar.find('.toolbar-left button.queryBtn').trigger('click');
+        }
     });
