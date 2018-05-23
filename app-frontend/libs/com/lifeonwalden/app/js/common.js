@@ -64,15 +64,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         const formCache = new Map();
         // set cache
         $.setupApp = function(App) {
-            if (typeof App === 'function') {
-                var _prototype = App.prototype;
-                App.prototype = new $.App();
-                App.prototype.constructor = App;
-                Object.assign(App.prototype, _prototype);
-                var _App = new App();
-                formCache.set($._globalCacheId, _App);
+            if (App.__mount) {
+                formCache.set($._globalCacheId, App);
             } else {
-                throw new Error('$.renderForm: arguments expect a construcotr function.');
+                throw new Error('$.setupApp: expects a $.App object');
             }
         };
         // get cache
@@ -84,16 +79,17 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             return formCache.has(uid);
         };
         // App页面核心
-        $.App = function () {
+        $.App = function (params) {
             this.host = API_HOST;
             this._root = null; //容器页面根节点
             this._path = ''; //js文件路径
             this._config = $.getGlobalConfig(); //config.js文件中的配置
             this.loading = new $.jqcLoading();
             this.pinyinParser = new $.jqcPinyin();
-            this.templatePath = ''; //模板文件相对路径
-            this.contextmenu = null;
-            this.dxDataGrid = null;
+            this.templatePath = params.templatePath ? params.templatePath : null; //模板文件相对路径
+            this.contextmenu = (params && params.contextmenu) ? params.contextmenu : null;
+            this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : null;
+            this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
         };
         $.App.prototype.__mount = function (root) {
@@ -316,9 +312,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 _dialog.open();
                 $btn.click(function () {
                     var _data = $.formUtil.fetch(_template);
-                    if (params.dataMerge) {
-                        _data = Object.assign({}, params.defaultData, _data);
-                    }
+                    _data = Object.assign({}, params.defaultData, _data);
                     _this.requestPost(params.api, _data).then(res => {
                         _dialog.close();
                         _this.triggerQuery();
