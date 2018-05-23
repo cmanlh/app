@@ -290,7 +290,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     });
                 }
                 setTimeout(function () {
-                    params.afterRender && params.afterRender(_template);
+                    params.afterRender && params.afterRender(_template, _dialog);
                     params.defaultData && $.formUtil.fill(_template, params.defaultData);
                 }, 0);
                 if (type === 'detail') {
