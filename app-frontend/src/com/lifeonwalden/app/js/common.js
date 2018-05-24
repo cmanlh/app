@@ -80,7 +80,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         // App页面核心
         $.App = function (params) {
-            this.host = API_HOST;
             this._root = null; //容器页面根节点
             this._path = ''; //js文件路径
             this._config = $.getGlobalConfig(); //config.js文件中的配置
@@ -127,14 +126,14 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 });
             }
             return $.ajax({
-                url: _this.host + api,
+                url: api,
                 data: _params
             });
         };
         $.App.prototype.requestPost = function (api, params) {
             var _this = this;
             return $.ajax({
-                url: _this.host + api,
+                url: api,
                 method: 'POST',
                 data: params
             });
