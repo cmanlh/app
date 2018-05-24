@@ -80,7 +80,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         // App页面核心
         $.App = function (params) {
-            this.host = API_HOST;
+            this.host = window.location.href.replace('index.do', '');
             this._root = null; //容器页面根节点
             this._path = ''; //js文件路径
             this._config = $.getGlobalConfig(); //config.js文件中的配置
