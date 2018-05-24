@@ -56,7 +56,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     content: `<div data-tabid=${uid} data-path=${path} data-name=${text}></div>`
                 });
                 setTimeout(function() {
-                    $.getFormCache(uid).__mount($('div[data-tabid=' + uid + ']'));
+                    $.getFormCache(uid).mount($('div[data-tabid=' + uid + ']'));
                 }, 0);
             }
         };
@@ -64,7 +64,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         const formCache = new Map();
         // set cache
         $.setupApp = function(App) {
-            if (App.__mount) {
+            if (App.mount) {
                 formCache.set($._globalCacheId, App);
             } else {
                 throw new Error('$.setupApp: expects a $.App object');
@@ -92,7 +92,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
         };
-        $.App.prototype.__mount = function (root) {
+        $.App.prototype.mount = function (root) {
             var _this = this;
             this._root = root;
             this.root = root;
