@@ -19,12 +19,16 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.messages.cn.js'))
     .importCss(LIB_ROOT_PATH.concat('com/devexpress/css/dx.common.css'))
     .importCss(LIB_ROOT_PATH.concat('com/devexpress/css/dx.light.css'))
+    // datetimepicker样式
+    .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/jqc/datetimepicker/css/datetimepicker.css'))
     // 全局配置
     .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/app.css'))
     .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/grid.css'))
     .importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/config.js'))
     .execute(function() {
         const T = $.jqcToolkit;
+        $.datetimepicker.setLocale('zh');
+        const YEAR = new Date().getFullYear();
         $.addForm = function(menu, tab) {
             var uid = menu.id;
             var text = menu.text;
@@ -191,6 +195,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 controlHtml: _this._controlHtml[0] || ''
             });
             setTimeout(function () {
+                $.formUtil.format(_this._toolBar);
                 _this._toolBar.find('.toolbar-left button.queryBtn').click(function () {
                     var _data = $.formUtil.fetch(_this._toolBar);
                     _this.fillDxDataGrid(_data);
@@ -323,5 +328,5 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.triggerQuery = function () {
             this._toolBar.find('.toolbar-left button.queryBtn').trigger('click');
-        }
+        };
     });
