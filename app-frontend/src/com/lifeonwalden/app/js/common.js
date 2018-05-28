@@ -91,6 +91,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.loading = new $.jqcLoading();
             this.pinyinParser = new $.jqcPinyin();
             this.templatePath = params.templatePath ? params.templatePath : null; //模板文件相对路径
+            this.stylePath = params.stylePath ? params.stylePath : null; //模板文件相对路径
             this.contextmenu = (params && params.contextmenu) ? params.contextmenu : null;
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : null;
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
@@ -105,6 +106,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.loading.show();
             // 生命周期-装载之前
             this.beforeMount && this.beforeMount();
+            if (this.stylePath) {
+                var _path = this.getAbsolutePath(_this.stylePath);
+                $JqcLoader.importCss(_path).execute();
+            }
             if (this.contextmenu) {
                 this.__renderContextMenu();
             }
@@ -145,9 +150,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         }
         $.App.prototype.getFile = function (relativePath) {
             var _this = this;
-            return $.ajax(_this.__getAbsolutePath(relativePath));
+            return $.ajax(_this.getAbsolutePath(relativePath));
         };
-        $.App.prototype.__getAbsolutePath = function (relativePath) {
+        $.App.prototype.getAbsolutePath = function (relativePath) {
             var _this = this;
             var _pathArr = this._path.split('/')
             _pathArr.pop();
@@ -181,8 +186,8 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 // dx表格
                 if (_this.dxDataGrid) {
                     _this.__renderDxDataGrid();
-                    _this.__afterRender();
                 }
+                _this.__afterRender();
             });
         };
         $.App.prototype.__renderToolBar = function () {
@@ -196,6 +201,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             });
             setTimeout(function () {
                 $.formUtil.format(_this._toolBar);
+                if (!_this.dxDataGrid) {
+                    return;
+                }
                 _this._toolBar.find('.toolbar-left button.queryBtn').click(function () {
                     var _data = $.formUtil.fetch(_this._toolBar);
                     _this.fillDxDataGrid(_data);
