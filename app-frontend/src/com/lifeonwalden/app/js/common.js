@@ -8,11 +8,11 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['notification'])
         .registerComponents(['contextmenu','layoutHelper'])
         .registerComponents(['loading'])
-        .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
+        .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab', 'jsoneditor'])
         .registerComponents(['apisBox']));
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['menu', 'formUtil', 'msg', 'tab', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification'])
+    .importComponents('com.lifeonwalden.jqc', ['menu', 'formUtil', 'msg', 'tab', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'jsoneditor'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
@@ -21,6 +21,8 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .importCss(LIB_ROOT_PATH.concat('com/devexpress/css/dx.light.css'))
     // datetimepicker样式
     .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/jqc/datetimepicker/css/datetimepicker.css'))
+    // jsoneditor样式
+    .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/jqc/jsoneditor/css/jsoneditor.css'))
     // 全局配置
     .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/app.css'))
     .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/grid.css'))
@@ -96,6 +98,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : null;
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
+            this.styleLoaded = false;
         };
         $.App.prototype.mount = function (root) {
             var _this = this;
@@ -106,9 +109,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.loading.show();
             // 生命周期-装载之前
             this.beforeMount && this.beforeMount();
-            if (this.stylePath) {
+            if (this.stylePath && !this.styleLoaded) {
                 var _path = this.getAbsolutePath(_this.stylePath);
-                $JqcLoader.importCss(_path).execute();
+                $JqcLoader.importCss(_path).execute(function () {
+                    _this.styleLoaded = true;
+                });
             }
             if (this.contextmenu) {
                 this.__renderContextMenu();

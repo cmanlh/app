@@ -98,6 +98,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : null;
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
+            this.styleLoaded = false;
         };
         $.App.prototype.mount = function (root) {
             var _this = this;
@@ -108,9 +109,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.loading.show();
             // 生命周期-装载之前
             this.beforeMount && this.beforeMount();
-            if (this.stylePath) {
+            if (this.stylePath && !this.styleLoaded) {
                 var _path = this.getAbsolutePath(_this.stylePath);
-                $JqcLoader.importCss(_path).execute();
+                $JqcLoader.importCss(_path).execute(function () {
+                    _this.styleLoaded = true;
+                });
             }
             if (this.contextmenu) {
                 this.__renderContextMenu();
