@@ -261,3 +261,19 @@ input.large {
     background: url('./images/export-excel.png') no-repeat center;
     background-size: 26px 26px;
 }
+
+.jqcConfirm-btnBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 0;
+}
+
+.jqcConfirm-btnBox button{
+    margin: 0 20px;
+}
+
+.jqcConfirm-textBox {
+    padding: 10px;
+    min-height: 50px;
+}

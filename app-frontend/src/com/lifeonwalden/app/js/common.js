@@ -352,4 +352,35 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         $.App.prototype.triggerQuery = function () {
             this._toolBar.find('.toolbar-left button.queryBtn').trigger('click');
         };
+        $.App.prototype.confirm = function (params) {
+            var _content = $('<div>');
+            var _text = $('<div>').addClass('jqcConfirm-textBox');
+            if (params.content) {
+                _text.append(params.content);
+            }
+            var done = $('<button>').addClass('btn jqcConfirm-btn').text('确认');
+            var cancel = $('<button>').addClass('btn jqcConfirm-btn').text('取消');
+            var $btnBox = $('<div>')
+                .addClass('jqcConfirm-btnBox')
+                .append(done)
+                .append(cancel);
+            _content.append(_text).append($btnBox);
+            var _confirm = new $.jqcDialog({
+                title: params.title || '请确认',
+                content: _content,
+                width: 300,
+                afterClose: function () {
+                    params.onClose && params.onClose();
+                }
+            });
+            _confirm.open();
+            done.click(function () {
+                params.onConfirm && params.onConfirm();
+                _confirm.close();
+            });
+            cancel.click(function () {
+                params.onCancel && params.onCancel();
+                _confirm.close();
+            })
+        };
     });
