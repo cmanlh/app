@@ -327,9 +327,24 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     var _data = $.formUtil.fetch(_template);
                     _data = Object.assign({}, params.defaultData, _data);
                     _this.requestPost(params.api, _data).then(res => {
-                        _dialog.close();
-                        _this.triggerQuery();
-                        params.success && params.success(res);
+                        if (res.code == 0) {
+                            _dialog.close();
+                            _this.triggerQuery();
+                            if (params.success) {
+                                params.success(res);
+                            } else {
+                                $.jqcNotification({
+                                    type: 'success',
+                                    title: '操作成功。'
+                                });
+                            }
+                        } else {
+                            $.jqcNotification({
+                                type: 'error',
+                                title: '操作失败。',
+                                content: res.msg
+                            });
+                        }
                     });
                 })
             });
