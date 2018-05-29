@@ -373,7 +373,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _confirm = new $.jqcDialog({
                 title: params.title || '请确认',
                 content: _content,
-                width: 300,
+                width: params.width || 300,
                 afterClose: function () {
                     params.onClose && params.onClose();
                 }
