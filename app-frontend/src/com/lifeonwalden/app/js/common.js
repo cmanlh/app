@@ -383,4 +383,31 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 _confirm.close();
             })
         };
+        $.App.prototype.delete = function (params) {
+            var _this = this;
+            this.confirm({
+                title: params.title,
+                content: params.content,
+                onConfirm: function () {
+                    if (!params.api || !params.data) {
+                        throw new Error('delete方法缺少“api”或“data”属性！');
+                    }
+                    _this.requestPost(params.api, params.data).then(res => {
+                        if (res.code == 0) {
+                            $.jqcNotification({
+                                type: 'success',
+                                title: '删除成功。'
+                            });
+                            params.success && params.success();
+                        } else {
+                            $.jqcNotification({
+                                type: 'error',
+                                title: '删除失败',
+                                content: res.msg
+                            });
+                        }
+                    });    
+                }
+            });
+        };
     });
