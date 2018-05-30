@@ -206,6 +206,15 @@ label {
     display: flex;
     justify-content: flex-end;
 }
+/*dialog*/
+.jqcDialogContent input,
+.jqcDialogContent textarea {
+    width: 100%;
+}
+
+.jqcDialogContent textarea {
+    height: 50px;
+}
 /*form styte*/
 .form_group {
     padding: 5px 0;
@@ -228,30 +237,22 @@ label {
 }
 
 input.smail {
-    width: 80px;
+    width: 80px!important;
 }
 
 input.large {
-    width: 200px;
+    width: 200px!important;
 }
 
 .jqcTabPanel input {
     height: 26px;
+    width: 150px;
     box-sizing: border-box;
 }
 
 .jqcTabPanel select {
     height: 26px;
     box-sizing: border-box;
-}
-
-.jqcDialogContent input,
-.jqcDialogContent textarea {
-    width: 100%;
-}
-
-.jqcDialogContent textarea {
-    height: 50px;
 }
 
 .jqcTabPanel .export-excel {

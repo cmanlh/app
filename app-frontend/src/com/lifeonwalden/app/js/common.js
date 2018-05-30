@@ -403,7 +403,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                                 type: 'success',
                                 title: '删除成功。'
                             });
-                            params.success && params.success();
+                            if (params.success) {
+                                params.success();
+                            } else {
+                                _this.triggerQuery();
+                            }
                         } else {
                             $.jqcNotification({
                                 type: 'error',
