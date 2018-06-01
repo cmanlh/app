@@ -29,8 +29,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/config.js'))
     .execute(function() {
         const T = $.jqcToolkit;
-        $.datetimepicker.setLocale('zh');
-        const YEAR = new Date().getFullYear();
+        var styleCache = {};
         $.addForm = function(menu, tab) {
             var uid = menu.id;
             var text = menu.text;
@@ -98,7 +97,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : null;
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
-            this.styleLoaded = false;
         };
         $.App.prototype.mount = function (root) {
             var _this = this;
@@ -109,11 +107,13 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.loading.show();
             // 生命周期-装载之前
             this.beforeMount && this.beforeMount();
-            if (this.stylePath && !this.styleLoaded) {
+            if (this.stylePath) {
                 var _path = this.getAbsolutePath(_this.stylePath);
-                $JqcLoader.importCss(_path).execute(function () {
-                    _this.styleLoaded = true;
-                });
+                if (!styleCache[_path]) {
+                    $JqcLoader.importCss(_path).execute(function () {
+                        styleCache[_path] = true;
+                    });
+                }
             }
             if (this.contextmenu) {
                 this.__renderContextMenu();
