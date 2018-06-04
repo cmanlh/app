@@ -30,6 +30,119 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .execute(function() {
         const T = $.jqcToolkit;
         var styleCache = {};
+        
+        function Stroage() {
+            this.apiMap = $.getGlobalConfig().commonDataApi;
+            this.pinyinParser = new $.jqcPinyin();
+        }
+        // 取数据
+        Stroage.prototype.get = function (name, params) {
+            var _this = this;
+            var data = window.localStorage.getItem(name);
+            var result;
+            return new Promise((resolve, reject) => {
+                if (data) {
+                    try {
+                        result = JSON.parse(data);
+                    } catch (error) {
+                        result = data;
+                    }
+                    resolve(result);
+                } else {
+                    // 从网络获取并存储
+                    _this.getDataFromNet(name, params).then(res => {
+                        resolve(res);
+                    }).catch(err => {
+                        console.error(err);
+                    });
+                }
+            });
+        }
+        // 存数据
+        Stroage.prototype.set = function (name, data) {
+            var _data;
+            try {
+                _data = JSON.stringify(data);
+            } catch (error) {
+                _data = data;
+            }
+            window.localStorage.setItem(name, _data);
+        }
+        // 从网络获取数据
+        Stroage.prototype.getDataFromNet = function (name, params) {
+            var _this = this;
+            var url = this.apiMap[name];
+            if (!url) {
+                throw new Error(`api.${name} is undefined.`);
+            }
+            return new Promise((resolve, reject) => {
+                $.ajax(url, params).then(res => {
+                    if (res.code == 0) {
+                        this.set(name, res.result);
+                        resolve(res.result);
+                    } else {
+                        reject(res.msg);
+                    }
+                })
+            });
+        }
+        // 格式化
+        Stroage.prototype.format = function($box) {
+            var _this = this;
+            var $els = $box.find('[commondata]');
+            var data = [];
+            $.each($els, function (index, el) {
+                _this.formatSingle($(el));
+            });
+        }
+        // 单个格式化
+        Stroage.prototype.formatSingle = function($node) {
+            var _this = this;
+            var dataName = $node.attr('commondata');
+            var defaultValue = $node.attr('defaultvalue');
+            var config = {
+                element: $node,
+                dataName: dataName + (defaultValue == '*' ? '_all' : ''),
+                supportFuzzyMatch: true,
+                supportPinYin: true,
+                pinyinParser: this.pinyinParser,
+                width: 200,
+                defaultVal: defaultValue,
+                onSelect: function (data) {
+                    $node.trigger('change', data);
+                }
+            };
+            config.optionData = {};
+            this.get(dataName).then(data => {
+                config.optionData.data = data;
+                // 系统
+                if (dataName == 'system') {
+                    config.optionData.adapter = {
+                        value: 'id',
+                        label: 'systemName',
+                        filter: 'id',
+                        pinyinFilter: 'systemName'
+                    };
+                    if (defaultValue == '*') {
+                        config.extOption = [{
+                            id: '*',
+                            systemName: '全部'
+                        }];
+                    }
+                }
+                // 部门
+                if (dataName == 'department') {
+                    config.optionData.adapter = {
+                        value: 'departmentId',
+                        label: 'departmentName',
+                        filter: 'departmentId',
+                        pinyinFilter: 'departmentName'
+                    };
+                }
+                new $.jqcSelectBox(config);
+            });
+        }
+
         $.addForm = function(menu, tab) {
             var uid = menu.id;
             var text = menu.text;
@@ -86,6 +199,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         // App页面核心
         $.App = function (params) {
+            var _this = this;
             this._root = null; //容器页面根节点
             this._path = ''; //js文件路径
             this._config = $.getGlobalConfig(); //config.js文件中的配置
@@ -97,6 +211,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : null;
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
+            this.commonData = new Stroage();
         };
         $.App.prototype.mount = function (root) {
             var _this = this;
@@ -205,6 +320,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 controlHtml: _this._controlHtml[0] || ''
             });
             setTimeout(function () {
+                _this.commonData.format(_this._toolBar);
                 $.formUtil.format(_this._toolBar);
                 if (!_this.dxDataGrid) {
                     return;
@@ -320,6 +436,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                 }
                 setTimeout(function () {
+                    _this.commonData.format(_template);
                     params.afterRender && params.afterRender(_template, _dialog);
                     params.defaultData && $.formUtil.fill(_template, params.defaultData);
                 }, 0);

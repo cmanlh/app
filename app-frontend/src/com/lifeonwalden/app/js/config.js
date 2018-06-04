@@ -36,9 +36,15 @@
         }]
     };
 
+    const commonDataApi = {
+        system: 'http://172.29.114.86:8080/ops/appSystem/query',
+        department: 'http://172.29.114.86:8080/ops/auth/role/queryDepartMentInfoCache',
+    };
+
     const globalConfig = {
         templateClassNameMap,
-        dxDataGridDefaultConfig
+        dxDataGridDefaultConfig,
+        commonDataApi
     };
     $.getGlobalConfig = function() {
         return globalConfig || {};
