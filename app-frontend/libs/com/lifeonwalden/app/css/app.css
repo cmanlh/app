@@ -21,7 +21,7 @@ body {
     /*grid-template-columns: 256px 1fr 128px;*/
     display: flex;
     justify-content: space-between;
-    line-height: 40px;
+    line-height: 60px;
 }
 
 .app-header-left {
@@ -31,7 +31,7 @@ body {
 
 .app-menu-switch {
     width: 70px;
-    height: 40px;
+    height: 60px;
     cursor: pointer;
     background: #888;
     font-size: 14px;
@@ -42,13 +42,13 @@ body {
 }
 
 .app-menu-logo {
-    padding-right: 5px;
+    padding: 0 10px 0 5px;
     background-color: #C4161C;
     color: #FFF;
     font-size: 20px;
     font-weight: 500;
     flex-shrink: 0;
-    height: 40px;
+    height: 60px;
 }
 
 .app-menu-logo::before {
@@ -56,7 +56,7 @@ body {
     width: 30px;
     height: 30px;
     float: left;
-    margin: 5px;
+    margin: 15px 5px;
     background: url('images/logo.png') no-repeat;
     background-size: 113px;
 }
@@ -70,11 +70,11 @@ body {
     flex-shrink: 0;
     display: flex;
     align-items: center;
+    color: #333;
 }
 
 .app-logout {
-    margin-left: 10px;
-    font-size: 12px;
+    margin: 0 30px 0 20px;
 }
 
 .app-logout:hover {
@@ -83,7 +83,7 @@ body {
 }
 
 .app-tab {
-    top: 40px;
+    top: 60px;
     bottom: 0px;
     left: 0px;
     right: 0px;
@@ -91,49 +91,14 @@ body {
 
 .jqcTabPanel {
     position: static!important;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 100px);
 }
 
 .jqcTabMoreContainer {
     z-index: 2!important;
     background-color: #fff;
 }
-/*global style*/
-/*input,
-button {
-    box-sizing: border-box;
-    height: 30px;
-    line-height: 28px;
-    border-radius: 4px;
-    margin: 0;
-}
-input {
-    padding: 0 10px;
-    border: 1px solid #ccc;
-}
-button {
-    background: #ed1c24;
-    color: #fff;
-    border: none;
-    padding: 0 10px;
-}
-.toolbar-left,
-.toolbar-right {
-    padding: 0 10px;
-}
-.formGroup{
-    overflow: hidden;
-    width: calc(100% - 100px);
-}
-.formGroup label {
-    float: left;
-    display: flex;
-    height: 36px;
-    align-items: center;
-}
-.formGroup label span{
-    margin: 0 10px;
-}*/
+
 input,
 select,
 textarea {
@@ -208,8 +173,10 @@ label {
 }
 /*dialog*/
 .jqcDialogContent input,
-.jqcDialogContent textarea {
+.jqcDialogContent textarea,
+.jqcDialogContent select {
     width: 100%;
+    height: 30px;
 }
 
 .jqcDialogContent textarea {
@@ -217,7 +184,7 @@ label {
 }
 /*form styte*/
 .form_group {
-    padding: 5px 0;
+    padding: 7px 0;
 }
 
 .form_group div{
@@ -234,6 +201,7 @@ label {
     border: none;
     line-height: 26px;
     cursor: pointer;
+    text-align: center;
 }
 
 input.smail {

@@ -317,7 +317,8 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             new $.jqcFormToolBar({
                 element: _this._toolBar,
                 conditionHtml: _this._conditionHtml[0] || '',
-                controlHtml: _this._controlHtml[0] || ''
+                controlHtml: _this._controlHtml[0] || '',
+                height: 40
             });
             setTimeout(function () {
                 _this.commonData.format(_this._toolBar);
@@ -435,11 +436,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         });
                     }
                 }
+                _this.commonData.format(_template);
                 setTimeout(function () {
-                    _this.commonData.format(_template);
                     params.afterRender && params.afterRender(_template, _dialog);
                     params.defaultData && $.formUtil.fill(_template, params.defaultData);
-                }, 0);
+                }, 10);
                 if (params.readOnly) {
                     _template.find('[databind]').attr('disabled', 'disabled');
                     _template.find('button').hide();
