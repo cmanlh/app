@@ -32,8 +32,15 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         var styleCache = {};
         
         function Stroage() {
+            var _this = this;
             this.apiMap = $.getGlobalConfig().commonDataApi;
             this.pinyinParser = new $.jqcPinyin();
+            Promise.all([
+                _this.get('system'),
+                _this.get('department')
+            ]).then(res => {
+                _this.data = res;
+            });
         }
         // 取数据
         Stroage.prototype.get = function (name, params) {
@@ -142,6 +149,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 new $.jqcSelectBox(config);
             });
         }
+        var stroage = new Stroage();
 
         $.addForm = function(menu, tab) {
             var uid = menu.id;
@@ -211,7 +219,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : null;
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
-            this.commonData = new Stroage();
+            
         };
         $.App.prototype.mount = function (root) {
             var _this = this;
@@ -321,7 +329,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 height: 40
             });
             setTimeout(function () {
-                _this.commonData.format(_this._toolBar);
+                stroage.format(_this._toolBar);
                 $.formUtil.format(_this._toolBar);
                 if (!_this.dxDataGrid) {
                     return;
@@ -436,7 +444,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         });
                     }
                 }
-                _this.commonData.format(_template);
+                stroage.format(_template);
                 setTimeout(function () {
                     params.afterRender && params.afterRender(_template, _dialog);
                     params.defaultData && $.formUtil.fill(_template, params.defaultData);
@@ -551,5 +559,15 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             };
             Object.assign(config, params);
             new $.jqcSelectBox(config);
-        }
+        };
+        $.App.prototype.getSystemNameById = function(id) {
+            var _this = this;
+            var _data = stroage.data[0].filter(item => (id === item.id));
+            return _data.length ? _data[0].systemName : '';
+        };
+        $.App.prototype.getDepartmentNameById = function(id) {
+            var _this = this;
+            var _data = stroage.data[1].filter(item => (id === item.departmentId));
+            return _data.length ? _data[0].departmentName : '';
+        };
     });
