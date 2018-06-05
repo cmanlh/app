@@ -250,3 +250,7 @@ input.large {
     padding: 10px;
     min-height: 50px;
 }
+
+.jqcDialogContent div[data-path] {
+    margin-top: -15px;
+}

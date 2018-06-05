@@ -30,22 +30,23 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .execute(function() {
         const T = $.jqcToolkit;
         var styleCache = {};
-        
-        function Stroage() {
+        function Storage() {
             var _this = this;
-            this.apiMap = $.getGlobalConfig().commonDataApi;
+            this.apiMap = COMMON_DATA_API;
             this.pinyinParser = new $.jqcPinyin();
             Promise.all([
                 _this.get('system'),
-                _this.get('department')
+                _this.get('department'),
+                _this.get('user')
             ]).then(res => {
                 _this.data = res;
             });
         }
         // 取数据
-        Stroage.prototype.get = function (name, params) {
+        Storage.prototype.get = function (name) {
             var _this = this;
-            var data = window.localStorage.getItem(name);
+            // var data = window.localStorage.getItem(name);
+            var data = window.sessionStorage.getItem(name);
             var result;
             return new Promise((resolve, reject) => {
                 if (data) {
@@ -57,7 +58,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     resolve(result);
                 } else {
                     // 从网络获取并存储
-                    _this.getDataFromNet(name, params).then(res => {
+                    _this.getDataFromNet(name).then(res => {
                         resolve(res);
                     }).catch(err => {
                         console.error(err);
@@ -66,17 +67,18 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             });
         }
         // 存数据
-        Stroage.prototype.set = function (name, data) {
+        Storage.prototype.set = function (name, data) {
             var _data;
             try {
                 _data = JSON.stringify(data);
             } catch (error) {
                 _data = data;
             }
-            window.localStorage.setItem(name, _data);
+            // window.localStorage.setItem(name, _data);
+            window.sessionStorage.setItem(name, _data);
         }
         // 从网络获取数据
-        Stroage.prototype.getDataFromNet = function (name, params) {
+        Storage.prototype.getDataFromNet = function (name) {
             var _this = this;
             var url = this.apiMap[name];
             if (!url) {
@@ -94,19 +96,28 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             });
         }
         // 格式化
-        Stroage.prototype.format = function($box) {
+        Storage.prototype.format = function($box) {
             var _this = this;
             var $els = $box.find('[commondata]');
-            var data = [];
+            var $subs = $box.find('[nextchain]');
+            var ignore = [];
+            $.each($subs, function (index, el) {
+                var nextchain = $(el).attr('nextchain');
+                ignore.push(nextchain);
+            });
             $.each($els, function (index, el) {
-                _this.formatSingle($(el));
+                var dataName = $(el).attr('commondata');
+                if (!ignore.includes(dataName)) {
+                    _this.formatSingle($(el), $box);
+                }
             });
         }
         // 单个格式化
-        Stroage.prototype.formatSingle = function($node) {
+        Storage.prototype.formatSingle = function($node, $box) {
             var _this = this;
             var dataName = $node.attr('commondata');
             var defaultValue = $node.attr('defaultvalue');
+            var nextchain = $node.attr('nextchain');
             var config = {
                 element: $node,
                 dataName: dataName + (defaultValue == '*' ? '_all' : ''),
@@ -117,11 +128,27 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 defaultVal: defaultValue,
                 onSelect: function (data) {
                     $node.trigger('change', data);
+                    if (nextchain) {
+                        var $subNode = $box.find(`[commondata=${nextchain}]`);
+                        var _params = {};
+                        if (dataName == 'department' && nextchain == 'user') {
+                            _params.departmentId = data.departmentId;
+                            $subNode.attr('filtervalue', data.departmentId);
+                        }
+                        _this.formatSingle($subNode, $box);
+                    }
                 }
             };
             config.optionData = {};
             this.get(dataName).then(data => {
-                config.optionData.data = data;
+                // 如果是筛选用户
+                var filterName = $node.attr('filtername');
+                var filterValue = $node.attr('filtervalue');
+                if (filterName != undefined && filterValue != undefined) {
+                    config.optionData.data = data.filter(item => (item[filterName] == filterValue));
+                } else {
+                    config.optionData.data = data;
+                }
                 // 系统
                 if (dataName == 'system') {
                     config.optionData.adapter = {
@@ -146,10 +173,22 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         pinyinFilter: 'departmentName'
                     };
                 }
+                // 用户
+                if (dataName == 'user') {
+                    config.optionData.adapter = {
+                        value: 'userID',
+                        label: 'displayName',
+                        filter: 'userID',
+                        pinyinFilter: 'displayName'
+                    }
+                    if (filterValue) {
+                        config.dataName = 'user_' + filterValue;
+                    }
+                }
                 new $.jqcSelectBox(config);
             });
         }
-        var stroage = new Stroage();
+        var storage = new Storage();
 
         $.addForm = function(menu, tab) {
             var uid = menu.id;
@@ -329,7 +368,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 height: 40
             });
             setTimeout(function () {
-                stroage.format(_this._toolBar);
+                storage.format(_this._toolBar);
                 $.formUtil.format(_this._toolBar);
                 if (!_this.dxDataGrid) {
                     return;
@@ -444,7 +483,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         });
                     }
                 }
-                stroage.format(_template);
+                storage.format(_template);
                 setTimeout(function () {
                     params.afterRender && params.afterRender(_template, _dialog);
                     params.defaultData && $.formUtil.fill(_template, params.defaultData);
@@ -562,12 +601,37 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.getSystemNameById = function(id) {
             var _this = this;
-            var _data = stroage.data[0].filter(item => (id === item.id));
+            var _data = storage.data[0].filter(item => (id === item.id));
             return _data.length ? _data[0].systemName : '';
+        };
+        $.App.prototype.getSystemInfoById = function(id) {
+            var _this = this;
+            var _data = storage.data[0].filter(item => (id === item.id));
+            return _data;
         };
         $.App.prototype.getDepartmentNameById = function(id) {
             var _this = this;
-            var _data = stroage.data[1].filter(item => (id === item.departmentId));
+            var _data = storage.data[1].filter(item => (id === item.departmentId));
             return _data.length ? _data[0].departmentName : '';
+        };
+        $.App.prototype.getDepartmentInfoById = function(id) {
+            var _this = this;
+            var _data = storage.data[1].filter(item => (id === item.departmentId));
+            return _data;
+        };
+        $.App.prototype.getUserNameById = function(id) {
+            var _this = this;
+            var _data = storage.data[2].filter(item => (id === item.userID));
+            return _data.length ? _data[0].displayName : '';
+        };
+        $.App.prototype.getUserInfoById = function(id) {
+            var _this = this;
+            var _data = storage.data[2].filter(item => (id === item.userID));
+            return _data;
+        };
+        $.App.prototype.getUsersByDepartmentId = function(id) {
+            var _this = this;
+            var _data = storage.data[2].filter(item => (id === item.departmentId));
+            return _data;
         };
     });
