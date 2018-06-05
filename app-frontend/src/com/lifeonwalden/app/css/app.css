@@ -179,6 +179,10 @@ label {
     height: 30px;
 }
 
+.jqcDialogContent .jqcFormToolBar input {
+    height: 26px;
+}
+
 .jqcDialogContent textarea {
     height: 50px;
 }

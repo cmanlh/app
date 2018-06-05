@@ -296,7 +296,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 _this._controlHtml = _fakeBox.find(`.${_this._config.templateClassNameMap.controlHtmlClassName}`);
                 _this._contentHtml = _fakeBox.find(`.${_this._config.templateClassNameMap.contentHtmlClassName}`);
                 // toolbar
-                if (_this._conditionHtml.length || _this.conditionHtml.length) {
+                if (_this._conditionHtml.length || _this._controlHtml.length) {
                     _this.__renderToolBar();
                 }
                 // content
@@ -537,4 +537,19 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 }
             });
         };
+        $.App.prototype.createSelectBox = function (params) {
+            var _this = this;
+            var config = {
+                dataName: '',
+                supportFuzzyMatch: true,
+                supportPinYin: true,
+                pinyinParser: _this.pinyinParser,
+                width: 200,
+                onSelect: function (data) {
+                    params.element && params.element.trigger('change', data);
+                }
+            };
+            Object.assign(config, params);
+            new $.jqcSelectBox(config);
+        }
     });
