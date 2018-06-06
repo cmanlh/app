@@ -601,36 +601,57 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.getSystemNameById = function(id) {
             var _this = this;
+            if (id === undefined) {
+                return '';
+            }
             var _data = storage.data[0].filter(item => (id === item.id));
-            return _data.length ? _data[0].systemName : '';
+            return _data.length ? _data[0].systemName : id;
         };
         $.App.prototype.getSystemInfoById = function(id) {
             var _this = this;
+            if (id === undefined) {
+                return {};
+            }
             var _data = storage.data[0].filter(item => (id === item.id));
             return _data;
         };
         $.App.prototype.getDepartmentNameById = function(id) {
             var _this = this;
+            if (id === undefined) {
+                return '';
+            }
             var _data = storage.data[1].filter(item => (id === item.departmentId));
-            return _data.length ? _data[0].departmentName : '';
+            return _data.length ? _data[0].departmentName : id;
         };
         $.App.prototype.getDepartmentInfoById = function(id) {
             var _this = this;
+            if (id === undefined) {
+                return {};
+            }
             var _data = storage.data[1].filter(item => (id === item.departmentId));
             return _data;
         };
         $.App.prototype.getUserNameById = function(id) {
             var _this = this;
+            if (id === undefined) {
+                return '';
+            }
             var _data = storage.data[2].filter(item => (id === item.userID));
-            return _data.length ? _data[0].displayName : '';
+            return _data.length ? _data[0].displayName : id;
         };
         $.App.prototype.getUserInfoById = function(id) {
             var _this = this;
+            if (id === undefined) {
+                return {};
+            }
             var _data = storage.data[2].filter(item => (id === item.userID));
             return _data;
         };
         $.App.prototype.getUsersByDepartmentId = function(id) {
             var _this = this;
+            if (id === undefined) {
+                return [];
+            }
             var _data = storage.data[2].filter(item => (id === item.departmentId));
             return _data;
         };
