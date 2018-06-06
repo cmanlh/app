@@ -85,7 +85,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 throw new Error(`api.${name} is undefined.`);
             }
             return new Promise((resolve, reject) => {
-                $.ajax(url, params).then(res => {
+                $.ajax(url).then(res => {
                     if (res.code == 0) {
                         this.set(name, res.result);
                         resolve(res.result);
