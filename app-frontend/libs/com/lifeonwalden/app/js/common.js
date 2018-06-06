@@ -30,166 +30,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .execute(function() {
         const T = $.jqcToolkit;
         var styleCache = {};
-        function Storage() {
-            var _this = this;
-            this.apiMap = COMMON_DATA_API;
-            this.pinyinParser = new $.jqcPinyin();
-            Promise.all([
-                _this.get('system'),
-                _this.get('department'),
-                _this.get('user')
-            ]).then(res => {
-                _this.data = res;
-            });
-        }
-        // 取数据
-        Storage.prototype.get = function (name) {
-            var _this = this;
-            // var data = window.localStorage.getItem(name);
-            var data = window.sessionStorage.getItem(name);
-            var result;
-            return new Promise((resolve, reject) => {
-                if (data) {
-                    try {
-                        result = JSON.parse(data);
-                    } catch (error) {
-                        result = data;
-                    }
-                    resolve(result);
-                } else {
-                    // 从网络获取并存储
-                    _this.getDataFromNet(name).then(res => {
-                        resolve(res);
-                    }).catch(err => {
-                        console.error(err);
-                    });
-                }
-            });
-        }
-        // 存数据
-        Storage.prototype.set = function (name, data) {
-            var _data;
-            try {
-                _data = JSON.stringify(data);
-            } catch (error) {
-                _data = data;
-            }
-            // window.localStorage.setItem(name, _data);
-            window.sessionStorage.setItem(name, _data);
-        }
-        // 从网络获取数据
-        Storage.prototype.getDataFromNet = function (name) {
-            var _this = this;
-            var url = this.apiMap[name];
-            if (!url) {
-                throw new Error(`api.${name} is undefined.`);
-            }
-            return new Promise((resolve, reject) => {
-                $.ajax(url).then(res => {
-                    if (res.code == 0) {
-                        this.set(name, res.result);
-                        resolve(res.result);
-                    } else {
-                        reject(res.msg);
-                    }
-                })
-            });
-        }
-        // 格式化
-        Storage.prototype.format = function($box) {
-            var _this = this;
-            var $els = $box.find('[commondata]');
-            var $subs = $box.find('[nextchain]');
-            var ignore = [];
-            $.each($subs, function (index, el) {
-                var nextchain = $(el).attr('nextchain');
-                ignore.push(nextchain);
-            });
-            $.each($els, function (index, el) {
-                var dataName = $(el).attr('commondata');
-                if (!ignore.includes(dataName)) {
-                    _this.formatSingle($(el), $box);
-                }
-            });
-        }
-        // 单个格式化
-        Storage.prototype.formatSingle = function($node, $box) {
-            var _this = this;
-            var dataName = $node.attr('commondata');
-            var defaultValue = $node.attr('defaultvalue');
-            var nextchain = $node.attr('nextchain');
-            var config = {
-                element: $node,
-                dataName: dataName + (defaultValue == '*' ? '_all' : ''),
-                supportFuzzyMatch: true,
-                supportPinYin: true,
-                pinyinParser: this.pinyinParser,
-                width: 200,
-                defaultVal: defaultValue,
-                onSelect: function (data) {
-                    $node.trigger('change', data);
-                    if (nextchain) {
-                        var $subNode = $box.find(`[commondata=${nextchain}]`);
-                        var _params = {};
-                        if (dataName == 'department' && nextchain == 'user') {
-                            _params.departmentId = data.departmentId;
-                            $subNode.attr('filtervalue', data.departmentId);
-                        }
-                        _this.formatSingle($subNode, $box);
-                    }
-                }
-            };
-            config.optionData = {};
-            this.get(dataName).then(data => {
-                // 如果是筛选用户
-                var filterName = $node.attr('filtername');
-                var filterValue = $node.attr('filtervalue');
-                if (filterName != undefined && filterValue != undefined) {
-                    config.optionData.data = data.filter(item => (item[filterName] == filterValue));
-                } else {
-                    config.optionData.data = data;
-                }
-                // 系统
-                if (dataName == 'system') {
-                    config.optionData.adapter = {
-                        value: 'id',
-                        label: 'systemName',
-                        filter: 'id',
-                        pinyinFilter: 'systemName'
-                    };
-                    if (defaultValue == '*') {
-                        config.extOption = [{
-                            id: '*',
-                            systemName: '全部'
-                        }];
-                    }
-                }
-                // 部门
-                if (dataName == 'department') {
-                    config.optionData.adapter = {
-                        value: 'departmentId',
-                        label: 'departmentName',
-                        filter: 'departmentId',
-                        pinyinFilter: 'departmentName'
-                    };
-                }
-                // 用户
-                if (dataName == 'user') {
-                    config.optionData.adapter = {
-                        value: 'userID',
-                        label: 'displayName',
-                        filter: 'userID',
-                        pinyinFilter: 'displayName'
-                    }
-                    if (filterValue) {
-                        config.dataName = 'user_' + filterValue;
-                    }
-                }
-                new $.jqcSelectBox(config);
-            });
-        }
-        var storage = new Storage();
-
         $.addForm = function(menu, tab) {
             var uid = menu.id;
             var text = menu.text;
@@ -249,6 +89,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _this = this;
             this._root = null; //容器页面根节点
             this._path = ''; //js文件路径
+            this.mixinData = {};
+            this.mixinFormat = [];
+            this.mixinAfterRender = [];
             this._config = $.getGlobalConfig(); //config.js文件中的配置
             this.loading = new $.jqcLoading();
             this.pinyinParser = new $.jqcPinyin();
@@ -258,7 +101,22 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : null;
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
-            
+            if (params.mixins && params.mixins.length) {
+                params.mixins.forEach(mixin => {
+                    Object.assign(_this.mixinData, mixin);
+                    var m_prototype = mixin.__proto__;
+                    for(var p in m_prototype) {
+                        if (p == 'format') {
+                            _this.mixinFormat.push(m_prototype[p].bind(_this));
+                        } else if (p == 'afterRender') {
+                            _this.mixinAfterRender.push(m_prototype[p].bind(_this));
+                        } else {
+                            _this[p] = m_prototype[p].bind(_this);
+                        }
+                    }
+                });
+            }
+            return this;
         };
         $.App.prototype.mount = function (root) {
             var _this = this;
@@ -368,7 +226,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 height: 40
             });
             setTimeout(function () {
-                storage.format(_this._toolBar);
+                _this.mixinFormat.forEach(format => {
+                    format(_this._toolBar);
+                });
                 $.formUtil.format(_this._toolBar);
                 if (!_this.dxDataGrid) {
                     return;
@@ -442,6 +302,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         $.App.prototype.__afterRender = function () {
             var _this = this;
             setTimeout(function () {
+                _this.mixinAfterRender.forEach(ar => {
+                    ar();
+                });
                 _this.afterRender && _this.afterRender();
                 _this.loading.hide();
             }, 0);
@@ -483,7 +346,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         });
                     }
                 }
-                storage.format(_template);
+                _this.mixinFormat.forEach(format => {
+                    format(_template);
+                });
+                // storage.format(_template);
                 setTimeout(function () {
                     params.afterRender && params.afterRender(_template, _dialog);
                     params.defaultData && $.formUtil.fill(_template, params.defaultData);
@@ -598,61 +464,5 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             };
             Object.assign(config, params);
             new $.jqcSelectBox(config);
-        };
-        $.App.prototype.getSystemNameById = function(id) {
-            var _this = this;
-            if (id === undefined) {
-                return '';
-            }
-            var _data = storage.data[0].filter(item => (id === item.id));
-            return _data.length ? _data[0].systemName : id;
-        };
-        $.App.prototype.getSystemInfoById = function(id) {
-            var _this = this;
-            if (id === undefined) {
-                return {};
-            }
-            var _data = storage.data[0].filter(item => (id === item.id));
-            return _data;
-        };
-        $.App.prototype.getDepartmentNameById = function(id) {
-            var _this = this;
-            if (id === undefined) {
-                return '';
-            }
-            var _data = storage.data[1].filter(item => (id === item.departmentId));
-            return _data.length ? _data[0].departmentName : id;
-        };
-        $.App.prototype.getDepartmentInfoById = function(id) {
-            var _this = this;
-            if (id === undefined) {
-                return {};
-            }
-            var _data = storage.data[1].filter(item => (id === item.departmentId));
-            return _data;
-        };
-        $.App.prototype.getUserNameById = function(id) {
-            var _this = this;
-            if (id === undefined) {
-                return '';
-            }
-            var _data = storage.data[2].filter(item => (id === item.userID));
-            return _data.length ? _data[0].displayName : id;
-        };
-        $.App.prototype.getUserInfoById = function(id) {
-            var _this = this;
-            if (id === undefined) {
-                return {};
-            }
-            var _data = storage.data[2].filter(item => (id === item.userID));
-            return _data;
-        };
-        $.App.prototype.getUsersByDepartmentId = function(id) {
-            var _this = this;
-            if (id === undefined) {
-                return [];
-            }
-            var _data = storage.data[2].filter(item => (id === item.departmentId));
-            return _data;
         };
     });
