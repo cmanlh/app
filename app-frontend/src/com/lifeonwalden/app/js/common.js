@@ -378,6 +378,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                                 }
                                 $.jqcNotification(config);
                             }
+                            if (params.updateCache && _this.updateCache) {
+                                _this.updateCache();
+                            }
                         } else {
                             $.jqcNotification({
                                 type: 'error',
@@ -446,6 +449,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                                     config.content = res.msg;
                                 }
                                 $.jqcNotification(config);
+                            }
+                            if (params.updateCache && _this.updateCache) {
+                                _this.updateCache();
                             }
                         } else {
                             $.jqcNotification({
