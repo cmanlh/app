@@ -436,7 +436,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         if (res.code == 0) {
                             _this.triggerQuery();
                             if (params.success) {
-                                params.success();
+                                params.success(res);
                             } else {
                                 var config = {
                                     type: 'success',
