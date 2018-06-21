@@ -254,3 +254,8 @@ input.large {
 .jqcDialogContent div[data-path] {
     margin-top: -15px;
 }
+
+hr {
+    border: none;
+    border-bottom: 1px solid #eee;
+}

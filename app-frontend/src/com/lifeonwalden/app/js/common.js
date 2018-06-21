@@ -369,10 +369,17 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                             if (params.success) {
                                 params.success(res);
                             } else {
-                                $.jqcNotification({
+                                var config = {
                                     type: 'success',
-                                    title: '操作成功。'
-                                });
+                                    title: '操作成功'
+                                };
+                                if (res.msg != undefined) {
+                                    config.content = res.msg;
+                                }
+                                $.jqcNotification(config);
+                            }
+                            if (params.updateCache && _this.updateCache) {
+                                _this.updateCache();
                             }
                         } else {
                             $.jqcNotification({
@@ -430,14 +437,21 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                     _this.requestPost(params.api, params.data).then(res => {
                         if (res.code == 0) {
-                            $.jqcNotification({
-                                type: 'success',
-                                title: '删除成功。'
-                            });
+                            _this.triggerQuery();
                             if (params.success) {
-                                params.success();
+                                params.success(res);
                             } else {
-                                _this.triggerQuery();
+                                var config = {
+                                    type: 'success',
+                                    title: '删除成功'
+                                };
+                                if (res.msg != undefined) {
+                                    config.content = res.msg;
+                                }
+                                $.jqcNotification(config);
+                            }
+                            if (params.updateCache && _this.updateCache) {
+                                _this.updateCache();
                             }
                         } else {
                             $.jqcNotification({
