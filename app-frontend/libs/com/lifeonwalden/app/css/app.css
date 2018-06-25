@@ -95,7 +95,7 @@ body {
 }
 
 .jqcTabMoreContainer {
-    z-index: 2!important;
+    z-index: 10!important;
     background-color: #fff;
 }
 
