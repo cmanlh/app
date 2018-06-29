@@ -13,7 +13,8 @@
 }
 
 body {
-    position: relative
+    position: relative;
+    min-width: 800px;
 }
 
 .app-header {
@@ -95,7 +96,7 @@ body {
 }
 
 .jqcTabMoreContainer {
-    z-index: 2!important;
+    z-index: 10!important;
     background-color: #fff;
 }
 
@@ -146,6 +147,15 @@ label {
 
 
 /*flex class*/
+.flexbox {
+    display: flex;
+}
+
+.flex_warp {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .flex_center {
     display: flex;
     align-items: center;
@@ -189,6 +199,7 @@ label {
 /*form styte*/
 .form_group {
     padding: 7px 0;
+    flex-shrink: 0;
 }
 
 .form_group div{
@@ -206,6 +217,11 @@ label {
     line-height: 26px;
     cursor: pointer;
     text-align: center;
+}
+
+.btn.disabled {
+    background: #ccc;
+    cursor: not-allowed;
 }
 
 input.smail {
