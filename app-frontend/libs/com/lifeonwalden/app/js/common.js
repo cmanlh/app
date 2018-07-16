@@ -4,7 +4,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['loader', 'location', 'pinyin', 'resizeable', 'selectbox', 'slide', 'uniqueKey', 'slide', 'uniqueKey'])
         .registerComponents(['valHooks', 'zindex'])
         .registerComponents(['toolkit'])
-        .registerComponents(['menu'])
+        .registerComponents(['menuTree'])
         .registerComponents(['notification'])
         .registerComponents(['contextmenu','layoutHelper'])
         .registerComponents(['loading'])
@@ -12,7 +12,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['apisBox']));
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['menu', 'formUtil', 'msg', 'tab', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'jsoneditor'])
+    .importComponents('com.lifeonwalden.jqc', ['menuTree', 'formUtil', 'msg', 'tab', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'jsoneditor'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
