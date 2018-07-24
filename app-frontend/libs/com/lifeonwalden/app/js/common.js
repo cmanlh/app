@@ -465,6 +465,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.createSelectBox = function (params) {
             var _this = this;
+            params.element[0].jqcSelectBox && params.element[0].jqcSelectBox.destroy();
             var config = {
                 dataName: '',
                 supportFuzzyMatch: true,
@@ -476,6 +477,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 }
             };
             Object.assign(config, params);
-            new $.jqcSelectBox(config);
+            params.element[0].jqcSelectBox = new $.jqcSelectBox(config);
         };
     });
