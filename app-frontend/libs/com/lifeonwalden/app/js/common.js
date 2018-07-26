@@ -41,16 +41,12 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _path = APP_ROOT_PATH.concat(menu.url);
             // 第一次点击menu
             if (!$.formCacheHas(uid)) {
-                $.ajax(_path).then(res => {
-                    $._globalCacheId = uid;
-                    $JqcLoader
-                        .importScript(_path)
-                        .execute(function() {
-                            addTabAndCreatePage(_path, text);
-                        });
-                }).catch(err => {
-                    console.error(err);
-                });
+                $._globalCacheId = uid;
+                $JqcLoader
+                    .importScript(_path)
+                    .execute(function() {
+                        addTabAndCreatePage(_path, text);
+                    });
             } else {
                 // 关闭后再次点击menu
                 addTabAndCreatePage(_path, text);
