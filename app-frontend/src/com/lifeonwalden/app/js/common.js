@@ -13,6 +13,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .importComponents('com.lifeonwalden.jqc', ['menuTree', 'formUtil', 'msg', 'tab', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'jsoneditor'])
+    .importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/jqc/moment/moment.js'))
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
