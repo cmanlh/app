@@ -44,14 +44,4 @@
     $.getGlobalConfig = function() {
         return globalConfig || {};
     };
-    // 时间格式化
-    $.timeFormat = function (format='YYYY-MM-DD') {
-        return function (value) {
-            var _time = value
-            if (typeof value == 'string' && !isNaN(+value)) {
-                _time = +value;                
-            }
-            return moment(_time).format(format);
-        }
-    }
 })(jQuery);
