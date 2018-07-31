@@ -281,7 +281,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _this = this;
             this.loading.show();
             this.requestGet(_this.dxDataGrid.fetchDataApi, params).then(res => {
-                _this.fillDxDataGridByData(res.result);
+                _this.fillDxDataGridByData(res.result || []);
                 _this.loading.hide();
             });
         };
