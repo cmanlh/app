@@ -33,8 +33,18 @@
         <property name="filterChainDefinitions" value="/** = authorizationFilter"/>
     </bean>
 
+    <bean id="sessionDAO" class="com.lifeonwalden.app.gateway.auth.session.RedisSessionDao">
+        <property name="redisConnectionFactory" ref="jedisConnectionFactory"/>
+    </bean>
+
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="sessionDAO" ref="sessionDAO"/>
+        <property name="globalSessionTimeout" value="60000"/>
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+    </bean>
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="cachingRealm"/>
+        <property name="sessionManager" ref="sessionManager"/>
     </bean>
 
     <bean id="authorizationFilter" class="com.lifeonwalden.app.gateway.auth.filter.BaseAuthorizationFilter">
