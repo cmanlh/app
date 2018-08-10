@@ -33,7 +33,8 @@
             alignment: 'center',
             cellTemplate: function(box, data) {
                 box.text(data.rowIndex + 1);
-            }
+            },
+            allowExporting: false
         }]
     };
 
