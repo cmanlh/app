@@ -30,8 +30,8 @@
 .dx-datagrid-borders > .dx-datagrid-headers,
 .dx-datagrid-borders > .dx-datagrid-rowsview,
 .dx-datagrid-borders > .dx-datagrid-total-footer {
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
+    border-left: 1px solid #ebedf3;
+    border-right: 1px solid#ebedf3;
 }
 .dx-datagrid-borders > .dx-datagrid-rowsview,
 .dx-datagrid-borders > .dx-datagrid-total-footer {
@@ -40,12 +40,12 @@
 .dx-datagrid-borders > .dx-datagrid-pager,
 .dx-datagrid-borders > .dx-datagrid-headers,
 .dx-datagrid-borders > .dx-datagrid-filter-panel {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #ebedf3;
 }
 .dx-datagrid-borders > .dx-datagrid-filter-panel {
     border-top-width: 0;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
+    border-left: 1px solid #ebedf3;
+    border-right: 1px solid #ebedf3;
 }
 .dx-datagrid {
     color: #333;
@@ -92,8 +92,12 @@
 .dx-datagrid .dx-datagrid-rowsview .dx-data-row td.dx-pointer-events-none,
 .dx-datagrid .dx-datagrid-rowsview .dx-freespace-row td.dx-pointer-events-none,
 .dx-datagrid .dx-datagrid-headers .dx-row td.dx-pointer-events-none {
-    border-left: 2px solid #ddd;
-    border-right: 2px solid #ddd;
+    /*border-left: 2px solid #ddd;*/
+    /*border-right: 2px solid #ddd;*/
+}
+.dx-datagrid .dx-datagrid-headers {
+    height: 80px;
+    overflow: hidden;
 }
 .dx-datagrid .dx-datagrid-rowsview .dx-data-row td.dx-pointer-events-none.dx-first-cell,
 .dx-datagrid .dx-datagrid-rowsview .dx-freespace-row td.dx-pointer-events-none.dx-first-cell,
@@ -6102,8 +6106,8 @@
 .dx-datagrid {
     line-height: inherit;
 }
-.dx-datagrid .dx-row-alt > td {
-    background-color: #f5f5f5;
+.dx-datagrid .dx-row-lines.dx-row-alt > td {
+    background-color: #fff;
 }
 .dx-datagrid .dx-row-alt.dx-row:not(.dx-row-removed) {
     border-bottom-color: transparent;
@@ -6112,11 +6116,12 @@
     color: #ed1c24;
 }
 .dx-datagrid .dx-row-lines > td {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ebedf3;
+    background-color: #f8f8f8;
 }
 .dx-datagrid .dx-column-lines > td {
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
+    border-left: 1px solid #ebedf3;
+    border-right: 1px solid #ebedf3;
 }
 .dx-datagrid .dx-error-row .dx-closebutton {
     float: right;
@@ -6141,7 +6146,11 @@
     padding-right: 35px;
 }
 .dx-datagrid .dx-row > td {
-    padding: 7px;
+    padding: 0 15px;
+    font-size: 12px;
+    line-height: 39px;
+    height: 39px;
+    color: #666;
 }
 .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row .dx-command-edit-with-icons .dx-link {
     width: 18px;
@@ -6343,15 +6352,15 @@
     min-width: 30px;
 }
 .dx-datagrid-table .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row) > td:not(.dx-focused) {
-    background-color: #f5f5f5;
-    color: #333;
+    background-color: #f5f6fa;
+    color: #000;
 }
 .dx-datagrid-table .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row) > td:not(.dx-focused).dx-datagrid-group-space {
-    border-right-color: #f5f5f5;
+    border-right-color: #f5f6fa;
 }
 .dx-datagrid-table .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row) > .dx-datagrid-readonly .dx-texteditor .dx-texteditor-input {
-    background-color: #f5f5f5;
-    color: #333;
+    background-color: #f5f6fa;
+    color: #000;
 }
 .dx-datagrid-table .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row) > td.dx-pointer-events-none {
     background-color: transparent;
@@ -6361,7 +6370,6 @@
     font-weight: normal;
     -ms-touch-action: pinch-zoom;
     touch-action: pinch-zoom;
-    border-bottom: 1px solid #ddd;
 }
 .dx-datagrid-headers .dx-datagrid-content {
     margin-bottom: -1px;
@@ -6370,7 +6378,10 @@
     border-bottom-width: 1px;
 }
 .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ebedf3;
+}
+.dx-datagrid-filter-row {
+    background: #fff!important;
 }
 .dx-datagrid-filter-row .dx-menu .dx-overlay-content {
     color: #333;
@@ -6591,7 +6602,7 @@
     line-height: 21px;
 }
 .dx-datagrid-rowsview {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #ebedf3;
 }
 .dx-datagrid-rowsview .dx-row {
     border-top: 1px solid transparent;
@@ -6659,8 +6670,8 @@
 }
 .dx-datagrid-rowsview .dx-selection.dx-row > td,
 .dx-datagrid-rowsview .dx-selection.dx-row:hover > td {
-    background-color: #e6e6e6;
-    color: #333;
+    background-color: #f5f6fa;
+    color: #000;
 }
 .dx-datagrid-rowsview .dx-selection.dx-row > td.dx-datagrid-group-space,
 .dx-datagrid-rowsview .dx-selection.dx-row:hover > td.dx-datagrid-group-space {
@@ -6674,7 +6685,7 @@
 .dx-datagrid-rowsview .dx-selection.dx-row > td.dx-focused,
 .dx-datagrid-rowsview .dx-selection.dx-row:hover > td.dx-focused {
     background-color: #fff;
-    color: #333;
+    color: #000;
 }
 .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-lines) > td,
 .dx-datagrid-rowsview .dx-selection.dx-row:hover:not(.dx-row-lines) > td {
@@ -6760,7 +6771,7 @@
     padding-left: 27px;
 }
 .dx-rtl .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row) > td:not(.dx-focused).dx-datagrid-group-space {
-    border-left-color: #f5f5f5;
+    border-left-color: #f5f6fa;
     border-right-color: transparent;
 }
 .dx-rtl .dx-datagrid-filter-row .dx-menu .dx-menu-item-has-submenu.dx-menu-item-has-icon .dx-icon {
@@ -7346,14 +7357,14 @@
 }
 .dx-treelist-table .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row) > td:not(.dx-focused) {
     background-color: #f5f5f5;
-    color: #333;
+    color: #000;
 }
 .dx-treelist-table .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row) > td:not(.dx-focused).dx-treelist-group-space {
     border-right-color: #f5f5f5;
 }
 .dx-treelist-table .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row) > .dx-treelist-readonly .dx-texteditor .dx-texteditor-input {
     background-color: #f5f5f5;
-    color: #333;
+    color: #000;
 }
 .dx-treelist-table .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row) > td.dx-pointer-events-none {
     background-color: transparent;
@@ -7919,7 +7930,7 @@
     color: #333;
 }
 .dx-menu-item.dx-state-hover {
-    color: #333;
+    color: #000;
     background-color: #f5f5f5;
 }
 .dx-menu-item.dx-state-focused {
@@ -10288,7 +10299,7 @@
     box-shadow: inset 0 0 0 1px #ed1c24;
 }
 .dx-scheduler-date-table-droppable-cell {
-    background-color: #f2f2f2;
+    background-color: #ebedf3;
 }
 .dx-scheduler-scrollable-appointments {
     position: absolute;
@@ -12050,8 +12061,8 @@
     background-color: #fff;
 }
 .dx-scheduler-appointment-popup .dx-scheduler-recurrence-rule-item.dx-scheduler-recurrence-rule-item-opened:before {
-    border-top: 1px solid #f2f2f2;
-    border-bottom: 1px solid #f2f2f2;
+    border-top: 1px solid #ebedf3;
+    border-bottom: 1px solid #ebedf3;
 }
 .dx-scheduler-appointment-popup .dx-form-validation-summary {
     padding: 10px 20px;

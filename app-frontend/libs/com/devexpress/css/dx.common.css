@@ -4265,6 +4265,8 @@
 }
 .dx-datagrid-nowrap.dx-datagrid-headers .dx-header-row > td > .dx-datagrid-text-content {
   white-space: nowrap;
+  color: #4d4d4d;
+  font-size: 12px;
 }
 .dx-datagrid-drag-header {
   position: absolute;
@@ -4473,6 +4475,9 @@ input.dx-hidden {
 }
 .dx-datagrid-headers .dx-header-row .dx-editor-cell .dx-select-checkbox {
   display: inline-block;
+}
+.dx-datagrid-headers .dx-header-row {
+  background: #f5f6fa;
 }
 .dx-datagrid-headers .dx-header-row > td {
   white-space: nowrap;

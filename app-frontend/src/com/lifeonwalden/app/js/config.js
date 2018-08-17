@@ -26,6 +26,8 @@
         scrolling: {
             mode: 'infinite'
         },
+        showRowLines: true,
+        showBorders: true,
         columns: [{
             caption: '序号',
             fixed: true,
