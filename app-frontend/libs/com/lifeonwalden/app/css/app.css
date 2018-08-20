@@ -14,7 +14,8 @@
 
 body {
     position: relative;
-    min-width: 800px;
+    min-width: 1280px;
+    background: #f2f2f2;
 }
 
 .app-header {
@@ -23,6 +24,7 @@ body {
     display: flex;
     justify-content: space-between;
     line-height: 60px;
+    background: #fff;
 }
 
 .app-header-left {
@@ -31,35 +33,35 @@ body {
 }
 
 .app-menu-switch {
-    width: 70px;
-    height: 60px;
-    cursor: pointer;
-    background: #888;
-    font-size: 14px;
-    color: #fff;
-    text-align: center;
-    border-right: 1px solid #888;
-    font-weight: 900;
+    display: none;
 }
 
 .app-menu-logo {
-    padding: 0 10px 0 5px;
-    background-color: #C4161C;
-    color: #FFF;
+    font-family: FZLTZHJW--GB1-0;
+    padding: 0 30px;
+    color: #222;
     font-size: 20px;
-    font-weight: 500;
     flex-shrink: 0;
     height: 60px;
 }
 
 .app-menu-logo::before {
     content: '';
-    width: 30px;
-    height: 30px;
+    width: 150px;
+    height: 40px;
     float: left;
-    margin: 15px 5px;
+    margin: 10px 0;
     background: url('images/logo.png') no-repeat;
-    background-size: 113px;
+    background-size: 150px 40px;
+}
+
+.app-menu-logo::after {
+    content: '';
+    width: 1px;
+    height: 20px;
+    float: left;
+    margin: 20px;
+    background: #ddd;
 }
 
 .app-msg {
@@ -67,20 +69,24 @@ body {
 }
 
 .app-ctrl {
-    padding: 0 8px 0 18px;
+    padding: 0 30px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     color: #333;
 }
-
+.app-user,
 .app-logout {
-    margin: 0 30px 0 20px;
+    margin: 0 10px;
+    font-family: FZLTZHJW--GB1-0!important;
+    font-size: 14px;
+    line-height: 20px;
+    height: 20px;
 }
 
 .app-logout:hover {
     cursor: pointer;
-    color: red;
+    color: #C63136;
 }
 
 .app-tab {
@@ -88,11 +94,15 @@ body {
     bottom: 0px;
     left: 0px;
     right: 0px;
+    padding: 15px 20px 20px 40px;
 }
 
 .jqcTabPanel {
     position: static!important;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 130px);
+    background: #fff;
+    box-sizing: border-box;
+    padding: 15px;
 }
 
 .jqcTabMoreContainer {
@@ -208,17 +218,23 @@ label {
 
 .btn {
     box-sizing: border-box;
-    height: 26px;
+    height: 30px;
     color: #fff;
-    background: #ed1c24;
-    padding: 0 10px;
-    border-radius: 4px;
+    background: #C63136;
+    padding: 0 15px;
+    border-radius: 2px;
     border: none;
-    line-height: 26px;
+    line-height: 30px;
     cursor: pointer;
     text-align: center;
+    font-size: 12px;
+    min-width: 70px;
 }
-
+.btn.btn_normal {
+    background: #fff;
+    line-height: 28px;
+    border: 1px solid #d9d9d9;
+}
 .btn.disabled {
     background: #ccc;
     cursor: not-allowed;
