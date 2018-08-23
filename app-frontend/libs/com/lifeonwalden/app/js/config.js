@@ -32,6 +32,7 @@
             caption: '序号',
             fixed: true,
             width: 70,
+            cssClass: 'bgf5f6fa',
             alignment: 'center',
             cellTemplate: function(box, data) {
                 box.text(data.rowIndex + 1);

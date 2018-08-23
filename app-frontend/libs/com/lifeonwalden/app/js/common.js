@@ -12,7 +12,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['apisBox']));
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['menuTree', 'formUtil', 'msg', 'tab', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'jsoneditor'])
+    .importComponents('com.lifeonwalden.jqc', ['menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'jsoneditor'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
@@ -219,7 +219,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 element: _this._toolBar,
                 conditionHtml: _this._conditionHtml[0] || '',
                 controlHtml: _this._controlHtml[0] || '',
-                height: 40
+                height: 50
             });
             setTimeout(function () {
                 _this.mixinFormat.forEach(format => {
@@ -287,7 +287,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.__renderContextMenu = function () {
             var _this = this;
-            this._contextmenu = new $.jqcContextMenu(_this.contextmenu);
+            var _options = $.extend({}, {
+                width: 118,
+                height: 40
+            }, this.contextmenu);
+            this._contextmenu = new $.jqcContextMenu(_options);
             setTimeout(function () {
                 $(document).on('mousewheel.$App', function () {
                     _this._contextmenu.box && _this._contextmenu.box.remove();

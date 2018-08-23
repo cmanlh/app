@@ -4479,6 +4479,9 @@ input.dx-hidden {
 .dx-datagrid-headers .dx-header-row {
   background: #f5f6fa;
 }
+.dx-datagrid-content-fixed .dx-header-row {
+  background: transparent;
+}
 .dx-datagrid-headers .dx-header-row > td {
   white-space: nowrap;
   overflow: hidden;

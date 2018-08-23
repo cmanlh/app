@@ -6380,6 +6380,9 @@
 .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
     border-bottom: 1px solid #ebedf3;
 }
+.dx-datagrid-content-fixed .dx-datagrid-filter-row{
+    background: transparent!important;
+}
 .dx-datagrid-filter-row {
     background: #fff!important;
 }

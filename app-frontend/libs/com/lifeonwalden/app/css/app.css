@@ -119,9 +119,24 @@ textarea {
     font-size: 12px !important;
     box-sizing: border-box;
 }
-
+label {
+    font-family: FZLTHJW--GB1-0;
+    font-size: 12px;
+    color: #262626;
+}
 input {
-    padding: 3px 5px 3px 5px;
+    box-sizing: border-box;
+    width: 150px;
+    height: 30px;
+    border-radius: 2px;
+    border: 1px solid #d9d9d9;
+    font-size: 12px;
+    color: #262626;
+    padding: 0 10px;
+}
+input:hover,
+input:focus {
+    border: 1px solid #999;
 }
 
 select {
@@ -208,14 +223,34 @@ label {
 }
 /*form styte*/
 .form_group {
-    padding: 7px 0;
     flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
 }
 
-.form_group div{
-    margin-left: 10px;
+.form_group .form_item{
+    display: flex;
+    align-items: center;
+    padding: 10px 5px 0 15px;
 }
-
+.form_group .form_item lable{
+    margin-right: 10px;
+}
+.toolbar-left {
+    padding-right: 48px;
+}
+.form_group .search_item{
+    padding: 10px 15px 0 0;
+}
+.jqcFormToolBar-newline .toolbar-right .form_item{
+    padding: 10px 20px 0 0;
+}
+.jqcFormToolBar-newline .toolbar-right .search_item{
+    flex-grow: 1;
+    flex-direction: row-reverse;
+    padding: 10px 0 0 0;
+}
 .btn {
     box-sizing: border-box;
     height: 30px;
@@ -230,10 +265,19 @@ label {
     font-size: 12px;
     min-width: 70px;
 }
+.btn:hover{
+    background: #D86065;
+}
 .btn.btn_normal {
     background: #fff;
     line-height: 28px;
+    color: #595959;
     border: 1px solid #d9d9d9;
+}
+.btn.btn_normal:hover{
+    background: #fff;
+    color: #C63136;
+    border: 1px solid #C63136;
 }
 .btn.disabled {
     background: #ccc;
@@ -248,23 +292,39 @@ input.large {
     width: 200px!important;
 }
 
-.jqcTabPanel input {
-    height: 26px;
-    width: 150px;
-    box-sizing: border-box;
-}
-
 .jqcTabPanel select {
     height: 26px;
     box-sizing: border-box;
 }
 
 .jqcTabPanel .export-excel {
-    width: 26px;
-    height: 26px;
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
     display: block;
-    background: url('./images/export-excel.png') no-repeat center;
-    background-size: 26px 26px;
+    box-sizing: border-box;
+    width: 30px;
+    height: 30px;
+    background: url('./images/icon_excel.png') no-repeat center;
+}
+
+.jqcTabPanel .export-excel:hover {
+    background: url('./images/icon_excel_active.png') no-repeat center;
+    border: 1px solid #C63136;
+}
+ 
+.export-pdf {
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+    display: block;
+    box-sizing: border-box;
+    width: 30px;
+    height: 30px;
+    background: url('./images/icon_pdf.png') no-repeat center;
+}
+
+.export-pdf:hover {
+    background: url('./images/icon_pdf_active.png') no-repeat center;
+    border: 1px solid #C63136;
 }
 
 .jqcConfirm-btnBox {
@@ -290,4 +350,36 @@ input.large {
 hr {
     border: none;
     border-bottom: 1px solid #eee;
+}
+
+/*修改toolbar样式*/
+.jqcFormToolBar{
+    margin-bottom: 20px;
+}
+.jqcFormToolBar-newline {
+    margin-bottom: 0;
+}
+
+.jqcFormToolBar .reset{
+    font-family: MicrosoftYaHei;
+    font-size: 12px;
+    color: #858AAC;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: none;
+    height: 30px;
+    line-height: 30px;
+}
+.jqcFormToolBar .reset:hover{
+    color: #C63136;
+}
+
+.jqcFormToolBar .showmore-visible .reset{
+    display: block;
+}
+.dx-datagrid-table-fixed .dx-header-row .bgf5f6fa {
+    background: #f5f6fa;
+}
+.toolbar-right button{
+    margin-right: 20px;
 }
