@@ -9,7 +9,7 @@
     padding: 0;
     border: none;
     font-size: 14px;
-    font-family: 'dfzq-fzlt', '新宋体', 'Microsoft YaHei', sans-serif;
+    font-family: 'Microsoft YaHei', 'dfzq-fzlt', sans-serif;
 }
 
 body {
@@ -114,25 +114,39 @@ input,
 select,
 textarea {
     outline: 0;
-    border: 1px solid #D1D2D4;
     border-radius: 2px;
-    font-size: 12px !important;
+    border: 1px solid #d9d9d9;
     box-sizing: border-box;
 }
+input:hover,
+select:hover,
+textarea:hover {
+    border: 1px solid #999;
+}
+textarea {
+    padding: 5px 10px;
+}
 label {
-    font-family: FZLTHJW--GB1-0;
-    font-size: 12px;
+    font-size: 14px;
     color: #262626;
 }
 input {
     box-sizing: border-box;
     width: 150px;
     height: 30px;
-    border-radius: 2px;
-    border: 1px solid #d9d9d9;
     font-size: 12px;
     color: #262626;
     padding: 0 10px;
+}
+input[datatype="date"] {
+    width: 110px;
+    padding-right: 28px;
+    background-image: url('./images/icon_calendar.png');
+    background-repeat: no-repeat;
+    background-position: 84px;;
+}
+input[datatype="date"]:focus{
+    background-image: url('./images/icon_calendar_active.png');
 }
 input:hover,
 input:focus {
@@ -153,7 +167,7 @@ a:FOCUS {
 }
 
 label {
-    font-size: 12px;
+    font-size: 14px;
     padding: 0 5px;
 }
 
@@ -262,7 +276,7 @@ label {
     line-height: 30px;
     cursor: pointer;
     text-align: center;
-    font-size: 12px;
+    font-size: 14px;
     min-width: 70px;
 }
 .btn:hover{
@@ -362,7 +376,7 @@ hr {
 
 .jqcFormToolBar .reset{
     font-family: MicrosoftYaHei;
-    font-size: 12px;
+    font-size: 14px;
     color: #858AAC;
     letter-spacing: 1px;
     cursor: pointer;
@@ -382,4 +396,8 @@ hr {
 }
 .toolbar-right button{
     margin-right: 20px;
+}
+.dx-datagrid input:hover,
+.dx-datagrid input:focus{
+    border-color: transparent;
 }

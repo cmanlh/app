@@ -128,22 +128,44 @@ textarea {
 }
 label {
     font-size: 14px;
-    color: #262626;
+    color: #444;
 }
 input {
     box-sizing: border-box;
     width: 150px;
     height: 30px;
     font-size: 12px;
-    color: #262626;
+    color: #222;
     padding: 0 10px;
 }
+input::-webkit-input-placeholder {
+    color: #ccc;
+}
+input:disabled {
+    background: #f2f2f2;
+    color: #ccc;
+}
+input:disabled:hover{
+    border-color: #d9d9d9;
+}
 input[datatype="date"] {
-    width: 110px;
+    /*width: 110px;*/
     padding-right: 28px;
     background-image: url('./images/icon_calendar.png');
     background-repeat: no-repeat;
-    background-position: 84px;;
+    background-position: 126px;
+}
+input[datatype="date"][date-start],
+input[datatype="date"][date-end] {
+    width: 110px;
+    padding-right: 10px;
+    background-image: none;
+}
+input[datatype="date"][date-start]{
+    margin-right: 10px;
+}
+input[datatype="date"][date-end]{
+    margin-left: 10px;
 }
 input[datatype="date"]:focus{
     background-image: url('./images/icon_calendar_active.png');
@@ -247,9 +269,11 @@ label {
     display: flex;
     align-items: center;
     padding: 10px 5px 0 15px;
+    color: #444;
 }
 .form_group .form_item lable{
     margin-right: 10px;
+    color: #444;
 }
 .toolbar-left {
     padding-right: 48px;
@@ -276,7 +300,7 @@ label {
     line-height: 30px;
     cursor: pointer;
     text-align: center;
-    font-size: 14px;
+    font-size: 12px;
     min-width: 70px;
 }
 .btn:hover{
@@ -285,7 +309,7 @@ label {
 .btn.btn_normal {
     background: #fff;
     line-height: 28px;
-    color: #595959;
+    color: #444;
     border: 1px solid #d9d9d9;
 }
 .btn.btn_normal:hover{
@@ -293,7 +317,12 @@ label {
     color: #C63136;
     border: 1px solid #C63136;
 }
-.btn.disabled {
+.btn.btn_normal:disabled{
+    color: #ccc;
+    background: #f2f2f2;
+    border: 1px solid #d9d9d9;
+}
+.btn:disabled {
     background: #ccc;
     cursor: not-allowed;
 }
@@ -318,11 +347,14 @@ input.large {
     box-sizing: border-box;
     width: 30px;
     height: 30px;
-    background: url('./images/icon_excel.png') no-repeat center;
+    background-color: #fff;
+    background-image: url('./images/icon_excel.png');
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .jqcTabPanel .export-excel:hover {
-    background: url('./images/icon_excel_active.png') no-repeat center;
+    background-image: url('./images/icon_excel_active.png');
     border: 1px solid #C63136;
 }
  
@@ -333,11 +365,14 @@ input.large {
     box-sizing: border-box;
     width: 30px;
     height: 30px;
-    background: url('./images/icon_pdf.png') no-repeat center;
+    background-color: #fff;
+    background-image: url('./images/icon_pdf.png');
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .export-pdf:hover {
-    background: url('./images/icon_pdf_active.png') no-repeat center;
+    background-image: url('./images/icon_pdf_active.png');
     border: 1px solid #C63136;
 }
 
@@ -375,8 +410,7 @@ hr {
 }
 
 .jqcFormToolBar .reset{
-    font-family: MicrosoftYaHei;
-    font-size: 14px;
+    font-size: 12px;
     color: #858AAC;
     letter-spacing: 1px;
     cursor: pointer;
