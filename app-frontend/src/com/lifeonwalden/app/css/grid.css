@@ -1328,7 +1328,7 @@
 	}
 }
 
-@media ( min-width : 1025px) {
+@media ( min-width : 1px) {
 	/* Column Widths */
 	.col-md-1 {
 		width: 0.46296%;
@@ -2630,7 +2630,7 @@
 	}
 }
 
-@media ( max-width : 1024px) {
+@media ( max-width : 0px) {
 	/* Column Widths */
 	.col-sm-1 {
 		width: 0.46296%;
