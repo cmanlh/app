@@ -19,9 +19,9 @@
         },
         hoverStateEnabled: true,
         rowAlternationEnabled: true,
-        selection: {
-            mode: 'single'
-        },
+        // selection: {
+        //     mode: 'single'
+        // },
         columnAutoWidth: true,
         scrolling: {
             mode: 'infinite'

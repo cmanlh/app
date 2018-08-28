@@ -155,6 +155,9 @@ input[datatype="date"] {
     background-repeat: no-repeat;
     background-position: 126px;
 }
+input[datatype="date"]:hover {
+    background-image: url('./images/icon_calendar_active.png');
+}
 input[datatype="date"][date-start],
 input[datatype="date"][date-end] {
     width: 110px;
@@ -278,6 +281,27 @@ label {
 .form_group .form_item lable{
     margin-right: 10px;
     color: #444;
+}
+.from_btn_box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0 10px;
+}
+.from_btn_box.left {
+    justify-content: flex-start;
+}
+.from_btn_box.right {
+    justify-content: flex-end;
+}
+.from_btn_box button{
+    margin: 0 10px;
+}
+.from_btn_box.left button {
+    margin: 0 20px 0 0;
+}
+.from_btn_box.right button {
+    margin: 0 0 0 20px;
 }
 .toolbar-left {
     padding-right: 48px;
