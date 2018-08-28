@@ -84,6 +84,10 @@ body {
     height: 20px;
 }
 
+.app-user{
+    cursor: default;
+}
+
 .app-logout:hover {
     cursor: pointer;
     color: #C63136;
@@ -325,7 +329,6 @@ label {
     padding: 0 15px;
     border-radius: 2px;
     border: none;
-    line-height: 30px;
     cursor: pointer;
     text-align: center;
     font-size: 12px;
