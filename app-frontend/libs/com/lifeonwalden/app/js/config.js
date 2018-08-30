@@ -10,7 +10,7 @@
     // dxDataGrid默认配置
     const dxDataGridDefaultConfig = {
         dataSource: [],
-        height: window.innerHeight - 250,
+        height: window.innerHeight - 170,
         filterRow: {
             visible: true,
         },

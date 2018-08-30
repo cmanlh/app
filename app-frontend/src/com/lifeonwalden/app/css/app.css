@@ -23,7 +23,7 @@ body {
     /*grid-template-columns: 256px 1fr 128px;*/
     display: flex;
     justify-content: space-between;
-    line-height: 60px;
+    line-height: 40px;
     background: #fff;
 }
 
@@ -42,7 +42,7 @@ body {
     color: #222;
     font-size: 20px;
     flex-shrink: 0;
-    height: 60px;
+    height: 40px;
 }
 
 .app-menu-logo::before {
@@ -50,7 +50,6 @@ body {
     width: 150px;
     height: 40px;
     float: left;
-    margin: 10px 0;
     background: url('images/logo.png') no-repeat;
     background-size: 150px 40px;
 }
@@ -60,7 +59,7 @@ body {
     width: 1px;
     height: 20px;
     float: left;
-    margin: 20px;
+    margin: 10px 20px;
     background: #ddd;
 }
 
@@ -94,19 +93,19 @@ body {
 }
 
 .app-tab {
-    top: 60px;
+    top: 40px;
     bottom: 0px;
     left: 0px;
     right: 0px;
-    padding: 15px 20px 20px 40px;
+    padding: 10px 10px 10px 30px;
 }
 
 .jqcTabPanel {
     position: static!important;
-    height: calc(100vh - 130px);
+    height: calc(100vh - 90px);
     background: #fff;
     box-sizing: border-box;
-    padding: 15px;
+    padding: 10px;
 }
 
 .jqcTabMoreContainer {
@@ -164,6 +163,10 @@ input[datatype="date"] {
     background-image: url('./images/icon_calendar.png');
     background-repeat: no-repeat;
     background-position: 126px;
+}
+input[datatype="date"][format="yyyy-MM-dd HH:mm:ss"] {
+    padding: 0 10px;
+    background-image: none!important;
 }
 input[datatype="date"]:hover {
     background-image: url('./images/icon_calendar_active.png');
@@ -445,7 +448,7 @@ hr {
 
 /*修改toolbar样式*/
 .jqcFormToolBar{
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 .jqcFormToolBar-newline {
     margin-bottom: 0;
