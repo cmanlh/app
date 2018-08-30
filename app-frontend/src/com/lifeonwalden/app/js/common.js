@@ -8,11 +8,13 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['notification'])
         .registerComponents(['contextmenu','layoutHelper'])
         .registerComponents(['loading'])
+        .registerComponents(['confirm'])
+        .registerComponents(['event'])
         .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab', 'jsoneditor'])
         .registerComponents(['apisBox']));
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['menuTree', 'formUtil', 'msg', 'tab', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'jsoneditor'])
+    .importComponents('com.lifeonwalden.jqc', ['confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'jsoneditor'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
@@ -29,6 +31,59 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/config.js'))
     .execute(function() {
         const T = $.jqcToolkit;
+        const pinyinParser = new $.jqcPinyin();
+        /* *******************jQuery对象封装********************* */
+        $.fn.extend({
+            /**
+             * params.data  数据
+             * params.adapter   适配 value/label
+             * params.defaultVal    默认值
+             */
+            select: function (data, defaultVal) {
+                var $el = this;
+                var _el = this[0];
+                if (!_el || (_el.nodeName != 'INPUT')) {
+                    return;
+                }
+                _el.jqcSelectBox && _el.jqcSelectBox.destroy();
+                var config = {
+                    optionData: data,
+                    defaultVal: defaultVal,
+                    dataName: JSON.stringify(data),
+                    withSearch: false,
+                    autoDisplay: true,
+                    element: $el,
+                    onSelect: function (data) {
+                        $el.trigger('change', data);
+                    }
+                };
+                _el.jqcSelectBox = new $.jqcSelectBox(config);
+
+            },
+            selectSearch: function (data, defaultVal) {
+                var $el = this;
+                var _el = this[0];
+                if (!_el || (_el.nodeName != 'INPUT')) {
+                    return;
+                }
+                _el.jqcSelectBox && _el.jqcSelectBox.destroy();
+                var config = {
+                    optionData: data,
+                    defaultVal: defaultVal,
+                    dataName: JSON.stringify(data),
+                    autoDisplay: true,
+                    supportFuzzyMatch: true,
+                    supportPinYin: true,
+                    pinyinParser: pinyinParser,
+                    element: $el,
+                    onSelect: function (data) {
+                        $el.trigger('change', data);
+                    }
+                };
+                _el.jqcSelectBox = new $.jqcSelectBox(config);
+            }
+        });
+        /* ********************************************************** */
         var styleCache = {};
         $.addForm = function(menu, tab) {
             var uid = menu.id;
@@ -90,7 +145,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.mixinAfterRender = [];
             this._config = $.getGlobalConfig(); //config.js文件中的配置
             this.loading = new $.jqcLoading();
-            this.pinyinParser = new $.jqcPinyin();
+            this.pinyinParser = pinyinParser;
             this.templatePath = params.templatePath ? params.templatePath : null; //模板文件相对路径
             this.stylePath = params.stylePath ? params.stylePath : null; //模板文件相对路径
             this.contextmenu = (params && params.contextmenu) ? params.contextmenu : null;
@@ -219,7 +274,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 element: _this._toolBar,
                 conditionHtml: _this._conditionHtml[0] || '',
                 controlHtml: _this._controlHtml[0] || '',
-                height: 40
+                height: 50
             });
             setTimeout(function () {
                 _this.mixinFormat.forEach(format => {
@@ -287,7 +342,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.__renderContextMenu = function () {
             var _this = this;
-            this._contextmenu = new $.jqcContextMenu(_this.contextmenu);
+            var _options = $.extend({}, {
+                width: 118,
+                height: 40
+            }, this.contextmenu);
+            this._contextmenu = new $.jqcContextMenu(_options);
             setTimeout(function () {
                 $(document).on('mousewheel.$App', function () {
                     _this._contextmenu.box && _this._contextmenu.box.remove();
@@ -387,8 +446,12 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 })
             });
         };
-        $.App.prototype.triggerQuery = function () {
-            this._toolBar.find('.toolbar-left button.queryBtn').trigger('click');
+        $.App.prototype.triggerQuery = function (params) {
+            if (this._toolBar) {
+                this._toolBar.find('.toolbar-left button.queryBtn').trigger('click');
+            } else {
+                this.fillDxDataGrid(params);
+            }
         };
         $.App.prototype.confirm = function (params) {
             var _content = $('<div>');
@@ -423,7 +486,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.delete = function (params) {
             var _this = this;
-            this.confirm({
+            $.jqcConfirm({
                 title: params.title,
                 content: params.content,
                 onConfirm: function () {
@@ -432,7 +495,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                     _this.requestPost(params.api, params.data).then(res => {
                         if (res.code == 0) {
-                            _this.triggerQuery();
+                            _this.triggerQuery(params.fillParams);
                             if (params.success) {
                                 params.success(res);
                             } else {

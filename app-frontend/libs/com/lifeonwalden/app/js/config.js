@@ -10,7 +10,7 @@
     // dxDataGrid默认配置
     const dxDataGridDefaultConfig = {
         dataSource: [],
-        height: window.innerHeight - 140,
+        height: window.innerHeight - 250,
         filterRow: {
             visible: true,
         },
@@ -19,17 +19,20 @@
         },
         hoverStateEnabled: true,
         rowAlternationEnabled: true,
-        selection: {
-            mode: 'single'
-        },
+        // selection: {
+        //     mode: 'single'
+        // },
         columnAutoWidth: true,
         scrolling: {
             mode: 'infinite'
         },
+        showRowLines: true,
+        showBorders: true,
         columns: [{
             caption: '序号',
             fixed: true,
             width: 70,
+            cssClass: 'bgf5f6fa',
             alignment: 'center',
             cellTemplate: function(box, data) {
                 box.text(data.rowIndex + 1);

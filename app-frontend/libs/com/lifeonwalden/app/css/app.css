@@ -9,12 +9,13 @@
     padding: 0;
     border: none;
     font-size: 14px;
-    font-family: 'dfzq-fzlt', '新宋体', 'Microsoft YaHei', sans-serif;
+    font-family: 'Microsoft YaHei', 'dfzq-fzlt', sans-serif;
 }
 
 body {
     position: relative;
-    min-width: 800px;
+    min-width: 1280px;
+    background: #f2f2f2;
 }
 
 .app-header {
@@ -23,6 +24,7 @@ body {
     display: flex;
     justify-content: space-between;
     line-height: 60px;
+    background: #fff;
 }
 
 .app-header-left {
@@ -31,35 +33,35 @@ body {
 }
 
 .app-menu-switch {
-    width: 70px;
-    height: 60px;
-    cursor: pointer;
-    background: #888;
-    font-size: 14px;
-    color: #fff;
-    text-align: center;
-    border-right: 1px solid #888;
-    font-weight: 900;
+    display: none;
 }
 
 .app-menu-logo {
-    padding: 0 10px 0 5px;
-    background-color: #C4161C;
-    color: #FFF;
+    font-family: FZLTZHJW--GB1-0;
+    padding: 0 30px;
+    color: #222;
     font-size: 20px;
-    font-weight: 500;
     flex-shrink: 0;
     height: 60px;
 }
 
 .app-menu-logo::before {
     content: '';
-    width: 30px;
-    height: 30px;
+    width: 150px;
+    height: 40px;
     float: left;
-    margin: 15px 5px;
+    margin: 10px 0;
     background: url('images/logo.png') no-repeat;
-    background-size: 113px;
+    background-size: 150px 40px;
+}
+
+.app-menu-logo::after {
+    content: '';
+    width: 1px;
+    height: 20px;
+    float: left;
+    margin: 20px;
+    background: #ddd;
 }
 
 .app-msg {
@@ -67,20 +69,28 @@ body {
 }
 
 .app-ctrl {
-    padding: 0 8px 0 18px;
+    padding: 0 30px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     color: #333;
 }
-
+.app-user,
 .app-logout {
-    margin: 0 30px 0 20px;
+    margin: 0 10px;
+    font-family: FZLTZHJW--GB1-0!important;
+    font-size: 14px;
+    line-height: 20px;
+    height: 20px;
+}
+
+.app-user{
+    cursor: default;
 }
 
 .app-logout:hover {
     cursor: pointer;
-    color: red;
+    color: #C63136;
 }
 
 .app-tab {
@@ -88,11 +98,15 @@ body {
     bottom: 0px;
     left: 0px;
     right: 0px;
+    padding: 15px 20px 20px 40px;
 }
 
 .jqcTabPanel {
     position: static!important;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 130px);
+    background: #fff;
+    box-sizing: border-box;
+    padding: 15px;
 }
 
 .jqcTabMoreContainer {
@@ -104,14 +118,77 @@ input,
 select,
 textarea {
     outline: 0;
-    border: 1px solid #D1D2D4;
     border-radius: 2px;
-    font-size: 12px !important;
+    border: 1px solid #d9d9d9;
     box-sizing: border-box;
+    width: 150px;
+    height: 30px;
+    font-size: 12px;
+    color: #222;
+    padding: 0 10px;
+    box-shadow: none!important;
+    -moz-box-shadow: none!important;
 }
-
-input {
-    padding: 3px 5px 3px 5px;
+input:hover,
+select:hover,
+textarea:hover {
+    border: 1px solid #999;
+}
+textarea {
+    padding: 5px 10px;
+    height: 60px;
+    resize: none;
+}
+label {
+    font-size: 14px;
+    color: #444;
+}
+input::-webkit-input-placeholder {
+    color: #ccc;
+}
+input:disabled,
+textarea:disabled,
+select:disabled {
+    background-color: #f2f2f2;
+    color: #ccc;
+    cursor: default!important;
+}
+input:disabled:hover,
+textarea:disabled:hover,
+select:disabled:hover{
+    border-color: #d9d9d9;
+}
+input[datatype="date"] {
+    /*width: 110px;*/
+    padding-right: 28px;
+    background-image: url('./images/icon_calendar.png');
+    background-repeat: no-repeat;
+    background-position: 126px;
+}
+input[datatype="date"]:hover {
+    background-image: url('./images/icon_calendar_active.png');
+}
+input[datatype="date"]:disabled:hover {
+    background-image: url('./images/icon_calendar.png');
+}
+input[datatype="date"][date-start],
+input[datatype="date"][date-end] {
+    width: 110px;
+    padding-right: 10px;
+    background-image: none;
+}
+input[datatype="date"][date-start]{
+    margin-right: 10px;
+}
+input[datatype="date"][date-end]{
+    margin-left: 10px;
+}
+input[datatype="date"]:focus{
+    background-image: url('./images/icon_calendar_active.png');
+}
+input:hover,
+input:focus {
+    border: 1px solid #999;
 }
 
 select {
@@ -128,13 +205,8 @@ a:FOCUS {
 }
 
 label {
-    font-size: 12px;
+    font-size: 14px;
     padding: 0 5px;
-}
-
-.inputBox,
-.inputNumber {
-    width: 92%
 }
 
 .inputArticle {
@@ -182,73 +254,168 @@ label {
     justify-content: flex-end;
 }
 /*dialog*/
-.jqcDialogContent input,
-.jqcDialogContent textarea,
-.jqcDialogContent select {
-    width: 100%;
-    height: 30px;
-}
-
-.jqcDialogContent .jqcFormToolBar input {
-    height: 26px;
-}
-
 .jqcDialogContent textarea {
     height: 50px;
 }
 /*form styte*/
 .form_group {
-    padding: 7px 0;
     flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
 }
 
-.form_group div{
-    margin-left: 10px;
+.form_group .form_item,
+.form_group > div{
+    display: flex;
+    align-items: center;
+    padding: 10px 5px 0 15px;
+    color: #444;
 }
 
+.form_label span,
+.form_label label,
+.form .row > div span,
+.form .row > div label,
+.form_group .form_item span,
+.form_group .form_item label,
+.form_group > div label,
+.form_group > div span{
+    color: #444;
+    font-size: 12px;
+    margin-right: 10px;
+}
+.form .row > div,
+.form_label {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+.form .row > div input:required + span::before,
+.form_label input:required + span::before{
+    content: '*';
+    color: #C63136;
+    margin-right: 4px;
+}
+.form_btn_box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0 10px;
+}
+.form_btn_box.left {
+    justify-content: flex-start;
+}
+.form_btn_box.right {
+    justify-content: flex-end;
+}
+.form_btn_box button{
+    margin: 0 10px;
+}
+.form_btn_box.left button {
+    margin: 0 20px 0 0;
+}
+.form_btn_box.right button {
+    margin: 0 0 0 20px;
+}
+.toolbar-left {
+    padding-right: 48px;
+}
+.form_group .search_item{
+    padding: 10px 15px 0 0;
+    margin-left: -5px;
+}
+.jqcFormToolBar-newline .toolbar-right .form_item{
+    padding: 10px 20px 0 0;
+}
+.jqcFormToolBar-newline .toolbar-right .search_item{
+    flex-grow: 1;
+    flex-direction: row-reverse;
+    padding: 10px 0 0 0;
+}
 .btn {
     box-sizing: border-box;
-    height: 26px;
+    height: 30px;
     color: #fff;
-    background: #ed1c24;
-    padding: 0 10px;
-    border-radius: 4px;
+    background: #C63136;
+    padding: 0 15px;
+    border-radius: 2px;
     border: none;
-    line-height: 26px;
     cursor: pointer;
     text-align: center;
+    font-size: 12px;
+    min-width: 70px;
 }
-
-.btn.disabled {
+.btn:hover{
+    background: #D86065;
+}
+.btn.btn_normal {
+    background: #fff;
+    line-height: 28px;
+    color: #444;
+    border: 1px solid #d9d9d9;
+}
+.btn.btn_normal:hover{
+    background: #fff;
+    color: #C63136;
+    border: 1px solid #C63136;
+}
+.btn.btn_normal:disabled{
+    color: #ccc;
+    background: #f2f2f2;
+    border: 1px solid #d9d9d9;
+}
+.btn:disabled {
     background: #ccc;
     cursor: not-allowed;
 }
 
-input.smail {
+input.smail,
+select.smail,
+textarea.smail {
     width: 80px!important;
 }
 
-input.large {
+input.large,
+select.large,
+textarea.large {
     width: 200px!important;
 }
 
-.jqcTabPanel input {
-    height: 26px;
-    width: 150px;
-    box-sizing: border-box;
-}
-
-.jqcTabPanel select {
-    height: 26px;
-    box-sizing: border-box;
-}
-
 .jqcTabPanel .export-excel {
-    width: 26px;
-    height: 26px;
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
     display: block;
-    background: url('./images/export-excel.png') no-repeat center;
-    background-size: 26px 26px;
+    box-sizing: border-box;
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    background-image: url('./images/icon_excel.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.jqcTabPanel .export-excel:hover {
+    background-image: url('./images/icon_excel_active.png');
+    border: 1px solid #C63136;
+}
+ 
+.export-pdf {
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+    display: block;
+    box-sizing: border-box;
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    background-image: url('./images/icon_pdf.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.export-pdf:hover {
+    background-image: url('./images/icon_pdf_active.png');
+    border: 1px solid #C63136;
 }
 
 .jqcConfirm-btnBox {
@@ -274,4 +441,39 @@ input.large {
 hr {
     border: none;
     border-bottom: 1px solid #eee;
+}
+
+/*修改toolbar样式*/
+.jqcFormToolBar{
+    margin-bottom: 20px;
+}
+.jqcFormToolBar-newline {
+    margin-bottom: 0;
+}
+
+.jqcFormToolBar .reset{
+    font-size: 12px;
+    color: #858AAC;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: none;
+    height: 30px;
+    line-height: 30px;
+}
+.jqcFormToolBar .reset:hover{
+    color: #C63136;
+}
+
+.jqcFormToolBar .showmore-visible .reset{
+    display: block;
+}
+.dx-datagrid-table-fixed .dx-header-row .bgf5f6fa {
+    background: #f5f6fa;
+}
+.toolbar-right button{
+    margin-right: 20px;
+}
+.dx-datagrid input:hover,
+.dx-datagrid input:focus{
+    border-color: transparent;
 }

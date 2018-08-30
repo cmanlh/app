@@ -17,10 +17,10 @@
  * select box, support filter & multi-select
  * 
  */
-(function ($) {
+(function($) {
     $JqcLoader.importComponents('com.lifeonwalden.jqc', ['baseElement', 'valHooks', 'uniqueKey', 'pinyin'])
         .importCss($JqcLoader.getCmpParentURL('com.lifeonwalden.jqc', 'selectbox').concat('css/selectbox.css'))
-        .execute(function () {
+        .execute(function() {
             var optionCoreCache = new Map();
             var DEFAULT_OPTION_COUNT = 10;
             var UNDEFINED_OPTION = '';
@@ -89,11 +89,11 @@
                 }
             }
 
-            OptionCore.prototype.get = function (key) {
+            OptionCore.prototype.get = function(key) {
                 return this.optionMapping.get(key);
             };
 
-            OptionCore.prototype.fetchLabel = function (key) {
+            OptionCore.prototype.fetchLabel = function(key) {
                 var data = this.get(key);
                 if (data) {
                     return data.text;
@@ -102,7 +102,7 @@
                 }
             };
 
-            OptionCore.prototype.fuzzyFilter = function (inputTerm) {
+            OptionCore.prototype.fuzzyFilter = function(inputTerm) {
                 var _inputTerm = null;
                 if (inputTerm.isMulti) {
                     _inputTerm = $.trim(inputTerm.value);
@@ -180,7 +180,7 @@
                 }
             };
 
-            OptionCore.prototype.filter = function (inputTerm) {
+            OptionCore.prototype.filter = function(inputTerm) {
                 var _inputTerm = null;
                 if (inputTerm.isMulti) {
                     _inputTerm = $.trim(inputTerm.value);
@@ -286,7 +286,7 @@
                 }
             };
 
-            OptionCore.prototype.updateDataSource = function (newDataSource) {
+            OptionCore.prototype.updateDataSource = function(newDataSource) {
                 if (this.option.source.adapter) {
                     this.option.source.data = newDataSource;
                 } else {
@@ -299,7 +299,7 @@
                 this.setup();
             };
 
-            OptionCore.prototype.addNewItem = function (newItem) {
+            OptionCore.prototype.addNewItem = function(newItem) {
                 var newDataSource = null;
                 if (this.option.source.adapter) {
                     newDataSource = this.option.source.data;
@@ -310,7 +310,7 @@
                 this.updateDataSource(newDataSource);
             };
 
-            OptionCore.prototype.setup = function () {
+            OptionCore.prototype.setup = function() {
                 var _source = this.option.source;
                 if (!_source) {
                     throw new Error('The data source of selectbox should not be null or undefined.');
@@ -342,7 +342,7 @@
                         if (_source.adapter.filter) {
                             keyFilter = _source.adapter.filter;
                         } else {
-                            if ('string' != typeof (keyLabel)) {
+                            if ('string' != typeof(keyLabel)) {
                                 throw new Error('Must provide a field for filtering.');
                             }
                             keyFilter = keyLabel;
@@ -369,7 +369,7 @@
                     if (!_data)
                         continue;
                     var packageData = null;
-                    if ('string' == typeof (keyLabel)) {
+                    if ('string' == typeof(keyLabel)) {
                         packageData = {
                             label: '<li '.concat('value="v').concat(_data[keyVal]).concat('">').concat(_data[keyLabel]).concat('</li>'),
                             key: keyVal,
@@ -390,7 +390,7 @@
                     fillMap(mapping, filterKey, packageData);
                     unSorted.push(filterKey);
                     if (this.option.supportPinYin) {
-                        if ('string' == typeof (keyPinyinFilter)) {
+                        if ('string' == typeof(keyPinyinFilter)) {
                             var cnFilterKey = _data[keyPinyinFilter].toString();
                             indexPYFilter(filterKey, cnFilterKey, mapping, packageData, unSorted, this);
                         } else {
@@ -427,7 +427,7 @@
             };
 
             // autoDisplay 自动显示前十个
-            OptionCore.prototype.autoDisplay = function (params) {
+            OptionCore.prototype.autoDisplay = function(params) {
                 var _this = this;
                 var cache = [];
                 if (this.sortedFilterCache.length) {
@@ -444,7 +444,7 @@
                         }
                         cache.push(_key);
                         _list += _data.label;
-                        count ++;
+                        count++;
                         if (count >= 10) {
                             break;
                         }
@@ -479,6 +479,7 @@
                 element: null,
                 supportFuzzyMatch: false,
                 filterDelay: 256,
+                withSearch: true,
                 withResetter: true, // does need resetter control
                 onSelect: null, // call back on selecting event,
                 afterSelect: null, // call back after selecting event
@@ -487,7 +488,7 @@
                 addNewItem: null, // add new item to options at runtime
                 maxOptionCount: DEFAULT_OPTION_COUNT
             };
-            $.jqcSelectBox = function (param) {
+            $.jqcSelectBox = function(param) {
                 if (arguments.length > 0) {
                     $.jqcBaseElement.apply(this, arguments);
                 }
@@ -514,6 +515,13 @@
 
                 this.el = this.options.element; // the jquery element for the target document node
                 this.el.addClass('jqcSelectboxHooks');
+                var _width = this.el.outerWidth();
+                this.el.css('background-position', _width - 26);
+                if (!this.options.withSearch) {
+                    this.el.addClass('onlySelect')
+                        .prop('readonly', true)
+                        .css('background-position', _width - 21);
+                }
                 this.typeName = 'jqcSelectBox';
                 this.elementId = 'jqc'.concat($.jqcUniqueKey.fetchIntradayKey());
                 this.el.attr($.jqcBaseElement.JQC_ELEMENT_TYPE, this.typeName);
@@ -538,7 +546,7 @@
             function renderMultiSelect(that) {
                 that.container = $('<div class="jqcSelectboxContainer" style="display:none;">'); //container for option list & operation board
                 that.operationBar = $('<div class="jqcSelectboxOperationBar">');
-                that.input = $('<input placeholder="输入选项值">');
+                that.input = $('<input placeholder="输入选项值">').addClass('search-input');
                 that.resetter = $('<button class="jqcSelectboxResetter" title="清空当前所选项">重置</button>'); // reset handler to reset value to default
                 that.refresher = $('<button class="jqcSelectboxRefresher" title="从服务器获取新选项">刷新</button>'); // refresh handler to refresh the data source
                 that.addNewItem = $('<button class="jqcSelectboxAddNewItem" title="从服务器获取新选项">新增</button>'); // allowed to trigger adding a item to options
@@ -567,13 +575,13 @@
 
                 that.valueCache = new Map();
                 if (that.defaultVal !== UNDEFINED_OPTION && that.defaultVal && that.defaultVal.length > 0) {
-                    that.defaultVal.split(',').forEach(function (element) {
+                    that.defaultVal.split(',').forEach(function(element) {
                         that.valueCache.set(element, null);
                     });
                 }
                 var triggerByMe = 0,
                     onSelecting = false;
-                that.el.focus(function (e) {
+                that.el.focus(function(e) {
                     triggerByMe = 1;
                     var elOffset = that.el.offset();
                     var maxWidth = $('body').width();
@@ -583,6 +591,7 @@
                     } else {
                         that.container.css('left', elOffset.left);
                     }
+                    $(this).addClass('jqcSelectboxHooks-active');
                     that.container.show();
                     that.input.focus();
                     // 自动显示
@@ -598,18 +607,19 @@
                 var oldVal = null,
                     selectIndex = null,
                     optionSize = 0;
-                that.input.keydown(function (e) {
+                that.input.keydown(function(e) {
                     switch (e.keyCode) {
                         case $.ui.keyCode.TAB:
                             {
                                 that.container.hide();
+                                that.el.removeClass('jqcSelectboxHooks-active').trigger('blur');
                                 that.el.nextAll(":input").first().focus();
                                 e.preventDefault();
                                 return;
                             }
                     }
                 });
-                that.input.keyup(function (e) {
+                that.input.keyup(function(e) {
                     switch (e.keyCode) {
                         case $.ui.keyCode.ENTER:
                             that.optionUL.find('li.jqcSelectboxSelected').trigger('click');
@@ -638,7 +648,7 @@
                                 if (null != filterHandler) {
                                     clearTimeout(filterHandler);
                                 }
-                                filterHandler = setTimeout(function () {
+                                filterHandler = setTimeout(function() {
                                     if (oldVal != that.input.val()) {
                                         that.optionUL.html(filterFun.call(that.optionCore, {
                                             value: that.input.val(),
@@ -661,13 +671,14 @@
                     that.optionUL.find('li').eq(selectIndex = selectIndex % optionSize).addClass('jqcSelectboxSelected');
                 });
 
-                $(document).click(function (e) {
+                $(document).click(function(e) {
                     if (1 !== triggerByMe && 2 !== triggerByMe) {
                         that.container.hide();
+                        that.el.removeClass('jqcSelectboxHooks-active').trigger('blur');
                         if (onSelecting && that.options.afterSelect) {
                             onSelecting = false;
                             var result = [];
-                            that.currentVal.split(',').forEach(function (element) {
+                            that.currentVal.split(',').forEach(function(element) {
                                 var _element = that.optionCore.get(element);
                                 if (_element) {
                                     result.push(_element.data);
@@ -680,11 +691,11 @@
                     triggerByMe = 3;
                 });
 
-                that.container.click(function (e) {
+                that.container.click(function(e) {
                     triggerByMe = 2;
                 });
 
-                that.optionUL.on('click', 'li', function (e) {
+                that.optionUL.on('click', 'li', function(e) {
                     var eTarget = $(e.target);
                     var _val = eTarget.attr('value');
                     if (null == _val || undefined == _val) {
@@ -702,7 +713,7 @@
                         }
                         if (that.options.onSelect) {
                             var result = [];
-                            that.currentVal.split(',').forEach(function (element) {
+                            that.currentVal.split(',').forEach(function(element) {
                                 var _element = that.optionCore.get(element);
                                 if (_element) {
                                     result.push(_element.data);
@@ -718,7 +729,7 @@
                     }
                 });
 
-                that.optionSelected.on('click', 'li', function (e) {
+                that.optionSelected.on('click', 'li', function(e) {
                     var eTarget = $(e.target);
                     var _val = eTarget.attr('value');
                     if (null == _val || undefined == _val) {
@@ -728,7 +739,7 @@
                     that.valueCache.delete(_val);
                     var resultStr = '',
                         result = [];
-                    that.valueCache.forEach(function (val, key) {
+                    that.valueCache.forEach(function(val, key) {
                         if (that.options.onSelect) {
                             result.push(that.optionCore.get(key).data);
                         }
@@ -756,11 +767,12 @@
                     that.el.val(that.defaultVal);
                     if (toHide) {
                         that.container.hide();
+                        that.el.removeClass('jqcSelectboxHooks-active').trigger('blur');
                     }
                 }
 
                 if (that.options.withResetter) {
-                    that.resetter.click(function (e) {
+                    that.resetter.click(function(e) {
                         reset(true);
                         if (that.options.postClear) {
                             that.options.postClear();
@@ -769,11 +781,11 @@
                 }
 
                 if (that.options.updateDataSource) {
-                    that.refresher.click(function (e) {
+                    that.refresher.click(function(e) {
                         if (!that.options.updateDataSource) {
                             return;
                         }
-                        that.options.updateDataSource(function (newDataSource) {
+                        that.options.updateDataSource(function(newDataSource) {
                             if ($.isArray(newDataSource)) {
                                 that.optionCore.updateDataSource(newDataSource);
                             }
@@ -783,9 +795,10 @@
                 }
 
                 if (that.options.addNewItem) {
-                    that.addNewItem.click(function (e) {
+                    that.addNewItem.click(function(e) {
                         that.container.hide();
-                        that.options.addNewItem(function (newItem) {
+                        that.el.removeClass('jqcSelectboxHooks-active').trigger('blur');
+                        that.options.addNewItem(function(newItem) {
                             if (newItem) {
                                 that.optionCore.addNewItem(newItem);
                             }
@@ -797,29 +810,34 @@
             function renderSingleSelect(that) {
                 that.container = $('<div class="jqcSelectboxContainer" style="display:none;">'); //container for option list & operation board
                 that.operationBar = $('<div class="jqcSelectboxOperationBar">');
-                that.input = $('<input placeholder="输入选项值">');
+                that.input = $('<input placeholder="输入选项值">').addClass('search-input');
                 that.resetter = $('<button class="jqcSelectboxResetter" title="清空当前所选项">重置</button>'); // reset handler to reset value to default
                 that.refresher = $('<button class="jqcSelectboxRefresher" title="从服务器获取新选项">刷新</button>'); // refresh handler to refresh the data source
                 that.addNewItem = $('<button class="jqcSelectboxAddNewItem" title="从服务器获取新选项">新增</button>'); // allowed to trigger adding a item to options
                 that.optionUL = $('<ul>');
 
-                var inputWidth = containerWidth = that.options.width;
-                containerWidth += 64;
-                that.operationBar.append(that.input);
-                if (that.options.withResetter) {
-                    that.operationBar.append(that.resetter);
+                var inputWidth = that.el.outerWidth();
+                var containerWidth = inputWidth;
+                if (that.options.withSearch) {
+                    that.operationBar.append(that.input);
+                    if (that.options.withResetter) {
+                        containerWidth += 54;
+                        that.operationBar.append(that.resetter);
+                    } else {
+                        // inputWidth += 52;
+                    }
+                    if (that.options.updateDataSource) {
+                        that.operationBar.append(that.refresher);
+                        containerWidth += 54;
+                    }
+                    if (that.options.addNewItem) {
+                        that.operationBar.append(that.addNewItem);
+                        containerWidth += 54;
+                    }
+                    that.container.append(that.operationBar).append(that.optionUL);
                 } else {
-                    inputWidth += 52;
+                    that.container.append(that.optionUL);
                 }
-                if (that.options.updateDataSource) {
-                    that.operationBar.append(that.refresher);
-                    containerWidth += 52;
-                }
-                if (that.options.addNewItem) {
-                    that.operationBar.append(that.addNewItem);
-                    containerWidth += 52;
-                }
-                that.container.append(that.operationBar).append(that.optionUL);
                 var
                     elOuterHeight = that.el.outerHeight(),
                     elOuterWidth = that.el.outerWidth();
@@ -828,16 +846,17 @@
                 that.container.appendTo('body');
 
                 var triggerByMe = false;
-                that.el.focus(function (e) {
+                that.el.focus(function(e) {
                     triggerByMe = true;
                     var elOffset = that.el.offset();
                     var maxWidth = $('body').width();
-                    that.container.css('top', elOffset.top + elOuterHeight + 2);
+                    that.container.css('top', elOffset.top + elOuterHeight + 4);
                     if (that.container.outerWidth() + elOffset.left + 5 > maxWidth) {
                         that.container.css('right', maxWidth - (elOffset.left + elOuterWidth - 15));
                     } else {
                         that.container.css('left', elOffset.left);
                     }
+                    $(this).addClass('jqcSelectboxHooks-active');
                     that.container.show();
                     that.input.focus();
                     // 自动显示
@@ -851,18 +870,19 @@
                 var oldVal = null,
                     selectIndex = null,
                     optionSize = 0;
-                that.input.keydown(function (e) {
+                that.input.keydown(function(e) {
                     switch (e.keyCode) {
                         case $.ui.keyCode.TAB:
                             {
                                 that.container.hide();
+                                that.el.removeClass('jqcSelectboxHooks-active').trigger('blur');
                                 that.el.nextAll(":input").first().focus();
                                 e.preventDefault();
                                 return;
                             }
                     }
                 });
-                that.input.keyup(function (e) {
+                that.input.keyup(function(e) {
                     switch (e.keyCode) {
                         case $.ui.keyCode.ENTER:
                             that.optionUL.find('li.jqcSelectboxSelected').trigger('click');
@@ -870,6 +890,7 @@
                             return;
                         case $.ui.keyCode.ESCAPE:
                             that.container.hide();
+                            that.el.removeClass('jqcSelectboxHooks-active').trigger('blur');
                             return;
                         case $.ui.keyCode.UP:
                             selectIndex == null ? selectIndex = -1 : selectIndex--;
@@ -887,7 +908,7 @@
                                 if (null != filterHandler) {
                                     clearTimeout(filterHandler);
                                 }
-                                filterHandler = setTimeout(function () {
+                                filterHandler = setTimeout(function() {
                                     if (oldVal != that.input.val()) {
                                         that.optionUL.html(filterFun.call(that.optionCore, that.input.val()));
                                         selectIndex = null;
@@ -906,18 +927,19 @@
                     that.optionUL.find('li').eq(selectIndex = selectIndex % optionSize).addClass('jqcSelectboxSelected');
                 });
 
-                $(document).click(function (e) {
+                $(document).click(function(e) {
                     if (!triggerByMe) {
                         that.container.hide();
+                        that.el.removeClass('jqcSelectboxHooks-active').trigger('blur');
                     }
                     triggerByMe = false;
                 });
 
-                that.container.click(function (e) {
+                that.container.click(function(e) {
                     triggerByMe = true;
                 });
 
-                that.optionUL.on('click', 'li', function (e) {
+                that.optionUL.on('click', 'li', function(e) {
                     var _val = $(e.target).attr('value');
                     if (null == _val || undefined == _val) {
                         return;
@@ -937,6 +959,7 @@
                     that.el.val(_val);
                     oldVal = null;
                     that.container.hide();
+                    that.el.removeClass('jqcSelectboxHooks-active').trigger('blur');
                 });
 
                 function reset(toHide) {
@@ -946,11 +969,12 @@
                     that.el.val(that.defaultVal);
                     if (toHide) {
                         that.container.hide();
+                        that.el.removeClass('jqcSelectboxHooks-active').trigger('blur');
                     }
                 }
 
                 if (that.options.withResetter) {
-                    that.resetter.click(function (e) {
+                    that.resetter.click(function(e) {
                         reset(true);
                         if (that.options.postClear) {
                             that.options.postClear();
@@ -959,11 +983,11 @@
                 }
 
                 if (that.options.updateDataSource) {
-                    that.refresher.click(function (e) {
+                    that.refresher.click(function(e) {
                         if (!that.options.updateDataSource) {
                             return;
                         }
-                        that.options.updateDataSource(function (newDataSource) {
+                        that.options.updateDataSource(function(newDataSource) {
                             if ($.isArray(newDataSource)) {
                                 that.optionCore.updateDataSource(newDataSource);
                             }
@@ -973,9 +997,10 @@
                 }
 
                 if (that.options.addNewItem) {
-                    that.addNewItem.click(function (e) {
+                    that.addNewItem.click(function(e) {
                         that.container.hide();
-                        that.options.addNewItem(function (newItem) {
+                        that.el.removeClass('jqcSelectboxHooks-active').trigger('blur');
+                        that.options.addNewItem(function(newItem) {
                             if (newItem) {
                                 that.optionCore.addNewItem(newItem);
                             }
@@ -986,7 +1011,7 @@
 
             $.jqcSelectBox.prototype = new $.jqcBaseElement();
             $.jqcSelectBox.prototype.constructor = $.jqcSelectBox;
-            $.jqcSelectBox.prototype.updateCurrentVal = function (val) {
+            $.jqcSelectBox.prototype.updateCurrentVal = function(val) {
                 this.currentVal = val;
                 if (this.options.supportMultiSelect) {
                     if (this.currentVal === UNDEFINED_OPTION) {
@@ -996,11 +1021,12 @@
                         var result = '',
                             label = '';
                         var _this = this;
-                        this.currentVal.split(',').forEach(function (element) {
+                        this.currentVal.split(',').forEach(function(element) {
                             var option = _this.optionCore.get(element);
                             if (option) {
                                 label = label.concat(option.label);
                                 result = result.concat(',').concat(option.text);
+                                _this.valueCache.set(element, null);
                             }
                         });
                         this.optionSelected.html(label);
@@ -1020,14 +1046,14 @@
                     }
                 }
             };
-            $.jqcSelectBox.prototype.updateDataSource = function (data) {
+            $.jqcSelectBox.prototype.updateDataSource = function(data) {
                 if ($.isArray(data)) {
                     this.optionCore.updateDataSource(data);
                 }
             };
 
             superDestroy = $.jqcSelectBox.prototype.destroy;
-            $.jqcSelectBox.prototype.destroy = function () {
+            $.jqcSelectBox.prototype.destroy = function() {
                 superDestroy.apply(this);
                 this.container.remove();
             };

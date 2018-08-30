@@ -1854,7 +1854,7 @@
   height: 0;
 }
 .dx-dropdowneditor-active .dx-dropdowneditor-icon {
-  opacity: .35;
+  /*opacity: .35;*/
 }
 .dx-dropdowneditor-button {
   position: relative;
@@ -4196,9 +4196,11 @@
   cursor: pointer;
 }
 .dx-datagrid .dx-column-indicators {
-  display: inline-block;
   vertical-align: top;
   white-space: nowrap;
+  display: flex;
+  height: 39px;
+  align-items: center;
 }
 .dx-datagrid .dx-column-indicators.dx-visibility-hidden {
   visibility: hidden;
@@ -4265,6 +4267,8 @@
 }
 .dx-datagrid-nowrap.dx-datagrid-headers .dx-header-row > td > .dx-datagrid-text-content {
   white-space: nowrap;
+  color: #4d4d4d;
+  font-size: 14px;
 }
 .dx-datagrid-drag-header {
   position: absolute;
@@ -4376,7 +4380,7 @@ input.dx-hidden {
   border-left: none;
 }
 .dx-datagrid-content .dx-datagrid-table .dx-row .dx-editor-container {
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 .dx-datagrid-content .dx-datagrid-table .dx-row .dx-cell-modified:not(.dx-field-item-content),
 .dx-datagrid-content .dx-datagrid-table .dx-row .dx-datagrid-invalid:not(.dx-field-item-content) {
@@ -4395,8 +4399,8 @@ input.dx-hidden {
   margin: 0;
 }
 .dx-datagrid-content .dx-datagrid-table .dx-row .dx-editor-cell .dx-dropdowneditor {
-  margin-left: -1px;
-  padding-left: 1px;
+  /*margin-left: -1px;*/
+  /*padding-left: 1px;*/
 }
 .dx-datagrid-content .dx-datagrid-table .dx-row .dx-command-select {
   padding: 0;
@@ -4473,6 +4477,12 @@ input.dx-hidden {
 }
 .dx-datagrid-headers .dx-header-row .dx-editor-cell .dx-select-checkbox {
   display: inline-block;
+}
+.dx-datagrid-headers .dx-header-row {
+  background: #f5f6fa;
+}
+.dx-datagrid-content-fixed .dx-header-row {
+  background: transparent;
 }
 .dx-datagrid-headers .dx-header-row > td {
   white-space: nowrap;
@@ -4552,7 +4562,7 @@ input.dx-hidden {
   z-index: 1;
   position: absolute;
   top: 0;
-  left: 0;
+  left: 2px;
   cursor: pointer;
   margin-left: -2px;
   margin-top: -2px;
@@ -5095,6 +5105,7 @@ input.dx-hidden {
   -ms-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 12px;
 }
 .dx-menu-base .dx-menu-item .dx-menu-item-content .dx-menu-item-popout-container {
   position: absolute;
