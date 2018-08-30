@@ -121,6 +121,13 @@ textarea {
     border-radius: 2px;
     border: 1px solid #d9d9d9;
     box-sizing: border-box;
+    width: 150px;
+    height: 30px;
+    font-size: 12px;
+    color: #222;
+    padding: 0 10px;
+    box-shadow: none!important;
+    -moz-box-shadow: none!important;
 }
 input:hover,
 select:hover,
@@ -129,27 +136,26 @@ textarea:hover {
 }
 textarea {
     padding: 5px 10px;
+    height: 60px;
+    resize: none;
 }
 label {
     font-size: 14px;
     color: #444;
 }
-input {
-    box-sizing: border-box;
-    width: 150px;
-    height: 30px;
-    font-size: 12px;
-    color: #222;
-    padding: 0 10px;
-}
 input::-webkit-input-placeholder {
     color: #ccc;
 }
-input:disabled {
-    background: #f2f2f2;
+input:disabled,
+textarea:disabled,
+select:disabled {
+    background-color: #f2f2f2;
     color: #ccc;
+    cursor: default!important;
 }
-input:disabled:hover{
+input:disabled:hover,
+textarea:disabled:hover,
+select:disabled:hover{
     border-color: #d9d9d9;
 }
 input[datatype="date"] {
@@ -161,6 +167,9 @@ input[datatype="date"] {
 }
 input[datatype="date"]:hover {
     background-image: url('./images/icon_calendar_active.png');
+}
+input[datatype="date"]:disabled:hover {
+    background-image: url('./images/icon_calendar.png');
 }
 input[datatype="date"][date-start],
 input[datatype="date"][date-end] {
@@ -198,11 +207,6 @@ a:FOCUS {
 label {
     font-size: 14px;
     padding: 0 5px;
-}
-
-.inputBox,
-.inputNumber {
-    width: 92%
 }
 
 .inputArticle {
@@ -261,50 +265,57 @@ label {
     padding-bottom: 10px;
 }
 
-.form_group .form_item{
+.form_group .form_item,
+.form_group > div{
     display: flex;
     align-items: center;
     padding: 10px 5px 0 15px;
     color: #444;
 }
+
+.form_label span,
+.form_label label,
+.form .row > div span,
+.form .row > div label,
+.form_group .form_item span,
+.form_group .form_item label,
+.form_group > div label,
+.form_group > div span{
+    color: #444;
+    font-size: 12px;
+    margin-right: 10px;
+}
+.form .row > div,
 .form_label {
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
 }
-.form_label span{
-    color: #444;
-    font-size: 12px;
-    margin-right: 10px;
-}
+.form .row > div input:required + span::before,
 .form_label input:required + span::before{
     content: '*';
     color: #C63136;
     margin-right: 4px;
 }
-.form_group .form_item lable{
-    margin-right: 10px;
-    color: #444;
-}
-.from_btn_box {
+.form_btn_box {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 20px 0 10px;
 }
-.from_btn_box.left {
+.form_btn_box.left {
     justify-content: flex-start;
 }
-.from_btn_box.right {
+.form_btn_box.right {
     justify-content: flex-end;
 }
-.from_btn_box button{
+.form_btn_box button{
     margin: 0 10px;
 }
-.from_btn_box.left button {
+.form_btn_box.left button {
     margin: 0 20px 0 0;
 }
-.from_btn_box.right button {
+.form_btn_box.right button {
     margin: 0 0 0 20px;
 }
 .toolbar-left {
@@ -312,6 +323,7 @@ label {
 }
 .form_group .search_item{
     padding: 10px 15px 0 0;
+    margin-left: -5px;
 }
 .jqcFormToolBar-newline .toolbar-right .form_item{
     padding: 10px 20px 0 0;
@@ -358,17 +370,16 @@ label {
     cursor: not-allowed;
 }
 
-input.smail {
+input.smail,
+select.smail,
+textarea.smail {
     width: 80px!important;
 }
 
-input.large {
+input.large,
+select.large,
+textarea.large {
     width: 200px!important;
-}
-
-.jqcTabPanel select {
-    height: 26px;
-    box-sizing: border-box;
 }
 
 .jqcTabPanel .export-excel {

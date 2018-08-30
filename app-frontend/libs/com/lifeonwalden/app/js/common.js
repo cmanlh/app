@@ -446,8 +446,12 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 })
             });
         };
-        $.App.prototype.triggerQuery = function () {
-            this._toolBar.find('.toolbar-left button.queryBtn').trigger('click');
+        $.App.prototype.triggerQuery = function (params) {
+            if (this._toolBar) {
+                this._toolBar.find('.toolbar-left button.queryBtn').trigger('click');
+            } else {
+                this.fillDxDataGrid(params);
+            }
         };
         $.App.prototype.confirm = function (params) {
             var _content = $('<div>');
@@ -482,7 +486,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.delete = function (params) {
             var _this = this;
-            this.confirm({
+            $.jqcConfirm({
                 title: params.title,
                 content: params.content,
                 onConfirm: function () {
@@ -491,7 +495,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                     _this.requestPost(params.api, params.data).then(res => {
                         if (res.code == 0) {
-                            _this.triggerQuery();
+                            _this.triggerQuery(params.fillParams);
                             if (params.success) {
                                 params.success(res);
                             } else {
