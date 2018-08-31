@@ -38,20 +38,21 @@ body {
 
 .app-menu-logo {
     font-family: FZLTZHJW--GB1-0;
-    padding: 0 30px;
+    padding: 0 20px;
     color: #222;
-    font-size: 20px;
+    font-size: 16px;
     flex-shrink: 0;
     height: 40px;
 }
 
 .app-menu-logo::before {
     content: '';
-    width: 150px;
-    height: 40px;
+    width: 83px;
+    height: 30px;
+    margin: 5px 0;
     float: left;
     background: url('images/logo.png') no-repeat;
-    background-size: 150px 40px;
+    background-size: 83px 30px;
 }
 
 .app-menu-logo::after {
