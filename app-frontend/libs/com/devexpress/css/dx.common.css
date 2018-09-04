@@ -4199,8 +4199,9 @@
   vertical-align: top;
   white-space: nowrap;
   display: flex;
-  height: 39px;
+  height: 36px;
   align-items: center;
+  float: right!important;
 }
 .dx-datagrid .dx-column-indicators.dx-visibility-hidden {
   visibility: hidden;
@@ -4565,7 +4566,7 @@ input.dx-hidden {
   left: 2px;
   cursor: pointer;
   margin-left: -2px;
-  margin-top: -2px;
+  /*margin-top: -2px;*/
   height: 100%;
 }
 .dx-datagrid-filter-row .dx-menu-item.dx-state-focused:after {
