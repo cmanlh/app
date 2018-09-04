@@ -329,8 +329,9 @@ label {
     padding: 10px 15px 0 0;
     margin-left: -5px;
 }
-.jqcFormToolBar-newline .toolbar-right .form_item{
-    padding: 10px 20px 0 0;
+.jqcFormToolBar-newline .toolbar-right .form_item,
+.jqcFormToolBar-newline .toolbar-right .form_group > div {
+    padding: 10px 5px 0 0;
 }
 .jqcFormToolBar-newline .toolbar-right .search_item{
     flex-grow: 1;
