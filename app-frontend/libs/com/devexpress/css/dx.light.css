@@ -30,8 +30,8 @@
 .dx-datagrid-borders > .dx-datagrid-headers,
 .dx-datagrid-borders > .dx-datagrid-rowsview,
 .dx-datagrid-borders > .dx-datagrid-total-footer {
-    border-left: 1px solid #ebedf3;
-    border-right: 1px solid#ebedf3;
+    border-left: 1px solid #e4e6ee;
+    border-right: 1px solid#e4e6ee;
 }
 .dx-datagrid-borders > .dx-datagrid-rowsview,
 .dx-datagrid-borders > .dx-datagrid-total-footer {
@@ -40,12 +40,12 @@
 .dx-datagrid-borders > .dx-datagrid-pager,
 .dx-datagrid-borders > .dx-datagrid-headers,
 .dx-datagrid-borders > .dx-datagrid-filter-panel {
-    border-top: 1px solid #ebedf3;
+    border-top: 1px solid #e4e6ee;
 }
 .dx-datagrid-borders > .dx-datagrid-filter-panel {
     border-top-width: 0;
-    border-left: 1px solid #ebedf3;
-    border-right: 1px solid #ebedf3;
+    border-left: 1px solid #e4e6ee;
+    border-right: 1px solid #e4e6ee;
 }
 .dx-datagrid {
     color: #333;
@@ -6158,12 +6158,12 @@
     color: #ed1c24;
 }
 .dx-datagrid .dx-row-lines > td {
-    border-bottom: 1px solid #ebedf3;
+    border-bottom: 1px solid #e4e6ee;
     background-color: #f8f8f8;
 }
 .dx-datagrid .dx-column-lines > td {
-    border-left: 1px solid #ebedf3;
-    border-right: 1px solid #ebedf3;
+    border-left: 1px solid #e4e6ee;
+    border-right: 1px solid #e4e6ee;
 }
 .dx-datagrid .dx-error-row .dx-closebutton {
     float: right;
@@ -6192,7 +6192,7 @@
     font-size: 14px;
     line-height: 35px;
     height: 35px;
-    color: #666;
+    color: #333;
 }
 .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row .dx-command-edit-with-icons .dx-link {
     width: 18px;
@@ -6421,7 +6421,7 @@
     border-bottom-width: 1px;
 }
 .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
-    border-bottom: 1px solid #ebedf3;
+    border-bottom: 1px solid #e4e6ee;
 }
 .dx-datagrid-content-fixed .dx-datagrid-filter-row{
     background: transparent!important;
@@ -6648,7 +6648,7 @@
     line-height: 21px;
 }
 .dx-datagrid-rowsview {
-    /*border-top: 1px solid #ebedf3;*/
+    /*border-top: 1px solid #e4e6ee;*/
 }
 .dx-datagrid-rowsview .dx-row {
     border-top: 1px solid transparent;
@@ -10353,7 +10353,7 @@
     box-shadow: inset 0 0 0 1px #ed1c24;
 }
 .dx-scheduler-date-table-droppable-cell {
-    background-color: #ebedf3;
+    background-color: #e4e6ee;
 }
 .dx-scheduler-scrollable-appointments {
     position: absolute;
@@ -12115,8 +12115,8 @@
     background-color: #fff;
 }
 .dx-scheduler-appointment-popup .dx-scheduler-recurrence-rule-item.dx-scheduler-recurrence-rule-item-opened:before {
-    border-top: 1px solid #ebedf3;
-    border-bottom: 1px solid #ebedf3;
+    border-top: 1px solid #e4e6ee;
+    border-bottom: 1px solid #e4e6ee;
 }
 .dx-scheduler-appointment-popup .dx-form-validation-summary {
     padding: 10px 20px;
