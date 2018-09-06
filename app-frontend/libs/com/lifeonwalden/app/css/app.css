@@ -383,7 +383,7 @@ textarea.smail {
 input.large,
 select.large,
 textarea.large {
-    width: 200px!important;
+    width: 200px;
 }
 
 .jqcTabPanel .export-excel {

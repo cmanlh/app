@@ -4394,11 +4394,9 @@
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAQAAAC00HvSAAABlklEQVRIx62Wv0rDUBSHTxE6uHTKGhDEzS2jg4vUMeBmX8BR8AFiJQEfwck3cAh2cxBcXEup3VoHF3UxS1FBvuvQhPy5N0lTwplyknz33HN+95wriNEsXAJCZkRAxIyQABfL/L3J6eAzRhltjI9Tj7HxmJcgEpvjYVdh+oxqEImN6JdhBkzXhCgUUwYmzIBFA4hCsUhB6XamDSGriPpZjL12TvQc2SnG2xCiUHgJxqktcdbe+SmU31lh/AaQJQ4HfOR8PiJYpYrVDU4RhD1+c8q2BLdBLNdxXW8KflcI1obcs4UgnGlvAiE0/DDhW/O90EMQDnMbWlkozDTnMz2OC6AvdhGEHT4Ny86EqOB6i1fNgv44QhC2mRi3Gwlozqs4kSnoHEHocFdWQT0ahWKYA93GT5elyY9MucmDHukiCCeGuDO5CUteJaAOgrDPskIKYZVuhpkG/1qpqKBaxRcIQpeHGmG6dWfKM0hfnxZW/Ql/qj0k/ib9Rh83Tqvdr7Ve3NJkaG1OtTY1W5vhrd0oWrvfbHjb+gdn1DPEHv9HmQAAAABJRU5ErkJggg==);
 }
 .dx-popup-wrapper > .dx-overlay-content {
-    border: 1px solid #ddd;
     background: #fff;
-    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    border: 1px solid #D9D9D9;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
     border-radius: 2px;
 }
 .dx-popup-wrapper > .dx-popup-fullscreen {
@@ -7973,7 +7971,7 @@
     color: #ed1c24;
 }
 .dx-menu-item {
-    color: #666;
+    color: #333;
     background: #fff;
     font-size: 12px;
 }

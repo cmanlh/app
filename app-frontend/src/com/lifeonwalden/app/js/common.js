@@ -270,11 +270,16 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _this = this;
             this._toolBar = $('<div>');
             this._root.prepend(_this._toolBar);
-            new $.jqcFormToolBar({
+            this.toolbar = new $.jqcFormToolBar({
                 element: _this._toolBar,
                 conditionHtml: _this._conditionHtml[0] || '',
                 controlHtml: _this._controlHtml[0] || '',
-                height: 50
+                height: 50,
+                onResize: function (height) {
+                    if (_this.dxDataGrid) {
+                        _this.getDxDataGrid().option('height', window.innerHeight - 110 - height);
+                    }
+                }
             });
             setTimeout(function () {
                 _this.mixinFormat.forEach(format => {
@@ -289,6 +294,12 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     _this.fillDxDataGrid(_data);
                 });
             }, 0);
+            var _parent = this.root.parents('.jqcTabPanel');
+            $.jqcEvent.on('resize.menu', function () {
+                if (_parent.is(':visible')) {
+                    _this.toolbar.resize();
+                }
+            })
         };
         $.App.prototype.__renderDxDataGrid = function () {
             var _this = this;
