@@ -275,11 +275,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 conditionHtml: _this._conditionHtml[0] || '',
                 controlHtml: _this._controlHtml[0] || '',
                 height: 50,
-                onResize: function (height) {
+                onResize: _this.root.parents('.jqcDialogContainer').length == 0 ? function (height) {
                     if (_this.dxDataGrid) {
                         _this.getDxDataGrid().option('height', window.innerHeight - 110 - height);
                     }
-                }
+                } : null
             });
             setTimeout(function () {
                 _this.mixinFormat.forEach(format => {

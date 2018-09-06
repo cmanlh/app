@@ -8374,7 +8374,7 @@
 .dx-calendar-cell {
     text-align: center;
     padding: 1px 8px 2px;
-    color: #666;
+    color: #333;
     font-size: 15px;
     border: 1px double transparent;
     width: 39px;
@@ -8438,6 +8438,7 @@
 .dx-calendar-cell.dx-calendar-selected-date.dx-calendar-contoured-date span,
 .dx-calendar-cell.dx-calendar-selected-date.dx-calendar-today.dx-calendar-contoured-date span{
     color: #000;
+    font-weight: 600;
 }
 .dx-state-focused.dx-calendar {
     -webkit-box-shadow: none;
