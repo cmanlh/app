@@ -47,12 +47,11 @@ body {
 
 .app-menu-logo::before {
     content: '';
-    width: 83px;
-    height: 30px;
-    margin: 5px 0;
+    width: 90px;
+    height: 24px;
+    margin: 8px 0;
     float: left;
-    background: url('images/logo.png') no-repeat;
-    background-size: 83px 30px;
+    background: url('images/logo.png') no-repeat center;
 }
 
 .app-menu-logo::after {
@@ -384,43 +383,45 @@ textarea.smail {
 input.large,
 select.large,
 textarea.large {
-    width: 200px!important;
+    width: 200px;
 }
 
-.jqcTabPanel .export-excel {
-    border: 1px solid #D9D9D9;
+.jqcTabPanel .export-excel,
+.jqcTabPanel .export-word,
+.jqcTabPanel .export-pdf {
     border-radius: 2px;
     display: block;
     box-sizing: border-box;
     width: 30px;
     height: 30px;
-    background-color: #fff;
-    background-image: url('./images/icon_excel.png');
+    background-color: transparent;
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: 3px center;
+    border: 1px solid #d9d9d9;
+}
+.jqcTabPanel .export-excel {
+    background-image: url('./images/icon_excel.png');
+}
+.jqcTabPanel .export-word {
+    background-image: url('./images/icon_word.png');
+}
+.jqcTabPanel .export-pdf {
+    background-image: url('./images/icon_pdf.png');
 }
 
 .jqcTabPanel .export-excel:hover {
-    background-image: url('./images/icon_excel_active.png');
     border: 1px solid #C63136;
-}
- 
-.export-pdf {
-    border: 1px solid #D9D9D9;
-    border-radius: 2px;
-    display: block;
-    box-sizing: border-box;
-    width: 30px;
-    height: 30px;
-    background-color: #fff;
-    background-image: url('./images/icon_pdf.png');
-    background-repeat: no-repeat;
-    background-position: center;
+    background-image: url('./images/icon_excel_hover.png');
 }
 
-.export-pdf:hover {
-    background-image: url('./images/icon_pdf_active.png');
+.jqcTabPanel .export-word:hover {
     border: 1px solid #C63136;
+    background-image: url('./images/icon_word_hover.png');
+}
+
+.jqcTabPanel .export-pdf:hover {
+    border: 1px solid #C63136;
+    background-image: url('./images/icon_pdf_hover.png');
 }
 
 .jqcConfirm-btnBox {
