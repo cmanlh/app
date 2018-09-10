@@ -10,15 +10,21 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['loading'])
         .registerComponents(['confirm'])
         .registerComponents(['event'])
-        .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab', 'jsoneditor'])
+        .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
+        .registerComponents(['echarts']) //图表
+        .registerComponents(['jsoneditor']) //json编辑器图表
+        .registerComponents(['editor']) //富文本编辑器
         .registerComponents(['apisBox']));
 
+const COMP_LIB_PATH = 'com.lifeonwalden.jqc';
+
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'jsoneditor'])
+    .importComponents('com.lifeonwalden.jqc', ['confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.messages.cn.js'))
+    // echarts
     .importCss(LIB_ROOT_PATH.concat('com/devexpress/css/dx.common.css'))
     .importCss(LIB_ROOT_PATH.concat('com/devexpress/css/dx.light.css'))
     // datetimepicker样式
@@ -146,6 +152,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._config = $.getGlobalConfig(); //config.js文件中的配置
             this.loading = new $.jqcLoading();
             this.pinyinParser = pinyinParser;
+            this.components = params.components || [];
             this.templatePath = params.templatePath ? params.templatePath : null; //模板文件相对路径
             this.stylePath = params.stylePath ? params.stylePath : null; //模板文件相对路径
             this.contextmenu = (params && params.contextmenu) ? params.contextmenu : null;
@@ -178,26 +185,28 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.loading.show();
             // 生命周期-装载之前
             this.beforeMount && this.beforeMount();
-            if (this.stylePath) {
-                var _path = this.getAbsolutePath(_this.stylePath);
-                if (!styleCache[_path]) {
-                    $JqcLoader.importCss(_path).execute(function () {
-                        styleCache[_path] = true;
-                    });
+            $JqcLoader.importComponents(COMP_LIB_PATH, this.components).execute(function () {
+                if (_this.stylePath) {
+                    var _path = _this.getAbsolutePath(_this.stylePath);
+                    if (!styleCache[_path]) {
+                        $JqcLoader.importCss(_path).execute(function () {
+                            styleCache[_path] = true;
+                        });
+                    }
                 }
-            }
-            if (this.contextmenu) {
-                this.__renderContextMenu();
-            }
-            if (this.templatePath) {
-                this.__getTemplateAndRender();
-            } else {
-                if (this.dxDataGrid) {
-                    this.__renderDxDataGrid();
+                if (_this.contextmenu) {
+                    _this.__renderContextMenu();
                 }
-                // 生命周期-渲染之后
-                this.__afterRender();
-            }
+                if (_this.templatePath) {
+                    _this.__getTemplateAndRender();
+                } else {
+                    if (_this.dxDataGrid) {
+                        _this.__renderDxDataGrid();
+                    }
+                    // 生命周期-渲染之后
+                    _this.__afterRender();
+                }
+            });
         };
         $.App.prototype.requestGet = function (api, params) {
             var _this = this;
