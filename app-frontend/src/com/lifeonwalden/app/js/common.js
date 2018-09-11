@@ -152,14 +152,15 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._config = $.getGlobalConfig(); //config.js文件中的配置
             this.loading = new $.jqcLoading();
             this.pinyinParser = pinyinParser;
-            this.components = params.components || [];
-            this.templatePath = params.templatePath ? params.templatePath : null; //模板文件相对路径
-            this.stylePath = params.stylePath ? params.stylePath : null; //模板文件相对路径
+            this.components = (params && params.components) ? params.components : [];
+            this.templatePath = (params && params.templatePath) ? params.templatePath : null; //模板文件相对路径
+            this.stylePath = (params && params.stylePath) ? params.stylePath : null; //模板文件相对路径
             this.contextmenu = (params && params.contextmenu) ? params.contextmenu : null;
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : null;
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
+            this.beforeRender = (params && params.beforeRender) ? params.beforeRender.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
-            if (params.mixins && params.mixins.length) {
+            if (params && params.mixins && params.mixins.length) {
                 params.mixins.forEach(mixin => {
                     Object.assign(_this.mixinData, mixin);
                     var m_prototype = mixin.__proto__;
@@ -174,6 +175,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                 });
             }
+            $.setupApp(this);
             return this;
         };
         $.App.prototype.mount = function (root) {
@@ -184,7 +186,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._name = root.attr('data-name');
             this.loading.show();
             // 生命周期-装载之前
-            this.beforeMount && this.beforeMount();
+            this.beforeRender && this.beforeRender();
             $JqcLoader.importComponents(COMP_LIB_PATH, this.components).execute(function () {
                 if (_this.stylePath) {
                     var _path = _this.getAbsolutePath(_this.stylePath);
@@ -328,16 +330,16 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._dxDataGrid.dxDataGrid(dxConfig);
             var dx = this.getDxDataGrid();
             // 导出事件绑定
-            if (dx && this.dxDataGrid.exportProxyClassName) {
-                this.root.find(`.${_this.dxDataGrid.exportProxyClassName}`)
+            if (dx && dxConfig.exportProxyClassName) {
+                this.root.find(`.${dxConfig.exportProxyClassName}`)
                     .click(function(e) {
                         e.stopPropagation();
                         dx.exportToExcel(false);
                     });
             }
             // 搜索事件绑定
-            if (dx && this.dxDataGrid.searchProxyClassName) {
-                this.root.find(`.${_this.dxDataGrid.searchProxyClassName}`)
+            if (dx && dxConfig.searchProxyClassName) {
+                this.root.find(`.${dxConfig.searchProxyClassName}`)
                     .keyup(function(e) {
                         e.stopPropagation();
                         var val = $(this).val();
@@ -473,37 +475,37 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 this.fillDxDataGrid(params);
             }
         };
-        $.App.prototype.confirm = function (params) {
-            var _content = $('<div>');
-            var _text = $('<div>').addClass('jqcConfirm-textBox');
-            if (params.content) {
-                _text.append(params.content);
-            }
-            var done = $('<button>').addClass('btn jqcConfirm-btn').text('确认');
-            var cancel = $('<button>').addClass('btn jqcConfirm-btn').text('取消');
-            var $btnBox = $('<div>')
-                .addClass('jqcConfirm-btnBox')
-                .append(done)
-                .append(cancel);
-            _content.append(_text).append($btnBox);
-            var _confirm = new $.jqcDialog({
-                title: params.title || '请确认',
-                content: _content,
-                width: params.width || 300,
-                afterClose: function () {
-                    params.onClose && params.onClose();
-                }
-            });
-            _confirm.open();
-            done.click(function () {
-                params.onConfirm && params.onConfirm();
-                _confirm.close();
-            });
-            cancel.click(function () {
-                params.onCancel && params.onCancel();
-                _confirm.close();
-            })
-        };
+        // $.App.prototype.confirm = function (params) {
+        //     var _content = $('<div>');
+        //     var _text = $('<div>').addClass('jqcConfirm-textBox');
+        //     if (params.content) {
+        //         _text.append(params.content);
+        //     }
+        //     var done = $('<button>').addClass('btn jqcConfirm-btn').text('确认');
+        //     var cancel = $('<button>').addClass('btn jqcConfirm-btn').text('取消');
+        //     var $btnBox = $('<div>')
+        //         .addClass('jqcConfirm-btnBox')
+        //         .append(done)
+        //         .append(cancel);
+        //     _content.append(_text).append($btnBox);
+        //     var _confirm = new $.jqcDialog({
+        //         title: params.title || '请确认',
+        //         content: _content,
+        //         width: params.width || 300,
+        //         afterClose: function () {
+        //             params.onClose && params.onClose();
+        //         }
+        //     });
+        //     _confirm.open();
+        //     done.click(function () {
+        //         params.onConfirm && params.onConfirm();
+        //         _confirm.close();
+        //     });
+        //     cancel.click(function () {
+        //         params.onCancel && params.onCancel();
+        //         _confirm.close();
+        //     })
+        // };
         $.App.prototype.delete = function (params) {
             var _this = this;
             $.jqcConfirm({
