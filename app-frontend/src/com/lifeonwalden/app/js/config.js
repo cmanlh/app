@@ -8,7 +8,9 @@
         contentHtmlClassName: 'content' //自定义内容
     };
     // dxDataGrid默认配置
-    const dxDataGridDefaultConfig = {
+    const dxDataGridDefaultConfig = {        
+        exportProxyClassName: 'export',
+        searchProxyClassName: 'search',
         dataSource: [],
         height: window.innerHeight - 170,
         filterRow: {
