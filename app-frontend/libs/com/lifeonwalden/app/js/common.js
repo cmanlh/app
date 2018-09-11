@@ -146,9 +146,25 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _this = this;
             this._root = null; //容器页面根节点
             this._path = ''; //js文件路径
-            this.mixinData = {};
             this.mixinFormat = [];
             this.mixinAfterRender = [];
+            if (params && params.mixins && params.mixins.length) {
+                params.mixins.forEach(mixin => {
+                    for (var key in mixin) {
+                        if (typeof mixin[key] == 'function') {
+                            if (key == 'format') {
+                                _this.mixinFormat.push(mixin[key].bind(_this));
+                            } else if (key == 'afterRender') {
+                                _this.mixinAfterRender.push(mixin[key].bind(_this));
+                            } else {
+                                $.App.prototype[key] = mixin[key];
+                            }
+                        } else {
+                            _this[key] = mixin[key];
+                        }
+                    }
+                });
+            }
             this._config = $.getGlobalConfig(); //config.js文件中的配置
             this.loading = new $.jqcLoading();
             this.pinyinParser = pinyinParser;
@@ -160,21 +176,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
             this.beforeRender = (params && params.beforeRender) ? params.beforeRender.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
-            if (params && params.mixins && params.mixins.length) {
-                params.mixins.forEach(mixin => {
-                    Object.assign(_this.mixinData, mixin);
-                    var m_prototype = mixin.__proto__;
-                    for(var p in m_prototype) {
-                        if (p == 'format') {
-                            _this.mixinFormat.push(m_prototype[p].bind(_this));
-                        } else if (p == 'afterRender') {
-                            _this.mixinAfterRender.push(m_prototype[p].bind(_this));
-                        } else {
-                            _this[p] = m_prototype[p].bind(_this);
-                        }
-                    }
-                });
-            }
             $.setupApp(this);
             return this;
         };
@@ -517,10 +518,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                     _this.requestPost(params.api, params.data).then(res => {
                         if (res.code == 0) {
-                            _this.triggerQuery(params.fillParams);
                             if (params.success) {
                                 params.success(res);
                             } else {
+                                _this.triggerQuery(params.fillParams);
                                 var config = {
                                     type: 'success',
                                     title: '删除成功'
