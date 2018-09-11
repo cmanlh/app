@@ -171,8 +171,8 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.components = (params && params.components) ? params.components : [];
             this.templatePath = (params && params.templatePath) ? params.templatePath : null; //模板文件相对路径
             this.stylePath = (params && params.stylePath) ? params.stylePath : null; //模板文件相对路径
-            this.contextmenu = (params && params.contextmenu) ? params.contextmenu : null;
-            this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : null;
+            this.contextmenu = (params && params.contextmenu) ? params.contextmenu : (this.contextmenu || null);
+            this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : (this.dxDataGrid || null);
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
             this.beforeRender = (params && params.beforeRender) ? params.beforeRender.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
