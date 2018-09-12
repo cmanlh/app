@@ -147,18 +147,17 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._root = null; //容器页面根节点
             this._path = ''; //js文件路径
             this.mixinFormat = [];
-            this.mixinAfterRender = [];
+            this._beforeRender = [];
+            this._afterRender = [];
             if (params && params.mixins && params.mixins.length) {
                 params.mixins.forEach(mixin => {
                     for (var key in mixin) {
-                        if (typeof mixin[key] == 'function') {
-                            if (key == 'format') {
-                                _this.mixinFormat.push(mixin[key].bind(_this));
-                            } else if (key == 'afterRender') {
-                                _this.mixinAfterRender.push(mixin[key].bind(_this));
-                            } else {
-                                $.App.prototype[key] = mixin[key];
-                            }
+                        if (key == 'format') {
+                            _this.mixinFormat.push(mixin[key].bind(_this));
+                        } else if (key == 'afterRender') {
+                            _this._afterRender.push(mixin[key].bind(_this));
+                        } else if (key == 'beforeRender') {
+                            _this._beforeRender.push(mixin[key].bind(_this));
                         } else {
                             _this[key] = mixin[key];
                         }
@@ -174,10 +173,14 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.contextmenu = (params && params.contextmenu) ? params.contextmenu : (this.contextmenu || null);
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : (this.dxDataGrid || null);
             this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
-            this.beforeRender = (params && params.beforeRender) ? params.beforeRender.bind(this) : null;
+            if (params && params.beforeRender && typeof params.beforeRender == 'function') {
+                this._beforeRender.push(params.beforeRender);
+            }
+            if (params && params.afterRender && typeof params.afterRender == 'function') {
+                this._afterRender.push(params.afterRender);
+            }
             this.root = null; //暴露给afterRender的容器根节点
             $.setupApp(this);
-            return this;
         };
         $.App.prototype.mount = function (root) {
             var _this = this;
@@ -187,29 +190,32 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._name = root.attr('data-name');
             this.loading.show();
             // 生命周期-装载之前
-            this.beforeRender && this.beforeRender();
-            $JqcLoader.importComponents(COMP_LIB_PATH, this.components).execute(function () {
-                if (_this.stylePath) {
-                    var _path = _this.getAbsolutePath(_this.stylePath);
-                    if (!styleCache[_path]) {
-                        $JqcLoader.importCss(_path).execute(function () {
-                            styleCache[_path] = true;
-                        });
+            var _beforeRender = [].concat(this._beforeRender);
+            _beforeRender.push(function () {
+                $JqcLoader.importComponents(COMP_LIB_PATH, this.components).execute(function () {
+                    if (_this.stylePath) {
+                        var _path = _this.getAbsolutePath(_this.stylePath);
+                        if (!styleCache[_path]) {
+                            $JqcLoader.importCss(_path).execute(function () {
+                                styleCache[_path] = true;
+                            });
+                        }
                     }
-                }
-                if (_this.contextmenu) {
-                    _this.__renderContextMenu();
-                }
-                if (_this.templatePath) {
-                    _this.__getTemplateAndRender();
-                } else {
-                    if (_this.dxDataGrid) {
-                        _this.__renderDxDataGrid();
+                    if (_this.contextmenu) {
+                        _this.__renderContextMenu();
                     }
-                    // 生命周期-渲染之后
-                    _this.__afterRender();
-                }
+                    if (_this.templatePath) {
+                        _this.__getTemplateAndRender();
+                    } else {
+                        if (_this.dxDataGrid) {
+                            _this.__renderDxDataGrid();
+                        }
+                        // 生命周期-渲染之后
+                        _this.__afterRender();
+                    }
+                });
             });
+            queue(_beforeRender, this);
         };
         $.App.prototype.requestGet = function (api, params) {
             var _this = this;
@@ -378,13 +384,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.__afterRender = function () {
             var _this = this;
+            var _afterRender = [].concat(this._afterRender);
             setTimeout(function () {
-                _this.mixinAfterRender.forEach(ar => {
-                    ar();
-                });
-                _this.afterRender && _this.afterRender();
+                queue(_afterRender, _this);
                 _this.loading.hide();
-            }, 0);
+            }, 17);
         };
         /**
          * templatePath 模板路径
@@ -456,7 +460,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                                 $.jqcNotification(config);
                             }
                             if (params.updateCache && _this.updateCache) {
-                                _this.updateCache();
+                                _this.updateCache(params.updateCache);
                             }
                         } else {
                             $.jqcNotification({
@@ -476,37 +480,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 this.fillDxDataGrid(params);
             }
         };
-        // $.App.prototype.confirm = function (params) {
-        //     var _content = $('<div>');
-        //     var _text = $('<div>').addClass('jqcConfirm-textBox');
-        //     if (params.content) {
-        //         _text.append(params.content);
-        //     }
-        //     var done = $('<button>').addClass('btn jqcConfirm-btn').text('确认');
-        //     var cancel = $('<button>').addClass('btn jqcConfirm-btn').text('取消');
-        //     var $btnBox = $('<div>')
-        //         .addClass('jqcConfirm-btnBox')
-        //         .append(done)
-        //         .append(cancel);
-        //     _content.append(_text).append($btnBox);
-        //     var _confirm = new $.jqcDialog({
-        //         title: params.title || '请确认',
-        //         content: _content,
-        //         width: params.width || 300,
-        //         afterClose: function () {
-        //             params.onClose && params.onClose();
-        //         }
-        //     });
-        //     _confirm.open();
-        //     done.click(function () {
-        //         params.onConfirm && params.onConfirm();
-        //         _confirm.close();
-        //     });
-        //     cancel.click(function () {
-        //         params.onCancel && params.onCancel();
-        //         _confirm.close();
-        //     })
-        // };
         $.App.prototype.delete = function (params) {
             var _this = this;
             $.jqcConfirm({
@@ -532,7 +505,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                                 $.jqcNotification(config);
                             }
                             if (params.updateCache && _this.updateCache) {
-                                _this.updateCache();
+                                _this.updateCache(params.updateCache);
                             }
                         } else {
                             $.jqcNotification({
@@ -560,5 +533,12 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             };
             Object.assign(config, params);
             params.element[0].jqcSelectBox = new $.jqcSelectBox(config);
+        };
+        function queue (funcs, scope) {
+            (function next() {
+                if(funcs.length > 0) {
+                    funcs.shift().apply(scope || {}, [next].concat(Array.prototype.slice.call(arguments, 0)));
+                }
+            })();
         };
     });
