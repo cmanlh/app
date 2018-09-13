@@ -485,7 +485,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _dialog;
             // 没有模板
             if (!params.templatePath) {
-
                 return;
             }
             this.getFile(params.templatePath).then(res => {
@@ -496,7 +495,12 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     content: _template,
                     width: params.width || 1080,
                     afterClose: function () {
-                        params.afterClose && params.afterClose();    
+                        params.afterClose && params.afterClose();
+                        $.each(_template.find('input'), function (index, el) {
+                            if (el.jqcSelectBox) {
+                                el.jqcSelectBox.destroy();
+                            }
+                        })
                     }
                 });
                 if (Array.isArray(params.disabled)) {
@@ -523,11 +527,13 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 _dialog.open();
                 $btn.click(function () {
                     var _data = $.formUtil.fetch(_template);
-                    _data = Object.assign({}, params.defaultData, _data);
+                    if (!params.isInsert) {
+                        _data = Object.assign({}, params.defaultData, _data);
+                    }
                     _this.requestPost(params.api, _data).then(res => {
                         if (res.code == 0) {
                             _dialog.close();
-                            _this.triggerQuery();
+                            _this.triggerQuery(params.fillParams);
                             if (params.success) {
                                 params.success(res);
                             } else {
@@ -557,8 +563,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         $.App.prototype.triggerQuery = function (params) {
             if (this._toolBar) {
                 this._toolBar.find('.toolbar-left button.queryBtn').trigger('click');
-            } else {
+            } else if (this.dxDataGrid){
                 this.fillDxDataGrid(params);
+            } else {
+                // nothing
             }
         };
         $.App.prototype.delete = function (params) {
@@ -572,10 +580,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                     _this.requestPost(params.api, params.data).then(res => {
                         if (res.code == 0) {
+                            _this.triggerQuery(params.fillParams);
                             if (params.success) {
                                 params.success(res);
                             } else {
-                                _this.triggerQuery(params.fillParams);
                                 var config = {
                                     type: 'success',
                                     title: '删除成功'
