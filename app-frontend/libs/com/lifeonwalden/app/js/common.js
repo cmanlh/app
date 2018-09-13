@@ -226,15 +226,20 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.mixinFormat = [];
             this._beforeRender = [];
             this._afterRender = [];
+            this.components = [];
             if (params && params.mixins && params.mixins.length) {
                 params.mixins.forEach(mixin => {
                     for (var key in mixin) {
-                        if (key == 'format') {
+                        if (key == 'format' && typeof mixin[key] == 'function') {
                             _this.mixinFormat.push(mixin[key].bind(_this));
-                        } else if (key == 'afterRender') {
+                        } else if (key == 'afterRender' && typeof mixin[key] == 'function') {
                             _this._afterRender.push(mixin[key].bind(_this));
-                        } else if (key == 'beforeRender') {
+                        } else if (key == 'beforeRender' && typeof mixin[key] == 'function') {
                             _this._beforeRender.push(mixin[key].bind(_this));
+                        } else if (key == 'components' && T.rawType(mixin[key]) == 'Array') {
+                            _this.components = _this.components.concat(mixin[key]);
+                        } else if (key == 'mixins') {
+                            // 忽略
                         } else {
                             _this[key] = mixin[key];
                         }
@@ -244,12 +249,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._config = $.getGlobalConfig(); //config.js文件中的配置
             this.loading = new $.jqcLoading();
             this.pinyinParser = pinyinParser;
-            this.components = (params && params.components) ? params.components : [];
-            this.templatePath = (params && params.templatePath) ? params.templatePath : null; //模板文件相对路径
-            this.stylePath = (params && params.stylePath) ? params.stylePath : null; //模板文件相对路径
+            this.components = (params && params.components) ? this.components.concat(params.components) : this.components;  //组件
+            this.templatePath = (params && params.templatePath) ? params.templatePath : (this.templatePath || null); //模板文件相对路径
+            this.stylePath = (params && params.stylePath) ? params.stylePath : (this.stylePath || null); //模板文件相对路径
             this.contextmenu = (params && params.contextmenu) ? params.contextmenu : (this.contextmenu || null);
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : (this.dxDataGrid || null);
-            this.afterRender = (params && params.afterRender) ? params.afterRender.bind(this) : null;
             if (params && params.beforeRender && typeof params.beforeRender == 'function') {
                 this._beforeRender.push(params.beforeRender);
             }
