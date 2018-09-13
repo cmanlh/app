@@ -90,6 +90,83 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             }
         });
         /* ********************************************************** */
+
+        /* **********************sessionStorage************************ */
+        $.SessionStorage = function (apisMap) {
+            this.apisMap = apisMap;
+        }
+        $.SessionStorage.prototype = {
+            set: function (key, value) {
+                var _value;
+                try {
+                    _value = JSON.stringify(value);
+                } catch (error) {
+                    _value = value;
+                }
+                window.sessionStorage.setItem(key, _value);
+            },
+            get: function (key) {
+                var result;
+                var data = window.sessionStorage.getItem(key);
+                try {
+                    result = JSON.parse(data);
+                } catch (error) {
+                    result = data;
+                }
+                return(result);
+            },
+            asyncGet: function (key, reload) {
+                var _this = this;
+                return new Promise(function (resolve, reject) {
+                    if (!_this.apisMap[key]) {
+                        reject(`storage: 获取${key}的api地址不存在！`);
+                        return;
+                    }
+                    var result;
+                    var data = window.sessionStorage.getItem(key);
+                    if (data && !reload) {
+                        try {
+                            result = JSON.parse(data);
+                        } catch (error) {
+                            result = data;
+                        }
+                        resolve(result);
+                    } else {
+                        _this.update(key).then(function (data) {
+                            resolve(data);
+                        });
+                    }
+                });
+            },
+            update: function (key) {
+                var _this = this;
+                return new Promise((resolve, reject) => {
+                    var url = _this.apisMap[key];
+                    if (!url) {
+                        reject(`storage: ${key}的api地址不存在！`);
+                        return;
+                    }
+                    $.ajax(url).then(res => {
+                        if (res.code == 0) {
+                            var data = res.result || [];
+                            _this.set(key, data);
+                            resolve(data);
+                        } else {
+                            reject(res.msg);
+                        }
+                    })
+                });
+            },
+            clear: function () {
+                window.sessionStorage.clear();
+            },
+            remove: function (key) {
+                window.sessionStorage.removeItem(key);
+            }
+        };
+        /* ********************************************************** */
+
+
         var styleCache = {};
         $.addForm = function(menu, tab) {
             var uid = menu.id;
