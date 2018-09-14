@@ -500,6 +500,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                             if (el.jqcSelectBox) {
                                 el.jqcSelectBox.destroy();
                             }
+                            if ($(el).data('xdsoft_datetimepicker')) {
+                                $(el).datetimepicker('destroy');
+                            }
                         })
                     }
                 });
