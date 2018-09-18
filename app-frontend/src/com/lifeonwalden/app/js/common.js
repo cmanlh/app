@@ -203,7 +203,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 tab.add({
                     id: uid,
                     title: text,
-                    content: `<div data-tabid=${uid} data-path=${path} data-name=${text}></div>`
+                    content: `<div data-tabid=${uid} data-path=${path} data-name=${text}></div>`,
+                    beforeDestroy: function () {
+                        var inputs = this.panel.find('input');
+                        inputs.destroySelectBox();
+                    }
                 });
                 setTimeout(function() {
                     var panel = tab.index.get(uid).panel;
@@ -275,16 +279,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.root = null; //暴露给afterRender的容器根节点
             $.setupApp(this);
         };
-        $.App.prototype.mount = function (root, panel) {
+        $.App.prototype.mount = function (root) {
             var _this = this;
             this._root = root;
             this.root = root;
-            if (panel) {
-                panel.data('destroy', function () {
-                    var inputs = _this.root.find('input');
-                    inputs.destroySelectBox();
-                });
-            }
             this._path = root.attr('data-path');
             this._name = root.attr('data-name');
             this.loading.show();
