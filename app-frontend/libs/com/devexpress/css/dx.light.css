@@ -2473,8 +2473,10 @@
     height: 12px;
     background: url('./icons/icon_checked.png') no-repeat center;
     position: absolute;
-    left: -1px;
-    top: 0;
+    left: 50%;
+    top: 50%;
+    margin-left: -6px;
+    margin-top: -6px;
 }
 .dx-checkbox-indeterminate .dx-checkbox-icon:before {
     content: '';
