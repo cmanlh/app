@@ -87,6 +87,16 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                 };
                 _el.jqcSelectBox = new $.jqcSelectBox(config);
+            },
+            destroySelectBox: function () {
+                $.each(this, function (index, el) {
+                    if (el.jqcSelectBox) {
+                        el.jqcSelectBox.destroy();
+                    }
+                    if ($(el).data('xdsoft_datetimepicker')) {
+                        $(el).datetimepicker('destroy');
+                    }
+                });
             }
         });
         /* ********************************************************** */
@@ -196,7 +206,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     content: `<div data-tabid=${uid} data-path=${path} data-name=${text}></div>`
                 });
                 setTimeout(function() {
-                    $.getFormCache(uid).mount($('div[data-tabid=' + uid + ']'));
+                    var panel = tab.index.get(uid).panel;
+                    var root = panel.find('div[data-tabid=' + uid + ']');
+                    $.getFormCache(uid).mount(root, panel);
                 }, 0);
             }
         };
@@ -263,10 +275,16 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.root = null; //暴露给afterRender的容器根节点
             $.setupApp(this);
         };
-        $.App.prototype.mount = function (root) {
+        $.App.prototype.mount = function (root, panel) {
             var _this = this;
             this._root = root;
             this.root = root;
+            if (panel) {
+                panel.data('destroy', function () {
+                    var inputs = _this.root.find('input');
+                    inputs.destroySelectBox();
+                });
+            }
             this._path = root.attr('data-path');
             this._name = root.attr('data-name');
             this.loading.show();
