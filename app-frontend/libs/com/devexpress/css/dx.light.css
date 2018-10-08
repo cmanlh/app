@@ -6161,6 +6161,9 @@
     border-bottom: 1px solid #e4e6ee;
     background-color: #f8f8f8;
 }
+.custom-row-style .dx-datagrid .dx-row-lines > td {
+    background-color: #fff;
+}
 .dx-datagrid .dx-column-lines > td {
     border-left: 1px solid #e4e6ee;
     border-right: 1px solid #e4e6ee;

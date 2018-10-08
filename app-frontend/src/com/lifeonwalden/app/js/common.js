@@ -423,8 +423,13 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _this = this;
             this._dxDataGrid = $('<div data-dx="a">');
             this._root.append(_this._dxDataGrid);
-            var _columns = [].concat(_this._config.dxDataGridDefaultConfig.columns, _this.dxDataGrid.columns);
+            var _columns = this.dxDataGrid.hideOrder ? _this.dxDataGrid.columns : [].concat(_this._config.dxDataGridDefaultConfig.columns, _this.dxDataGrid.columns);
             var dxConfig = $.extend({}, _this._config.dxDataGridDefaultConfig, _this.dxDataGrid, {columns: _columns});
+            if (this.dxDataGrid.hideOrder) {
+                dxConfig.scrolling = {
+                    mode: 'virtual'
+                }
+            }
             if (this._contextmenu) {
                 dxConfig.onContextMenuPreparing = function(e) {
                     e.jQueryEvent.preventDefault();
@@ -432,6 +437,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         return;
                     }
                     _this._contextmenu.show(e.row.data);
+                }
+            }
+            if (!dxConfig.rowAlternationEnabled) {
+                dxConfig.elementAttr = {
+                    class: 'custom-row-style'
                 }
             }
             this._dxDataGrid.dxDataGrid(dxConfig);
