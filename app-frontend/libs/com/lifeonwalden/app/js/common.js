@@ -10,6 +10,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['loading'])
         .registerComponents(['confirm'])
         .registerComponents(['event'])
+        .registerComponents(['asyncSelect'])
         .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
         .registerComponents(['echarts']) //图表
         .registerComponents(['jsoneditor']) //json编辑器图表
@@ -19,7 +20,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
 const COMP_LIB_PATH = 'com.lifeonwalden.jqc';
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification'])
+    .importComponents('com.lifeonwalden.jqc', ['asyncSelect', 'confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
@@ -289,7 +290,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             // 生命周期-装载之前
             var _beforeRender = [].concat(this._beforeRender);
             _beforeRender.push(function () {
-                $JqcLoader.importComponents(COMP_LIB_PATH, this.components).execute(function () {
+                $JqcLoader.registerModule($JqcLoader.newModule('com.lifeonwalden.jqc', LIB_ROOT_PATH)
+                    .registerComponents(_this.components));
+                $JqcLoader.importComponents(COMP_LIB_PATH, _this.components).execute(function () {
                     if (_this.stylePath) {
                         var _path = _this.getAbsolutePath(_this.stylePath);
                         if (!styleCache[_path]) {
