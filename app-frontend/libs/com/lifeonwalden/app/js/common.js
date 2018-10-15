@@ -593,8 +593,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             });
         };
         $.App.prototype.triggerQuery = function (params) {
-            if (this._toolBar) {
-                this._toolBar.find('.toolbar-left button.queryBtn').trigger('click');
+            var queryBtn = this.root.find('.toolbar-left button.queryBtn');
+            if (queryBtn.length) {
+                queryBtn.trigger('click');
             } else if (this.dxDataGrid){
                 this.fillDxDataGrid(params);
             } else {

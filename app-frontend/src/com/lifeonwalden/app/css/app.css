@@ -297,7 +297,11 @@ label {
 .form .row > div input:required + span::before,
 .form .row > div input:required + label::before,
 .form_label input:required + span::before,
-.form_label input:required + label::before {
+.form_label input:required + label::before,
+.form .row > div textarea:required + span::before,
+.form .row > div textarea:required + label::before,
+.form_label textarea:required + span::before,
+.form_label textarea:required + label::before {
     content: '*';
     color: #C63136;
     margin-right: 4px;
