@@ -49,14 +49,34 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             select: function (data, defaultVal) {
                 var $el = this;
                 var _el = this[0];
+                var _data = data;
+                var _defaultVal = defaultVal;
                 if (!_el || (_el.nodeName != 'INPUT')) {
                     return;
                 }
+                if ($el.attr('off') != undefined) {
+                    return;
+                }
+                if (this.attr('defaultvalue') != undefined) {
+                    _defaultVal = this.attr('defaultvalue');
+                }
+                if (this.attr('ext') == '*' || _defaultVal == '*') {
+                    if ($.isArray(data)) {
+                        _data = [{value: '*',label: '全部'}].concat(data);
+                    } else {
+                        var _value = data.adapter.value || 'value';
+                        var _label = data.adapter.label || 'label';
+                        _data.data = [{
+                            [_value]: '*',
+                            [_label]: '全部'
+                        }].concat(_data.data);
+                    }
+                }
                 _el.jqcSelectBox && _el.jqcSelectBox.destroy();
                 var config = {
-                    optionData: data,
-                    defaultVal: defaultVal,
-                    dataName: JSON.stringify(data),
+                    optionData: _data,
+                    defaultVal: _defaultVal,
+                    dataName: JSON.stringify(_data),
                     withSearch: false,
                     autoDisplay: true,
                     element: $el,
@@ -70,14 +90,34 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             selectSearch: function (data, defaultVal) {
                 var $el = this;
                 var _el = this[0];
+                var _data = data;
+                var _defaultVal = defaultVal;
                 if (!_el || (_el.nodeName != 'INPUT')) {
                     return;
                 }
+                if ($el.attr('off') != undefined) {
+                    return;
+                }
+                if (this.attr('defaultvalue') != undefined) {
+                    _defaultVal = this.attr('defaultvalue');
+                }
+                if (this.attr('ext') == '*' || _defaultVal == '*') {
+                    if ($.isArray(data)) {
+                        _data = [{value: '*',label: '全部'}].concat(data);
+                    } else {
+                        var _value = data.adapter.value;
+                        var _label = typeof data.adapter.label == 'function' ? data.adapter.pinyinFilter : data.adapter.label;
+                        _data.data = [{
+                            [_value]: '*',
+                            [_label]: '全部'
+                        }].concat(_data.data);
+                    }
+                }
                 _el.jqcSelectBox && _el.jqcSelectBox.destroy();
                 var config = {
-                    optionData: data,
-                    defaultVal: defaultVal,
-                    dataName: JSON.stringify(data),
+                    optionData: _data,
+                    defaultVal: _defaultVal,
+                    dataName: JSON.stringify(_data),
                     autoDisplay: true,
                     supportFuzzyMatch: true,
                     supportPinYin: true,
