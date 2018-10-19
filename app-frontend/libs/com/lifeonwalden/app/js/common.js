@@ -92,6 +92,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 var _el = this[0];
                 var _data = data;
                 var _defaultVal = defaultVal;
+                var _updateDataSource = undefined;
                 if (!_el || (_el.nodeName != 'INPUT')) {
                     return;
                 }
@@ -113,6 +114,14 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         }].concat(_data.data);
                     }
                 }
+                if (data.refreshApi != undefined) {
+                    _updateDataSource = function (callback) {
+                        $.ajax(data.refreshApi).then(res => {
+                            var result = res.result || [];
+                            callback(result);
+                        });
+                    }
+                }
                 _el.jqcSelectBox && _el.jqcSelectBox.destroy();
                 var config = {
                     optionData: _data,
@@ -122,7 +131,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     supportFuzzyMatch: true,
                     supportPinYin: true,
                     pinyinParser: pinyinParser,
+                    withSearch: true,
                     element: $el,
+                    updateDataSource: _updateDataSource,
                     onSelect: function (data) {
                         $el.trigger('change', data);
                     }
@@ -142,29 +153,20 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         });
         /* ********************************************************** */
 
-        /* **********************sessionStorage************************ */
-        $.SessionStorage = function (apisMap) {
-            this.apisMap = apisMap;
+        /**
+         * 缓存api请求到的数据
+         */
+        $.DataPool = function (apisMap) {
+            this.map = new Map();
+            this.apisMap = apisMap || {};
+            this.clear();
         }
-        $.SessionStorage.prototype = {
+        $.DataPool.prototype = {
             set: function (key, value) {
-                var _value;
-                try {
-                    _value = JSON.stringify(value);
-                } catch (error) {
-                    _value = value;
-                }
-                window.sessionStorage.setItem(key, _value);
+                this.map.set(key, value);
             },
             get: function (key) {
-                var result;
-                var data = window.sessionStorage.getItem(key);
-                try {
-                    result = JSON.parse(data);
-                } catch (error) {
-                    result = data;
-                }
-                return(result);
+                return this.map.get(key);
             },
             asyncGet: function (key, reload) {
                 var _this = this;
@@ -174,14 +176,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         return;
                     }
                     var result;
-                    var data = window.sessionStorage.getItem(key);
+                    var data = _this.map.has(key);
                     if (data && !reload) {
-                        try {
-                            result = JSON.parse(data);
-                        } catch (error) {
-                            result = data;
-                        }
-                        resolve(result);
+                        resolve(_this.map.get(key));
                     } else {
                         _this.update(key).then(function (data) {
                             resolve(data);
@@ -200,7 +197,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     $.ajax(url).then(res => {
                         if (res.code == 0) {
                             var data = res.result || [];
-                            _this.set(key, data);
+                            _this.map.set(key, data);
                             resolve(data);
                         } else {
                             reject(res.msg);
@@ -209,12 +206,14 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 });
             },
             clear: function () {
-                window.sessionStorage.clear();
+                this.map.clear();
             },
-            remove: function (key) {
-                window.sessionStorage.removeItem(key);
+            delete: function (key) {
+                this.map.delete(key);
             }
         };
+        // 兼容老代码
+        $.SessionStorage = $.DataPool;
         /* ********************************************************** */
 
 
