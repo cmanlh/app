@@ -39,6 +39,26 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .execute(function() {
         const T = $.jqcToolkit;
         const pinyinParser = new $.jqcPinyin();
+        // dxDataGrid数据格式化
+        // 时间格式化
+        $.timeFormat = function (format) {
+            return function (value) {
+                return $.jqcDateUtil.format(+value, format);
+            }
+        }
+        // 保留小数
+        $.numberFormat = function (num=2) {
+            return function (value) {
+                var _temp = typeof value === 'number' ? value : +value;
+                return _temp.toFixed(num);
+            }
+        }
+        // 时间戳转时间对象
+        $.timestamp2date = function (name) {
+            return function (rowData) {
+                return rowData[name] ? new Date(+(rowData[name])) : '';
+            }
+        }
         /* *******************jQuery对象封装********************* */
         $.fn.extend({
             /**
@@ -505,6 +525,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.fillDxDataGridByData = function (data) {
             var _this = this;
+            this.dataSource = data || [];
             this._dxDataGrid && this.getDxDataGrid().option('dataSource', data);
         };
         $.App.prototype.getDxDataGrid = function () {
@@ -514,6 +535,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _this = this;
             this.loading.show();
             this.requestGet(_this.dxDataGrid.fetchDataApi, params).then(res => {
+                _this.dataSource = res.result || [];
                 _this.fillDxDataGridByData(res.result || []);
                 _this.loading.hide();
             });
@@ -589,7 +611,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 // storage.format(_template);
                 setTimeout(function () {
                     params.afterRender && params.afterRender(_template, _dialog);
-                    params.defaultData && $.formUtil.fill(_template, params.defaultData);
+                    $.formUtil.fill(_template, params.defaultData || {});
                 }, 10);
                 if (params.readOnly) {
                     _template.find('[databind]').attr('disabled', 'disabled');
@@ -598,6 +620,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 _dialog.open();
                 $btn.click(function () {
                     var _data = $.formUtil.fetch(_template);
+                    if (params.check && !params.check(_data)) {
+                        return;
+                    }
                     if (!params.isInsert) {
                         _data = Object.assign({}, params.defaultData, _data);
                     }
@@ -606,7 +631,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                             _dialog.close();
                             _this.triggerQuery(params.fillParams);
                             if (params.success) {
-                                params.success(res);
+                                params.success(res, _dialog);
                             } else {
                                 var config = {
                                     type: 'success',
@@ -621,11 +646,15 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                                 _this.updateCache(params.updateCache);
                             }
                         } else {
-                            $.jqcNotification({
-                                type: 'error',
-                                title: '操作失败。',
-                                content: res.msg
-                            });
+                            if (params.failed) {
+                                params.failed(res, _dialog);
+                            } else {
+                                $.jqcNotification({
+                                    type: 'error',
+                                    title: '操作失败。',
+                                    content: res.msg
+                                });
+                            }
                         }
                     });
                 })
