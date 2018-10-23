@@ -11,6 +11,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['confirm'])
         .registerComponents(['event'])
         .registerComponents(['asyncSelect'])
+        .registerComponents(['select'])
         .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
         .registerComponents(['echarts']) //图表
         .registerComponents(['jsoneditor']) //json编辑器图表
@@ -20,7 +21,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
 const COMP_LIB_PATH = 'com.lifeonwalden.jqc';
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['asyncSelect', 'confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification'])
+    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
@@ -69,42 +70,27 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             select: function (data, defaultVal) {
                 var $el = this;
                 var _el = this[0];
-                var _data = data;
-                var _defaultVal = defaultVal;
                 if (!_el || (_el.nodeName != 'INPUT')) {
                     return;
                 }
                 if ($el.attr('off') != undefined) {
                     return;
                 }
-                if (this.attr('defaultvalue') != undefined) {
-                    _defaultVal = this.attr('defaultvalue');
+                var _data;
+                var adapter = {};
+                if (data.length) {
+                    _data = data;
+                    adapter = undefined;
+                } else {
+                    _data = data.data;
+                    adapter = data.adapter || {};
                 }
-                if (this.attr('ext') == '*' || _defaultVal == '*') {
-                    if ($.isArray(data)) {
-                        _data = [{value: '*',label: '全部'}].concat(data);
-                    } else {
-                        var _value = data.adapter.value || 'value';
-                        var _label = data.adapter.label || 'label';
-                        _data.data = [{
-                            [_value]: '*',
-                            [_label]: '全部'
-                        }].concat(_data.data);
-                    }
-                }
-                _el.jqcSelectBox && _el.jqcSelectBox.destroy();
-                var config = {
-                    optionData: _data,
-                    defaultVal: _defaultVal,
-                    dataName: JSON.stringify(_data),
-                    withSearch: false,
-                    autoDisplay: true,
-                    element: $el,
-                    onSelect: function (data) {
-                        $el.trigger('change', data);
-                    }
-                };
-                _el.jqcSelectBox = new $.jqcSelectBox(config);
+                new $.jqcSelect({
+                    el: $el,
+                    data: _data,
+                    adapter,
+                    defaultValue: defaultVal
+                });
 
             },
             selectSearch: function (data, defaultVal) {
@@ -611,7 +597,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 // storage.format(_template);
                 setTimeout(function () {
                     params.afterRender && params.afterRender(_template, _dialog);
-                    $.formUtil.fill(_template, params.defaultData || {});
+                    if (params.defaultData) {
+                        $.formUtil.fill(_template, params.defaultData);
+                    } else {
+                        $.formUtil.format(_template);
+                    }
                 }, 10);
                 if (params.readOnly) {
                     _template.find('[databind]').attr('disabled', 'disabled');
