@@ -4377,6 +4377,9 @@ input.dx-hidden {
   border-right: none;
   vertical-align: middle;
 }
+.dx-header-row td.dx-datagrid-group-space {
+  background: #f5f6fa!important;
+}
 .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-datagrid-group-space + td {
   border-left: none;
 }

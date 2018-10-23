@@ -10,6 +10,8 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['loading'])
         .registerComponents(['confirm'])
         .registerComponents(['event'])
+        .registerComponents(['asyncSelect'])
+        .registerComponents(['select'])
         .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
         .registerComponents(['echarts']) //图表
         .registerComponents(['jsoneditor']) //json编辑器图表
@@ -19,7 +21,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
 const COMP_LIB_PATH = 'com.lifeonwalden.jqc';
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification'])
+    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
@@ -38,6 +40,26 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .execute(function() {
         const T = $.jqcToolkit;
         const pinyinParser = new $.jqcPinyin();
+        // dxDataGrid数据格式化
+        // 时间格式化
+        $.timeFormat = function (format) {
+            return function (value) {
+                return $.jqcDateUtil.format(+value, format);
+            }
+        }
+        // 保留小数
+        $.numberFormat = function (num=2) {
+            return function (value) {
+                var _temp = typeof value === 'number' ? value : +value;
+                return _temp.toFixed(num);
+            }
+        }
+        // 时间戳转时间对象
+        $.timestamp2date = function (name) {
+            return function (rowData) {
+                return rowData[name] ? new Date(+(rowData[name])) : '';
+            }
+        }
         /* *******************jQuery对象封装********************* */
         $.fn.extend({
             /**
@@ -51,37 +73,73 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 if (!_el || (_el.nodeName != 'INPUT')) {
                     return;
                 }
-                _el.jqcSelectBox && _el.jqcSelectBox.destroy();
-                var config = {
-                    optionData: data,
-                    defaultVal: defaultVal,
-                    dataName: JSON.stringify(data),
-                    withSearch: false,
-                    autoDisplay: true,
-                    element: $el,
-                    onSelect: function (data) {
-                        $el.trigger('change', data);
-                    }
-                };
-                _el.jqcSelectBox = new $.jqcSelectBox(config);
+                if ($el.attr('off') != undefined) {
+                    return;
+                }
+                var _data;
+                var adapter = {};
+                if (data.length) {
+                    _data = data;
+                    adapter = undefined;
+                } else {
+                    _data = data.data;
+                    adapter = data.adapter || {};
+                }
+                new $.jqcSelect({
+                    el: $el,
+                    data: _data,
+                    adapter,
+                    defaultValue: defaultVal
+                });
 
             },
             selectSearch: function (data, defaultVal) {
                 var $el = this;
                 var _el = this[0];
+                var _data = data;
+                var _defaultVal = defaultVal;
+                var _updateDataSource = undefined;
                 if (!_el || (_el.nodeName != 'INPUT')) {
                     return;
                 }
+                if ($el.attr('off') != undefined) {
+                    return;
+                }
+                if (this.attr('defaultvalue') != undefined) {
+                    _defaultVal = this.attr('defaultvalue');
+                }
+                if (this.attr('ext') == '*' || _defaultVal == '*') {
+                    if ($.isArray(data)) {
+                        _data = [{value: '*',label: '全部'}].concat(data);
+                    } else {
+                        var _value = data.adapter.value;
+                        var _label = typeof data.adapter.label == 'function' ? data.adapter.pinyinFilter : data.adapter.label;
+                        _data.data = [{
+                            [_value]: '*',
+                            [_label]: '全部'
+                        }].concat(_data.data);
+                    }
+                }
+                if (data.refreshApi != undefined) {
+                    _updateDataSource = function (callback) {
+                        $.ajax(data.refreshApi).then(res => {
+                            var result = res.result || [];
+                            callback(result);
+                        });
+                    }
+                }
                 _el.jqcSelectBox && _el.jqcSelectBox.destroy();
                 var config = {
-                    optionData: data,
-                    defaultVal: defaultVal,
-                    dataName: JSON.stringify(data),
+                    optionData: _data,
+                    defaultVal: _defaultVal,
+                    dataName: JSON.stringify(_data),
                     autoDisplay: true,
                     supportFuzzyMatch: true,
                     supportPinYin: true,
                     pinyinParser: pinyinParser,
+                    withSearch: true,
                     element: $el,
+                    updateDataSource: _updateDataSource,
                     onSelect: function (data) {
                         $el.trigger('change', data);
                     }
@@ -101,29 +159,20 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         });
         /* ********************************************************** */
 
-        /* **********************sessionStorage************************ */
-        $.SessionStorage = function (apisMap) {
-            this.apisMap = apisMap;
+        /**
+         * 缓存api请求到的数据
+         */
+        $.DataPool = function (apisMap) {
+            this.map = new Map();
+            this.apisMap = apisMap || {};
+            this.clear();
         }
-        $.SessionStorage.prototype = {
+        $.DataPool.prototype = {
             set: function (key, value) {
-                var _value;
-                try {
-                    _value = JSON.stringify(value);
-                } catch (error) {
-                    _value = value;
-                }
-                window.sessionStorage.setItem(key, _value);
+                this.map.set(key, value);
             },
             get: function (key) {
-                var result;
-                var data = window.sessionStorage.getItem(key);
-                try {
-                    result = JSON.parse(data);
-                } catch (error) {
-                    result = data;
-                }
-                return(result);
+                return this.map.get(key);
             },
             asyncGet: function (key, reload) {
                 var _this = this;
@@ -133,14 +182,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         return;
                     }
                     var result;
-                    var data = window.sessionStorage.getItem(key);
+                    var data = _this.map.has(key);
                     if (data && !reload) {
-                        try {
-                            result = JSON.parse(data);
-                        } catch (error) {
-                            result = data;
-                        }
-                        resolve(result);
+                        resolve(_this.map.get(key));
                     } else {
                         _this.update(key).then(function (data) {
                             resolve(data);
@@ -159,7 +203,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     $.ajax(url).then(res => {
                         if (res.code == 0) {
                             var data = res.result || [];
-                            _this.set(key, data);
+                            _this.map.set(key, data);
                             resolve(data);
                         } else {
                             reject(res.msg);
@@ -168,12 +212,14 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 });
             },
             clear: function () {
-                window.sessionStorage.clear();
+                this.map.clear();
             },
-            remove: function (key) {
-                window.sessionStorage.removeItem(key);
+            delete: function (key) {
+                this.map.delete(key);
             }
         };
+        // 兼容老代码
+        $.SessionStorage = $.DataPool;
         /* ********************************************************** */
 
 
@@ -289,7 +335,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             // 生命周期-装载之前
             var _beforeRender = [].concat(this._beforeRender);
             _beforeRender.push(function () {
-                $JqcLoader.importComponents(COMP_LIB_PATH, this.components).execute(function () {
+                $JqcLoader.registerModule($JqcLoader.newModule('com.lifeonwalden.jqc', LIB_ROOT_PATH)
+                    .registerComponents(_this.components));
+                $JqcLoader.importComponents(COMP_LIB_PATH, _this.components).execute(function () {
                     if (_this.stylePath) {
                         var _path = _this.getAbsolutePath(_this.stylePath);
                         if (!styleCache[_path]) {
@@ -420,8 +468,13 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _this = this;
             this._dxDataGrid = $('<div data-dx="a">');
             this._root.append(_this._dxDataGrid);
-            var _columns = [].concat(_this._config.dxDataGridDefaultConfig.columns, _this.dxDataGrid.columns);
+            var _columns = this.dxDataGrid.hideOrder ? _this.dxDataGrid.columns : [].concat(_this._config.dxDataGridDefaultConfig.columns, _this.dxDataGrid.columns);
             var dxConfig = $.extend({}, _this._config.dxDataGridDefaultConfig, _this.dxDataGrid, {columns: _columns});
+            if (this.dxDataGrid.hideOrder) {
+                dxConfig.scrolling = {
+                    mode: 'virtual'
+                }
+            }
             if (this._contextmenu) {
                 dxConfig.onContextMenuPreparing = function(e) {
                     e.jQueryEvent.preventDefault();
@@ -429,6 +482,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         return;
                     }
                     _this._contextmenu.show(e.row.data);
+                }
+            }
+            if (!dxConfig.rowAlternationEnabled) {
+                dxConfig.elementAttr = {
+                    class: 'custom-row-style'
                 }
             }
             this._dxDataGrid.dxDataGrid(dxConfig);
@@ -453,6 +511,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.fillDxDataGridByData = function (data) {
             var _this = this;
+            this.dataSource = data || [];
             this._dxDataGrid && this.getDxDataGrid().option('dataSource', data);
         };
         $.App.prototype.getDxDataGrid = function () {
@@ -462,6 +521,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _this = this;
             this.loading.show();
             this.requestGet(_this.dxDataGrid.fetchDataApi, params).then(res => {
+                _this.dataSource = res.result || [];
                 _this.fillDxDataGridByData(res.result || []);
                 _this.loading.hide();
             });
@@ -537,7 +597,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 // storage.format(_template);
                 setTimeout(function () {
                     params.afterRender && params.afterRender(_template, _dialog);
-                    params.defaultData && $.formUtil.fill(_template, params.defaultData);
+                    if (params.defaultData) {
+                        $.formUtil.fill(_template, params.defaultData);
+                    } else {
+                        $.formUtil.format(_template);
+                    }
                 }, 10);
                 if (params.readOnly) {
                     _template.find('[databind]').attr('disabled', 'disabled');
@@ -546,6 +610,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 _dialog.open();
                 $btn.click(function () {
                     var _data = $.formUtil.fetch(_template);
+                    if (params.check && !params.check(_data)) {
+                        return;
+                    }
                     if (!params.isInsert) {
                         _data = Object.assign({}, params.defaultData, _data);
                     }
@@ -554,7 +621,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                             _dialog.close();
                             _this.triggerQuery(params.fillParams);
                             if (params.success) {
-                                params.success(res);
+                                params.success(res, _dialog);
                             } else {
                                 var config = {
                                     type: 'success',
@@ -569,19 +636,24 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                                 _this.updateCache(params.updateCache);
                             }
                         } else {
-                            $.jqcNotification({
-                                type: 'error',
-                                title: '操作失败。',
-                                content: res.msg
-                            });
+                            if (params.failed) {
+                                params.failed(res, _dialog);
+                            } else {
+                                $.jqcNotification({
+                                    type: 'error',
+                                    title: '操作失败。',
+                                    content: res.msg
+                                });
+                            }
                         }
                     });
                 })
             });
         };
         $.App.prototype.triggerQuery = function (params) {
-            if (this._toolBar) {
-                this._toolBar.find('.toolbar-left button.queryBtn').trigger('click');
+            var queryBtn = this.root.find('.toolbar-left button.queryBtn');
+            if (queryBtn.length) {
+                queryBtn.trigger('click');
             } else if (this.dxDataGrid){
                 this.fillDxDataGrid(params);
             } else {

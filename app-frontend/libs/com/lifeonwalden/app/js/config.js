@@ -24,6 +24,9 @@
         // selection: {
         //     mode: 'single'
         // },
+        grouping: {
+            expandMode: 'rowClick'
+        },
         columnAutoWidth: true,
         scrolling: {
             mode: 'infinite'
