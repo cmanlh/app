@@ -267,6 +267,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         // set cache
         $.setupApp = function(App) {
             if (App.mount) {
+                if (formCache.has($._globalCacheId)) {
+                    return;
+                }
                 formCache.set($._globalCacheId, App);
             } else {
                 throw new Error('$.setupApp: expects a $.App object');
