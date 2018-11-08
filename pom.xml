@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.lifeonwalden</groupId>
     <artifactId>app</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11-SNAPSHOT</version>
     <modules>
         <module>app-gateway</module>
         <module>app-common</module>
@@ -201,7 +201,7 @@
         <url>https://gitee.com/lifeonwalden/app</url>
         <connection>scm:git:git@gitee.com:lifeonwalden/app.git</connection>
         <developerConnection>scm:git:git@gitee.com:lifeonwalden/app.git</developerConnection>
-        <tag>app-1.0.10</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
