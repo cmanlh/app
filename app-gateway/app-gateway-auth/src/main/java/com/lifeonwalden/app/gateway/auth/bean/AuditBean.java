@@ -22,6 +22,8 @@ import java.util.Date;
 public class AuditBean implements Serializable {
     private static final long serialVersionUID = -580015212976607853L;
 
+    private String trackId;
+
     private String principle;
 
     private String host;
@@ -31,6 +33,28 @@ public class AuditBean implements Serializable {
     private String operation;
 
     private String content;
+
+    private int costTime;
+
+    public String getTrackId() {
+        return trackId;
+    }
+
+    public AuditBean setTrackId(String trackId) {
+        this.trackId = trackId;
+
+        return this;
+    }
+
+    public int getCostTime() {
+        return costTime;
+    }
+
+    public AuditBean setCostTime(int costTime) {
+        this.costTime = costTime;
+
+        return this;
+    }
 
     public String getPrinciple() {
         return principle;
