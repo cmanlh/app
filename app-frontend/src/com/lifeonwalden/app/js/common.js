@@ -5,7 +5,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['valHooks', 'zindex'])
         .registerComponents(['toolkit'])
         .registerComponents(['menuTree'])
-        .registerComponents(['notification'])
+        .registerComponents(['notification', 'tag', 'calendar'])
         .registerComponents(['contextmenu','layoutHelper'])
         .registerComponents(['loading'])
         .registerComponents(['confirm'])
@@ -21,7 +21,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
 const COMP_LIB_PATH = 'com.lifeonwalden.jqc';
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification'])
+    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'tag', 'calendar'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
@@ -612,44 +612,46 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 }
                 _dialog.open();
                 $btn.click(function () {
-                    var _data = $.formUtil.fetch(_template);
-                    if (params.check && !params.check(_data)) {
-                        return;
-                    }
-                    if (!params.isInsert) {
-                        _data = Object.assign({}, params.defaultData, _data);
-                    }
-                    _this.requestPost(params.api, _data).then(res => {
-                        if (res.code == 0) {
-                            _dialog.close();
-                            _this.triggerQuery(params.fillParams);
-                            if (params.success) {
-                                params.success(res, _dialog);
-                            } else {
-                                var config = {
-                                    type: 'success',
-                                    title: '操作成功'
-                                };
-                                if (res.msg != undefined) {
-                                    config.content = res.msg;
-                                }
-                                $.jqcNotification(config);
-                            }
-                            if (params.updateCache && _this.updateCache) {
-                                _this.updateCache(params.updateCache);
-                            }
-                        } else {
-                            if (params.failed) {
-                                params.failed(res, _dialog);
-                            } else {
-                                $.jqcNotification({
-                                    type: 'error',
-                                    title: '操作失败。',
-                                    content: res.msg
-                                });
-                            }
+                    setTimeout(function () {
+                        var _data = $.formUtil.fetch(_template);
+                        if (params.check && !params.check(_data)) {
+                            return;
                         }
-                    });
+                        if (!params.isInsert) {
+                            _data = Object.assign({}, params.defaultData, _data);
+                        }
+                        _this.requestPost(params.api, _data).then(res => {
+                            if (res.code == 0) {
+                                _dialog.close();
+                                _this.triggerQuery(params.fillParams);
+                                if (params.success) {
+                                    params.success(res, _dialog);
+                                } else {
+                                    var config = {
+                                        type: 'success',
+                                        title: '操作成功'
+                                    };
+                                    if (res.msg != undefined) {
+                                        config.content = res.msg;
+                                    }
+                                    $.jqcNotification(config);
+                                }
+                                if (params.updateCache && _this.updateCache) {
+                                    _this.updateCache(params.updateCache);
+                                }
+                            } else {
+                                if (params.failed) {
+                                    params.failed(res, _dialog);
+                                } else {
+                                    $.jqcNotification({
+                                        type: 'error',
+                                        title: '操作失败。',
+                                        content: res.msg
+                                    });
+                                }
+                            }
+                        });
+                    }, 20);
                 })
             });
         };
