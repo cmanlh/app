@@ -14,6 +14,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['select'])
         .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
         .registerComponents(['echarts']) //图表
+        .registerComponents(['timeline']) //时间线
         .registerComponents(['jsoneditor']) //json编辑器图表
         .registerComponents(['editor']) //富文本编辑器
         .registerComponents(['apisBox']));
@@ -325,6 +326,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             if (params && params.afterRender && typeof params.afterRender == 'function') {
                 this._afterRender.push(params.afterRender);
             }
+            _this.queryCallback = params.queryCallback ? params.queryCallback.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
             $.setupApp(this);
         };
@@ -334,6 +336,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.root = root;
             this._path = root.attr('data-path');
             this._name = root.attr('data-name');
+            this._id = root.attr('data-tabid');
             this.loading.show();
             // 生命周期-装载之前
             var _beforeRender = [].concat(this._beforeRender);
@@ -452,12 +455,13 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     format(_this._toolBar);
                 });
                 $.formUtil.format(_this._toolBar);
-                if (!_this.dxDataGrid) {
-                    return;
-                }
                 _this._toolBar.find('.toolbar-left button.queryBtn').click(function () {
                     var _data = $.formUtil.fetch(_this._toolBar);
-                    _this.fillDxDataGrid(_data);
+                    _this.queryCallback && _this.queryCallback(_data);
+                    if (_this.dxDataGrid) {
+                        _this.fillDxDataGrid(_data);
+                        return;
+                    }
                 });
             }, 0);
             var _parent = this.root.parents('.jqcTabPanel');
