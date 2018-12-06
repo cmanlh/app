@@ -449,7 +449,12 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     if (_this.dxDataGrid) {
                         _this.getDxDataGrid().option('height', window.innerHeight - 110 - height);
                     }
-                } : null
+                } : null,
+                onChange: function (height) {
+                    if (_this.dxDataGrid) {
+                        _this.getDxDataGrid().option('height', window.innerHeight - 110 - height);
+                    }
+                }
             });
             setTimeout(function () {
                 _this.mixinFormat.forEach(format => {
