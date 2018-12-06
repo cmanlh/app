@@ -11,6 +11,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['confirm'])
         .registerComponents(['event'])
         .registerComponents(['asyncSelect'])
+        .registerComponents(['timepicker'])
         .registerComponents(['select'])
         .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
         .registerComponents(['echarts']) //图表
@@ -448,7 +449,12 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     if (_this.dxDataGrid) {
                         _this.getDxDataGrid().option('height', window.innerHeight - 110 - height);
                     }
-                } : null
+                } : null,
+                onChange: function (height) {
+                    if (_this.dxDataGrid) {
+                        _this.getDxDataGrid().option('height', window.innerHeight - 110 - height);
+                    }
+                }
             });
             setTimeout(function () {
                 _this.mixinFormat.forEach(format => {
