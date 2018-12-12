@@ -13,6 +13,8 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['asyncSelect'])
         .registerComponents(['timepicker'])
         .registerComponents(['select'])
+        .registerComponents(['icon'])
+        .registerComponents(['upload'])
         .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
         .registerComponents(['echarts']) //图表
         .registerComponents(['timeline']) //时间线
