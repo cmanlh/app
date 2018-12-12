@@ -25,7 +25,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
 const COMP_LIB_PATH = 'com.lifeonwalden.jqc';
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'tag', 'calendar', 'notify'])
+    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'tag', 'calendar', 'icon', 'upload', 'notify'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
