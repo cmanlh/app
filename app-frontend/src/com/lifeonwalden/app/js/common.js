@@ -42,6 +42,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/grid.css'))
     .importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/config.js'))
     .execute(function() {
+        new $.jqcLoading().show();
         const T = $.jqcToolkit;
         const pinyinParser = new $.jqcPinyin();
         // dxDataGrid数据格式化
@@ -326,6 +327,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             if (params && params.beforeRender && typeof params.beforeRender == 'function') {
                 this._beforeRender.push(params.beforeRender);
             }
+            this._afterRender.push(function (next) {
+                this.loading.hide();
+                next();
+            }.bind(this));
             if (params && params.afterRender && typeof params.afterRender == 'function') {
                 this._afterRender.push(params.afterRender);
             }
