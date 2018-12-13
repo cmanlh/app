@@ -177,7 +177,7 @@ input[datatype="date"][date-start],
 input[datatype="date"][date-end] {
     width: 110px;
     padding-right: 10px;
-    background-image: none;
+    /*background-image: none;*/
 }
 input[datatype="date"][date-start]{
     margin-right: 10px;
