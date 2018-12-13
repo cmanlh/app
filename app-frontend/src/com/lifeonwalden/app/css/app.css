@@ -158,11 +158,10 @@ select:disabled:hover{
     border-color: #d9d9d9;
 }
 input[datatype="date"] {
-    /*width: 110px;*/
     padding-right: 28px;
     background-image: url('./images/icon_calendar.png');
     background-repeat: no-repeat;
-    background-position: 126px;
+    background-position: right 6px center;
 }
 input[datatype="date"][format="yyyy-MM-dd HH:mm:ss"] {
     padding: 0 10px;
