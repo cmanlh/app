@@ -126,11 +126,15 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                 }
                 if (data.refreshApi != undefined) {
-                    _updateDataSource = function (callback) {
-                        $.ajax(data.refreshApi).then(res => {
-                            var result = res.result || [];
-                            callback(result);
-                        });
+                    if (typeof data.refreshApi == 'string') {
+                        _updateDataSource = function (callback) {
+                            $.ajax(data.refreshApi).then(res => {
+                                var result = res.result || [];
+                                callback(result);
+                            });
+                        }
+                    } else if (typeof data.refreshApi == 'function') {
+                        _updateDataSource = data.refreshApi;
                     }
                 }
                 _el.jqcSelectBox && _el.jqcSelectBox.destroy();
@@ -586,6 +590,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.getFile(params.templatePath).then(res => {
                 var _template = $(res);
                 var $btn = _template.find('button.done');
+                var $next = _template.find('button.save_and_add');
                 _dialog = new $.jqcDialog({
                     title: params.title || '',
                     content: _template,
@@ -628,7 +633,13 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     _template.find('button').hide();
                 }
                 _dialog.open();
-                $btn.click(function () {
+                if ($next.length == 1) {
+                    $next.click(function () {
+                        _this.loading.lock(500);
+                        $btn.length == 1 && $btn.trigger('click', 'next');
+                    })
+                }
+                $btn.click(function (e, type) {
                     setTimeout(function () {
                         var _data = $.formUtil.fetch(_template);
                         if (params.check && !params.check(_data)) {
@@ -639,7 +650,12 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         }
                         _this.requestPost(params.api, _data).then(res => {
                             if (res.code == 0) {
-                                _dialog.close();
+                                if (type == 'next') {
+                                    _template.find('input').val('');
+                                    $.formUtil.fill(_template, params.defaultData);
+                                } else {
+                                    _dialog.close();
+                                }
                                 _this.triggerQuery(params.fillParams);
                                 if (params.success) {
                                     params.success(res, _dialog);
