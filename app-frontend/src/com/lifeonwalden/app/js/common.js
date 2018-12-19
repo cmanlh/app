@@ -752,6 +752,21 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             Object.assign(config, params);
             params.element[0].jqcSelectBox = new $.jqcSelectBox(config);
         };
+        // 打开子页面
+        $.App.prototype.openChildPage = function ({app, title='', width=1080, height=470}) {
+            var _this = this;
+            var $root = $('<div>').attr('data-path', _this._path).addClass('jqcTabPanel').css('height', height + 80);
+            var _dialog = new $.jqcDialog({
+                title: title,
+                content: $root,
+                width: width
+            });
+            _dialog.open();
+            if (!app || !app.mount) {
+                throw new Error('openChildPage expect a $.App instance!');
+            }
+            app.mount($root);
+        }
         function queue (funcs, scope) {
             (function next() {
                 if(funcs.length > 0) {
