@@ -5,15 +5,19 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['valHooks', 'zindex'])
         .registerComponents(['toolkit'])
         .registerComponents(['menuTree'])
-        .registerComponents(['notification'])
+        .registerComponents(['notification', 'tag', 'calendar', 'notify'])
         .registerComponents(['contextmenu','layoutHelper'])
         .registerComponents(['loading'])
         .registerComponents(['confirm'])
         .registerComponents(['event'])
         .registerComponents(['asyncSelect'])
+        .registerComponents(['timepicker'])
         .registerComponents(['select'])
+        .registerComponents(['icon'])
+        .registerComponents(['upload'])
         .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
         .registerComponents(['echarts']) //图表
+        .registerComponents(['timeline']) //时间线
         .registerComponents(['jsoneditor']) //json编辑器图表
         .registerComponents(['editor']) //富文本编辑器
         .registerComponents(['apisBox']));
@@ -21,7 +25,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
 const COMP_LIB_PATH = 'com.lifeonwalden.jqc';
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification'])
+    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'tag', 'calendar', 'icon', 'upload', 'notify'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
@@ -121,11 +125,15 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                 }
                 if (data.refreshApi != undefined) {
-                    _updateDataSource = function (callback) {
-                        $.ajax(data.refreshApi).then(res => {
-                            var result = res.result || [];
-                            callback(result);
-                        });
+                    if (typeof data.refreshApi == 'string') {
+                        _updateDataSource = function (callback) {
+                            $.ajax(data.refreshApi).then(res => {
+                                var result = res.result || [];
+                                callback(result);
+                            });
+                        }
+                    } else if (typeof data.refreshApi == 'function') {
+                        _updateDataSource = data.refreshApi;
                     }
                 }
                 _el.jqcSelectBox && _el.jqcSelectBox.destroy();
@@ -322,9 +330,14 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             if (params && params.beforeRender && typeof params.beforeRender == 'function') {
                 this._beforeRender.push(params.beforeRender);
             }
+            this._afterRender.push(function (next) {
+                this.loading.hide();
+                next();
+            }.bind(this));
             if (params && params.afterRender && typeof params.afterRender == 'function') {
                 this._afterRender.push(params.afterRender);
             }
+            _this.queryCallback = params.queryCallback ? params.queryCallback.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
             $.setupApp(this);
         };
@@ -334,6 +347,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.root = root;
             this._path = root.attr('data-path');
             this._name = root.attr('data-name');
+            this._id = root.attr('data-tabid');
             this.loading.show();
             // 生命周期-装载之前
             var _beforeRender = [].concat(this._beforeRender);
@@ -442,22 +456,28 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 controlHtml: _this._controlHtml[0] || '',
                 height: 50,
                 onResize: _this.root.parents('.jqcDialogContainer').length == 0 ? function (height) {
-                    if (_this.dxDataGrid) {
+                    if (_this.dxDataGrid && _this.getDxDataGrid()) {
                         _this.getDxDataGrid().option('height', window.innerHeight - 110 - height);
                     }
-                } : null
+                } : null,
+                onChange: function (height) {
+                    if (_this.dxDataGrid && _this.getDxDataGrid()) {
+                        _this.getDxDataGrid().option('height', window.innerHeight - 110 - height);
+                    }
+                }
             });
             setTimeout(function () {
                 _this.mixinFormat.forEach(format => {
                     format(_this._toolBar);
                 });
                 $.formUtil.format(_this._toolBar);
-                if (!_this.dxDataGrid) {
-                    return;
-                }
                 _this._toolBar.find('.toolbar-left button.queryBtn').click(function () {
                     var _data = $.formUtil.fetch(_this._toolBar);
-                    _this.fillDxDataGrid(_data);
+                    _this.queryCallback && _this.queryCallback(_data);
+                    if (_this.dxDataGrid) {
+                        _this.fillDxDataGrid(_data);
+                        return;
+                    }
                 });
             }, 0);
             var _parent = this.root.parents('.jqcTabPanel');
@@ -569,6 +589,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.getFile(params.templatePath).then(res => {
                 var _template = $(res);
                 var $btn = _template.find('button.done');
+                var $next = _template.find('button.save_and_add');
                 _dialog = new $.jqcDialog({
                     title: params.title || '',
                     content: _template,
@@ -611,45 +632,58 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     _template.find('button').hide();
                 }
                 _dialog.open();
-                $btn.click(function () {
-                    var _data = $.formUtil.fetch(_template);
-                    if (params.check && !params.check(_data)) {
-                        return;
-                    }
-                    if (!params.isInsert) {
-                        _data = Object.assign({}, params.defaultData, _data);
-                    }
-                    _this.requestPost(params.api, _data).then(res => {
-                        if (res.code == 0) {
-                            _dialog.close();
-                            _this.triggerQuery(params.fillParams);
-                            if (params.success) {
-                                params.success(res, _dialog);
-                            } else {
-                                var config = {
-                                    type: 'success',
-                                    title: '操作成功'
-                                };
-                                if (res.msg != undefined) {
-                                    config.content = res.msg;
-                                }
-                                $.jqcNotification(config);
-                            }
-                            if (params.updateCache && _this.updateCache) {
-                                _this.updateCache(params.updateCache);
-                            }
-                        } else {
-                            if (params.failed) {
-                                params.failed(res, _dialog);
-                            } else {
-                                $.jqcNotification({
-                                    type: 'error',
-                                    title: '操作失败。',
-                                    content: res.msg
-                                });
-                            }
+                if ($next.length == 1) {
+                    $next.click(function () {
+                        _this.loading.lock(500);
+                        $btn.length == 1 && $btn.trigger('click', 'next');
+                    })
+                }
+                $btn.click(function (e, type) {
+                    setTimeout(function () {
+                        var _data = $.formUtil.fetch(_template);
+                        if (params.check && !params.check(_data)) {
+                            return;
                         }
-                    });
+                        if (!params.isInsert) {
+                            _data = Object.assign({}, params.defaultData, _data);
+                        }
+                        _this.requestPost(params.api, _data).then(res => {
+                            if (res.code == 0) {
+                                if (type == 'next') {
+                                    _template.find('input').val('');
+                                    $.formUtil.fill(_template, params.defaultData);
+                                } else {
+                                    _dialog.close();
+                                }
+                                _this.triggerQuery(params.fillParams);
+                                if (params.success) {
+                                    params.success(res, _dialog);
+                                } else {
+                                    var config = {
+                                        type: 'success',
+                                        title: '操作成功'
+                                    };
+                                    if (res.msg != undefined) {
+                                        config.content = res.msg;
+                                    }
+                                    $.jqcNotification(config);
+                                }
+                                if (params.updateCache && _this.updateCache) {
+                                    _this.updateCache(params.updateCache);
+                                }
+                            } else {
+                                if (params.failed) {
+                                    params.failed(res, _dialog);
+                                } else {
+                                    $.jqcNotification({
+                                        type: 'error',
+                                        title: '操作失败。',
+                                        content: res.msg
+                                    });
+                                }
+                            }
+                        });
+                    }, 20);
                 })
             });
         };
@@ -717,6 +751,21 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             Object.assign(config, params);
             params.element[0].jqcSelectBox = new $.jqcSelectBox(config);
         };
+        // 打开子页面
+        $.App.prototype.openChildPage = function ({app, title='', width=1080, height=470}) {
+            var _this = this;
+            var $root = $('<div>').attr('data-path', _this._path).addClass('jqcTabPanel').css('height', height + 80);
+            var _dialog = new $.jqcDialog({
+                title: title,
+                content: $root,
+                width: width
+            });
+            _dialog.open();
+            if (!app || !app.mount) {
+                throw new Error('openChildPage expect a $.App instance!');
+            }
+            app.mount($root);
+        }
         function queue (funcs, scope) {
             (function next() {
                 if(funcs.length > 0) {
