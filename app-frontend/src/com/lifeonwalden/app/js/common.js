@@ -352,8 +352,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             // 生命周期-装载之前
             var _beforeRender = [].concat(this._beforeRender);
             _beforeRender.push(function () {
-                $JqcLoader.registerModule($JqcLoader.newModule('com.lifeonwalden.jqc', LIB_ROOT_PATH)
-                    .registerComponents(_this.components));
                 $JqcLoader.importComponents(COMP_LIB_PATH, _this.components).execute(function () {
                     if (_this.stylePath) {
                         var _path = _this.getAbsolutePath(_this.stylePath);

@@ -508,3 +508,25 @@ hr {
     text-indent: 14px;
     background: #F5F6FA;
 }
+.btn_group .btn_list {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    flex-direction: column;
+    padding-top: 4px;
+    min-width: 70px;
+}
+.btn_group:hover .btn_list{
+    display: flex;
+}
+.btn_group .btn_list button{
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+}
+.btn_group .btn_list button:nth-child(1){
+    border-radius: 2px 2px 0 0;
+}
+.btn_group .btn_list button:nth-last-child(1){
+    border-radius: 0 0 2px 2px;
+}
