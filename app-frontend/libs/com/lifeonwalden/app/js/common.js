@@ -750,8 +750,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             params.element[0].jqcSelectBox = new $.jqcSelectBox(config);
         };
         // 打开子页面
-        $.App.prototype.openChildPage = function ({app, title='', width=1080, height=470}) {
+        $.App.prototype.openChildPage = function ({app, title, width, height}) {
             var _this = this;
+            title = title || '';
+            width = width || 1080;
+            height = height || 470;
             var $root = $('<div>').attr('data-path', _this._path).addClass('jqcTabPanel').css('height', height + 80);
             var _dialog = new $.jqcDialog({
                 title: title,
