@@ -31,16 +31,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.messages.cn.js'))
-    // echarts
     .importCss(LIB_ROOT_PATH.concat('com/devexpress/css/dx.common.css'))
     .importCss(LIB_ROOT_PATH.concat('com/devexpress/css/dx.light.css'))
-    // datetimepicker样式
-    .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/jqc/datetimepicker/css/datetimepicker.css'))
-    // jsoneditor样式
-    .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/jqc/jsoneditor/css/jsoneditor.css'))
     // 全局配置
     .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/app.css'))
-    .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/grid.css'))
     .importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/config.js'))
     .execute(function() {
         const T = $.jqcToolkit;
