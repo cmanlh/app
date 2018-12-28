@@ -17,29 +17,25 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['upload'])
         .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
         .registerComponents(['echarts']) //图表
+        .registerComponents(['bpmn']) // bpmn2.0
         .registerComponents(['timeline']) //时间线
         .registerComponents(['jsoneditor']) //json编辑器图表
         .registerComponents(['editor']) //富文本编辑器
+        .registerComponents(['checkbox'])
         .registerComponents(['apisBox']));
 
 const COMP_LIB_PATH = 'com.lifeonwalden.jqc';
 
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'tag', 'calendar', 'icon', 'upload', 'notify'])
+    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'checkbox', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'tag', 'calendar', 'icon', 'upload', 'notify'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.messages.cn.js'))
-    // echarts
     .importCss(LIB_ROOT_PATH.concat('com/devexpress/css/dx.common.css'))
     .importCss(LIB_ROOT_PATH.concat('com/devexpress/css/dx.light.css'))
-    // datetimepicker样式
-    .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/jqc/datetimepicker/css/datetimepicker.css'))
-    // jsoneditor样式
-    .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/jqc/jsoneditor/css/jsoneditor.css'))
     // 全局配置
     .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/app.css'))
-    .importCss(LIB_ROOT_PATH.concat('com/lifeonwalden/app/css/grid.css'))
     .importScript(LIB_ROOT_PATH.concat('com/lifeonwalden/app/js/config.js'))
     .execute(function() {
         const T = $.jqcToolkit;
@@ -352,8 +348,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             // 生命周期-装载之前
             var _beforeRender = [].concat(this._beforeRender);
             _beforeRender.push(function () {
-                $JqcLoader.registerModule($JqcLoader.newModule('com.lifeonwalden.jqc', LIB_ROOT_PATH)
-                    .registerComponents(_this.components));
                 $JqcLoader.importComponents(COMP_LIB_PATH, _this.components).execute(function () {
                     if (_this.stylePath) {
                         var _path = _this.getAbsolutePath(_this.stylePath);
@@ -752,8 +746,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             params.element[0].jqcSelectBox = new $.jqcSelectBox(config);
         };
         // 打开子页面
-        $.App.prototype.openChildPage = function ({app, title='', width=1080, height=470}) {
+        $.App.prototype.openChildPage = function ({app, title, width, height}) {
             var _this = this;
+            title = title || '';
+            width = width || 1080;
+            height = height || 470;
             var $root = $('<div>').attr('data-path', _this._path).addClass('jqcTabPanel').css('height', height + 80);
             var _dialog = new $.jqcDialog({
                 title: title,

@@ -1,5 +1,4 @@
-;
-(function($) {
+;(function($) {
     $.datetimepicker.setLocale('zh');
     // 模板文件功能区域对应的类名
     const templateClassNameMap = {
