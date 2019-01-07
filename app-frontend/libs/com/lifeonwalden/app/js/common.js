@@ -296,6 +296,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._beforeRender = [];
             this._afterRender = [];
             this.components = [];
+            this._dataSource = [];
             if (params && params.mixins && params.mixins.length) {
                 params.mixins.forEach(mixin => {
                     for (var key in mixin) {
@@ -335,7 +336,17 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             }
             _this.queryCallback = params.queryCallback ? params.queryCallback.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
+            Object.defineProperty(this, 'dataSource', {
+                get: function () {
+                    return _this._dataSource;
+                },
+                set: function (val) {
+                    _this._dataSource = [].concat(val);
+                    $.jqcEvent.emit('dataSourceLoaded.app', val, _this);
+                }
+            });
             $.setupApp(this);
+            $.jqcEvent.emit('setup.app', this);
         };
         $.App.prototype.mount = function (root) {
             var _this = this;
@@ -538,7 +549,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _this = this;
             this.loading.show();
             this.requestGet(_this.dxDataGrid.fetchDataApi, params).then(res => {
-                _this.dataSource = res.result || [];
                 _this.fillDxDataGridByData(res.result || []);
                 _this.loading.hide();
             });
