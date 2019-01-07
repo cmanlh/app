@@ -113,10 +113,14 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         _data = [{value: '*',label: '全部'}].concat(data);
                     } else {
                         var _value = data.adapter.value;
+                        var _filter = data.adapter.filter;
+                        var _pinyinFilter = data.adapter.pinyinFilter;
                         var _label = typeof data.adapter.label == 'function' ? data.adapter.pinyinFilter : data.adapter.label;
                         _data.data = [{
                             [_value]: '*',
-                            [_label]: '全部'
+                            [_label]: '全部',
+                            [_filter]: '*',
+                            [_pinyinFilter]: '全部',
                         }].concat(_data.data);
                     }
                 }
@@ -296,6 +300,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._beforeRender = [];
             this._afterRender = [];
             this.components = [];
+            this._dataSource = [];
             if (params && params.mixins && params.mixins.length) {
                 params.mixins.forEach(mixin => {
                     for (var key in mixin) {
@@ -335,7 +340,17 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             }
             _this.queryCallback = params.queryCallback ? params.queryCallback.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
+            Object.defineProperty(this, 'dataSource', {
+                get: function () {
+                    return _this._dataSource;
+                },
+                set: function (val) {
+                    _this._dataSource = [].concat(val);
+                    $.jqcEvent.emit('dataSourceLoaded.app', val, _this);
+                }
+            });
             $.setupApp(this);
+            $.jqcEvent.emit('setup.app', this);
         };
         $.App.prototype.mount = function (root) {
             var _this = this;
@@ -371,6 +386,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                 });
             });
+            $.jqcEvent.emit('beforeRender.app', this);
             queue(_beforeRender, this);
         };
         $.App.prototype.requestGet = function (api, params) {
@@ -538,7 +554,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             var _this = this;
             this.loading.show();
             this.requestGet(_this.dxDataGrid.fetchDataApi, params).then(res => {
-                _this.dataSource = res.result || [];
                 _this.fillDxDataGridByData(res.result || []);
                 _this.loading.hide();
             });
@@ -770,4 +785,103 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 }
             })();
         };
+        // 单独dialog页面
+        if (window.__PAGE_TYPE__ == 'dialog') {
+            $.App.prototype.dialog = function (params) {
+                var _this = this;
+                var _dialog;
+                // 没有模板
+                if (!params.templatePath) {
+                    return;
+                }
+                this.getFile(params.templatePath).then(res => {
+                    var _template = $(res);
+                    _dialog = $('<div>').css({
+                        width: params.width || 1080
+                    });
+                    $('.dialog_title').text(params.title);
+                    $('.dialog_body').append(_dialog);
+                    _dialog.append(_template);
+                    var $btn = _template.find('button.done');
+                    var $next = _template.find('button.save_and_add');
+                    if (Array.isArray(params.disabled)) {
+                        if (params.disabled.length === 1 && params.disabled[0] === '*') {
+                            _template.find('[databind]').attr('disabled', 'disabled');                        
+                        } else {
+                            params.disabled.forEach(item => {
+                                _template.find(`[databind=${item}]`).attr('disabled', 'disabled');
+                            });
+                        }
+                    }
+                    _this.mixinFormat.forEach(format => {
+                        format(_template);
+                    });
+                    setTimeout(function () {
+                        params.afterRender && params.afterRender(_template, _dialog);
+                        if (params.defaultData) {
+                            $.formUtil.fill(_template, params.defaultData);
+                        } else {
+                            $.formUtil.format(_template);
+                        }
+                    }, 10);
+                    if (params.readOnly) {
+                        _template.find('[databind]').attr('disabled', 'disabled');
+                        _template.find('button').hide();
+                    }
+                    if ($next.length == 1) {
+                        $next.click(function () {
+                            _this.loading.lock(500);
+                            $btn.length == 1 && $btn.trigger('click', 'next');
+                        })
+                    }
+                    $btn.click(function (e, type) {
+                        setTimeout(function () {
+                            var _data = $.formUtil.fetch(_template);
+                            if (params.check && !params.check(_data)) {
+                                return;
+                            }
+                            if (!params.isInsert) {
+                                _data = Object.assign({}, params.defaultData, _data);
+                            }
+                            _this.requestPost(params.api, _data).then(res => {
+                                if (res.code == 0) {
+                                    if (type == 'next') {
+                                        _template.find('input').val('');
+                                        $.formUtil.fill(_template, params.defaultData);
+                                    } else {
+                                        // _dialog.close();
+                                        window.close();
+                                    }
+                                    if (params.success) {
+                                        params.success(res, _dialog);
+                                    } else {
+                                        var config = {
+                                            type: 'success',
+                                            title: '操作成功'
+                                        };
+                                        if (res.msg != undefined) {
+                                            config.content = res.msg;
+                                        }
+                                        $.jqcNotification(config);
+                                    }
+                                    if (params.updateCache && _this.updateCache) {
+                                        _this.updateCache(params.updateCache);
+                                    }
+                                } else {
+                                    if (params.failed) {
+                                        params.failed(res, _dialog);
+                                    } else {
+                                        $.jqcNotification({
+                                            type: 'error',
+                                            title: '操作失败。',
+                                            content: res.msg
+                                        });
+                                    }
+                                }
+                            });
+                        }, 20);
+                    })
+                });
+            };
+        }
     });
