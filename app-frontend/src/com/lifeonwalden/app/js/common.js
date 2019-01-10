@@ -416,7 +416,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         }
         $.App.prototype.getFile = function (relativePath) {
             var _this = this;
-            return $.ajax(_this.getAbsolutePath(relativePath));
+            return $.ajax(_this.getAbsolutePath(relativePath) + '?v=' + +new Date());
         };
         $.App.prototype.getAbsolutePath = function (relativePath) {
             var _this = this;
