@@ -359,7 +359,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._path = root.attr('data-path');
             this._name = root.attr('data-name');
             this._id = root.attr('data-tabid');
-            this.loading.show();
+            this.loading.show('加载中...');
             // 生命周期-装载之前
             var _beforeRender = [].concat(this._beforeRender);
             _beforeRender.push(function () {
@@ -416,7 +416,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         }
         $.App.prototype.getFile = function (relativePath) {
             var _this = this;
-            return $.ajax(_this.getAbsolutePath(relativePath));
+            return $.ajax(_this.getAbsolutePath(relativePath) + '?v=' + +new Date());
         };
         $.App.prototype.getAbsolutePath = function (relativePath) {
             var _this = this;
@@ -552,7 +552,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.fillDxDataGrid = function (params) {
             var _this = this;
-            this.loading.show();
+            this.loading.show('加载中...');
             this.requestGet(_this.dxDataGrid.fetchDataApi, params).then(res => {
                 _this.fillDxDataGridByData(res.result || []);
                 _this.loading.hide();
