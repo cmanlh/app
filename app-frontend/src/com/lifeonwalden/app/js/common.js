@@ -158,6 +158,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 $.each(this, function (index, el) {
                     if (el.jqcSelectBox) {
                         el.jqcSelectBox.destroy();
+                        el.jqcSelectBox = undefined;
+                    }
+                    if ($(el).data('jqcSelect')) {
+                        $(el).data('jqcSelect').destroy();
                     }
                     if ($(el).data('xdsoft_datetimepicker')) {
                         $(el).datetimepicker('destroy');
