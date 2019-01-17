@@ -665,6 +665,15 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                                 if (type == 'next') {
                                     _template.find('input').val('');
                                     $.formUtil.fill(_template, params.defaultData);
+                                    if (Array.isArray(params.disabled)) {
+                                        if (params.disabled.length === 1 && params.disabled[0] === '*') {
+                                            _template.find('[databind]').attr('disabled', 'disabled');                        
+                                        } else {
+                                            params.disabled.forEach(item => {
+                                                _template.find(`[databind=${item}]`).attr('disabled', 'disabled');
+                                            });
+                                        }
+                                    }
                                 } else {
                                     _dialog.close();
                                 }
