@@ -393,8 +393,13 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             $.jqcEvent.emit('beforeRender.app', this);
             queue(_beforeRender, this);
         };
-        $.App.prototype.requestGet = function (api, params) {
+        $.App.prototype.requestGet = function (api, params, loadingText) {
             var _this = this;
+            if (typeof loadingText == 'string') {
+                this.loading.show(loadingText)
+            } else if (typeof loadingText == 'boolean' && loadingText) {
+                this.loading.show();
+            }
             var _params;
             if (params) {
                 _params = JSON.parse(JSON.stringify(params));
@@ -408,14 +413,23 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             return $.ajax({
                 url: api,
                 data: _params
+            }).done(res => {
+                _this.loading.hide();
             });
         };
-        $.App.prototype.requestPost = function (api, params) {
+        $.App.prototype.requestPost = function (api, params, loadingText) {
             var _this = this;
+            if (typeof loadingText == 'string') {
+                this.loading.show(loadingText)
+            } else if (typeof loadingText == 'boolean' && loadingText) {
+                this.loading.show();
+            }
             return $.ajax({
                 url: api,
                 method: 'POST',
                 data: params
+            }).done(res => {
+                _this.loading.hide();
             });
         }
         $.App.prototype.getFile = function (relativePath) {
@@ -556,10 +570,8 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         };
         $.App.prototype.fillDxDataGrid = function (params) {
             var _this = this;
-            this.loading.show('加载中...');
-            this.requestGet(_this.dxDataGrid.fetchDataApi, params).then(res => {
+            this.requestGet(_this.dxDataGrid.fetchDataApi, params, '加载中...').then(res => {
                 _this.fillDxDataGridByData(res.result || []);
-                _this.loading.hide();
             });
         };
         $.App.prototype.__renderContextMenu = function () {
@@ -652,6 +664,13 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     })
                 }
                 $btn.click(function (e, type) {
+                    console.log($(this).attr('loading'))
+                    var loadingTxt = $(this).attr('loading');
+                    if (loadingTxt == undefined) {
+                        loadingTxt = false
+                    } else {
+                        loadingTxt = loadingTxt || true;
+                    }
                     setTimeout(function () {
                         var _data = $.formUtil.fetch(_template);
                         if (params.check && !params.check(_data)) {
@@ -660,7 +679,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         if (!params.isInsert) {
                             _data = Object.assign({}, params.defaultData, _data);
                         }
-                        _this.requestPost(params.api, _data).then(res => {
+                        _this.requestPost(params.api, _data, loadingTxt).then(res => {
                             if (res.code == 0) {
                                 if (type == 'next') {
                                     _template.find('input').val('');
@@ -728,7 +747,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     if (!params.api || !params.data) {
                         throw new Error('delete方法缺少“api”或“data”属性！');
                     }
-                    _this.requestPost(params.api, params.data).then(res => {
+                    _this.requestPost(params.api, params.data, '删除中...').then(res => {
                         if (res.code == 0) {
                             _this.triggerQuery(params.fillParams);
                             if (params.success) {
@@ -848,6 +867,12 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         })
                     }
                     $btn.click(function (e, type) {
+                        var loadingTxt = $(this).attr('loading');
+                        if (loadingTxt == undefined) {
+                            loadingTxt = false
+                        } else {
+                            loadingTxt = loadingTxt || true;
+                        }
                         setTimeout(function () {
                             var _data = $.formUtil.fetch(_template);
                             if (params.check && !params.check(_data)) {
@@ -856,7 +881,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                             if (!params.isInsert) {
                                 _data = Object.assign({}, params.defaultData, _data);
                             }
-                            _this.requestPost(params.api, _data).then(res => {
+                            _this.requestPost(params.api, _data, loadingTxt).then(res => {
                                 if (res.code == 0) {
                                     if (type == 'next') {
                                         _template.find('input').val('');
