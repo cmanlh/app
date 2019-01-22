@@ -48,10 +48,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             }
         }
         // 保留小数
-        $.numberFormat = function (num=2) {
+        $.numberFormat = function (num=2, postfix='', prefix='') {
             return function (value) {
                 var _temp = typeof value === 'number' ? value : +value;
-                return _temp.toFixed(num);
+                return prefix + _temp.toFixed(num) + postfix;
             }
         }
         // 时间戳转时间对象
@@ -520,7 +520,44 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._dxDataGrid = $('<div data-dx="a">');
             this._root.append(_this._dxDataGrid);
             var _columns = this.dxDataGrid.hideOrder ? _this.dxDataGrid.columns : [].concat(_this._config.dxDataGridDefaultConfig.columns, _this.dxDataGrid.columns);
-            var dxConfig = $.extend({}, _this._config.dxDataGridDefaultConfig, _this.dxDataGrid, {columns: _columns});
+            var columnsAddDataType = _columns.map(item => {
+                var _item = {};
+                var _temp = {};
+                var dataField = item.dataField;
+                if (!item.hasOwnProperty('dataType')) {
+                    item.dataType = 'string';
+                }
+                if (item.dataType === 'date') {     // 日期
+                    _temp = {
+                        format: $.timeFormat(),
+                        width: 150,
+                        calculateCellValue: function (rowData) {
+                            return rowData[dataField] ? new Date(+(rowData[dataField])) : '';
+                        }
+                    }
+                } else if (item.dataType === 'datetime') {      // 时间
+                    _temp = {
+                        format: $.timeFormat('yyyy-MM-dd HH:mm:ss'),
+                        width: 180,
+                        calculateCellValue: function (rowData) {
+                            return rowData[dataField] ? new Date(+(rowData[dataField])) : '';
+                        }
+                    }
+                } else if (item.dataType === 'boolean') {       // 布尔   0：否， 1：是
+                    item.dataType = 'string';
+                    _temp = {
+                        calculateCellValue: function (rowData) {
+                            if (rowData[dataField] === '' || rowData[dataField] === undefined) {
+                                return '';
+                            }
+                            return rowData[dataField] ? '是' : '否';
+                        }
+                    }
+                }
+                Object.assign(_item, _temp, item);
+                return _item;
+            });
+            var dxConfig = $.extend({}, _this._config.dxDataGridDefaultConfig, _this.dxDataGrid, {columns: columnsAddDataType});
             if (this.dxDataGrid.hideOrder) {
                 dxConfig.scrolling = {
                     mode: 'virtual'
