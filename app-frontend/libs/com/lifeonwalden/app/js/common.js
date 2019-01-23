@@ -701,7 +701,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     })
                 }
                 $btn.click(function (e, type) {
-                    console.log($(this).attr('loading'))
                     var loadingTxt = $(this).attr('loading');
                     if (loadingTxt == undefined) {
                         loadingTxt = false
@@ -710,57 +709,107 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     }
                     setTimeout(function () {
                         var _data = $.formUtil.fetch(_template);
-                        if (params.check && !params.check(_data)) {
-                            return;
-                        }
                         if (!params.isInsert) {
                             _data = Object.assign({}, params.defaultData, _data);
                         }
-                        _this.requestPost(params.api, _data, loadingTxt).then(res => {
-                            if (res.code == 0) {
-                                if (type == 'next') {
-                                    _template.find('input').val('');
-                                    $.formUtil.fill(_template, params.defaultData);
-                                    if (Array.isArray(params.disabled)) {
-                                        if (params.disabled.length === 1 && params.disabled[0] === '*') {
-                                            _template.find('[databind]').attr('disabled', 'disabled');                        
-                                        } else {
-                                            params.disabled.forEach(item => {
-                                                _template.find(`[databind=${item}]`).attr('disabled', 'disabled');
-                                            });
-                                        }
+                        if (params.check && !params.check(_data)) {
+                            return;
+                        }
+                        var submit_queue = [];
+                        params.beforeSubmit && submit_queue.push(function (next) {
+                            params.beforeSubmit(_data, _template, next);
+                        });
+                        submit_queue.push(submit);
+                        params.afterSubmit && submit_queue.push(function (next, res, success, failded) {
+                            params.afterSubmit(res, success, failded);
+                        });
+                        queue(submit_queue);
+                        function submit(next) {
+                            _this.requestPost(params.api, _data, loadingTxt).then(res => {
+                                // 异步回调
+                                function success() {
+                                    if (params.updateCache && _this.updateCache) {
+                                        _this.updateCache(params.updateCache);
                                     }
-                                } else {
-                                    _dialog.close();
-                                }
-                                _this.triggerQuery(params.fillParams);
-                                if (params.success) {
-                                    params.success(res, _dialog);
-                                } else {
-                                    var config = {
+                                    $.jqcNotification({
                                         type: 'success',
                                         title: '操作成功'
-                                    };
-                                    if (res.msg != undefined) {
-                                        config.content = res.msg;
+                                    });
+                                    _this.triggerQuery(params.fillParams);
+                                    // 新增下一个
+                                    if (type == 'next') {
+                                        _template.find('input').val('');
+                                        $.formUtil.fill(_template, params.defaultData);
+                                        if (Array.isArray(params.disabled)) {
+                                            if (params.disabled.length === 1 && params.disabled[0] === '*') {
+                                                _template.find('[databind]').attr('disabled', 'disabled');                        
+                                            } else {
+                                                params.disabled.forEach(item => {
+                                                    _template.find(`[databind=${item}]`).attr('disabled', 'disabled');
+                                                });
+                                            }
+                                        }
+                                    } else {
+                                        _dialog.close();
                                     }
-                                    $.jqcNotification(config);
                                 }
-                                if (params.updateCache && _this.updateCache) {
-                                    _this.updateCache(params.updateCache);
-                                }
-                            } else {
-                                if (params.failed) {
-                                    params.failed(res, _dialog);
-                                } else {
+                                function failed() {
                                     $.jqcNotification({
                                         type: 'error',
                                         title: '操作失败。',
                                         content: res.msg
                                     });
                                 }
-                            }
-                        });
+                                if (params.afterSubmit) {
+                                    next(res, success, failed);
+                                    return;
+                                }
+                                // 默认同步代码
+                                if (res.code == 0) {
+                                    if (type == 'next') {
+                                        _template.find('input').val('');
+                                        $.formUtil.fill(_template, params.defaultData);
+                                        if (Array.isArray(params.disabled)) {
+                                            if (params.disabled.length === 1 && params.disabled[0] === '*') {
+                                                _template.find('[databind]').attr('disabled', 'disabled');                        
+                                            } else {
+                                                params.disabled.forEach(item => {
+                                                    _template.find(`[databind=${item}]`).attr('disabled', 'disabled');
+                                                });
+                                            }
+                                        }
+                                    } else {
+                                        _dialog.close();
+                                    }
+                                    _this.triggerQuery(params.fillParams);
+                                    if (params.success) {
+                                        params.success(res, _dialog);
+                                    } else {
+                                        var config = {
+                                            type: 'success',
+                                            title: '操作成功'
+                                        };
+                                        if (res.msg != undefined) {
+                                            config.content = res.msg;
+                                        }
+                                        $.jqcNotification(config);
+                                    }
+                                    if (params.updateCache && _this.updateCache) {
+                                        _this.updateCache(params.updateCache);
+                                    }
+                                } else {
+                                    if (params.failed) {
+                                        params.failed(res, _dialog);
+                                    } else {
+                                        $.jqcNotification({
+                                            type: 'error',
+                                            title: '操作失败。',
+                                            content: res.msg
+                                        });
+                                    }
+                                }
+                            });
+                        }
                     }, 20);
                 })
             });
@@ -912,48 +961,107 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         }
                         setTimeout(function () {
                             var _data = $.formUtil.fetch(_template);
-                            if (params.check && !params.check(_data)) {
-                                return;
-                            }
                             if (!params.isInsert) {
                                 _data = Object.assign({}, params.defaultData, _data);
                             }
-                            _this.requestPost(params.api, _data, loadingTxt).then(res => {
-                                if (res.code == 0) {
-                                    if (type == 'next') {
-                                        _template.find('input').val('');
-                                        $.formUtil.fill(_template, params.defaultData);
-                                    } else {
-                                        // _dialog.close();
-                                        window.close();
-                                    }
-                                    if (params.success) {
-                                        params.success(res, _dialog);
-                                    } else {
-                                        var config = {
+                            if (params.check && !params.check(_data)) {
+                                return;
+                            }
+                            var submit_queue = [];
+                            params.beforeSubmit && submit_queue.push(function (next) {
+                                params.beforeSubmit(_data, _template, next);
+                            });
+                            submit_queue.push(submit);
+                            params.afterSubmit && submit_queue.push(function (next, res, success, failded) {
+                                params.afterSubmit(res, success, failded);
+                            });
+                            queue(submit_queue);
+                            function submit(next) {
+                                _this.requestPost(params.api, _data, loadingTxt).then(res => {
+                                    // 异步回调
+                                    function success() {
+                                        if (params.updateCache && _this.updateCache) {
+                                            _this.updateCache(params.updateCache);
+                                        }
+                                        $.jqcNotification({
                                             type: 'success',
                                             title: '操作成功'
-                                        };
-                                        if (res.msg != undefined) {
-                                            config.content = res.msg;
+                                        });
+                                        _this.triggerQuery(params.fillParams);
+                                        // 新增下一个
+                                        if (type == 'next') {
+                                            _template.find('input').val('');
+                                            $.formUtil.fill(_template, params.defaultData);
+                                            if (Array.isArray(params.disabled)) {
+                                                if (params.disabled.length === 1 && params.disabled[0] === '*') {
+                                                    _template.find('[databind]').attr('disabled', 'disabled');                        
+                                                } else {
+                                                    params.disabled.forEach(item => {
+                                                        _template.find(`[databind=${item}]`).attr('disabled', 'disabled');
+                                                    });
+                                                }
+                                            }
+                                        } else {
+                                            window.close();
                                         }
-                                        $.jqcNotification(config);
                                     }
-                                    if (params.updateCache && _this.updateCache) {
-                                        _this.updateCache(params.updateCache);
-                                    }
-                                } else {
-                                    if (params.failed) {
-                                        params.failed(res, _dialog);
-                                    } else {
+                                    function failed() {
                                         $.jqcNotification({
                                             type: 'error',
                                             title: '操作失败。',
                                             content: res.msg
                                         });
                                     }
-                                }
-                            });
+                                    if (params.afterSubmit) {
+                                        next(res, success, failed);
+                                        return;
+                                    }
+                                    // 默认同步代码
+                                    if (res.code == 0) {
+                                        if (type == 'next') {
+                                            _template.find('input').val('');
+                                            $.formUtil.fill(_template, params.defaultData);
+                                            if (Array.isArray(params.disabled)) {
+                                                if (params.disabled.length === 1 && params.disabled[0] === '*') {
+                                                    _template.find('[databind]').attr('disabled', 'disabled');                        
+                                                } else {
+                                                    params.disabled.forEach(item => {
+                                                        _template.find(`[databind=${item}]`).attr('disabled', 'disabled');
+                                                    });
+                                                }
+                                            }
+                                        } else {
+                                            window.close();
+                                        }
+                                        _this.triggerQuery(params.fillParams);
+                                        if (params.success) {
+                                            params.success(res, _dialog);
+                                        } else {
+                                            var config = {
+                                                type: 'success',
+                                                title: '操作成功'
+                                            };
+                                            if (res.msg != undefined) {
+                                                config.content = res.msg;
+                                            }
+                                            $.jqcNotification(config);
+                                        }
+                                        if (params.updateCache && _this.updateCache) {
+                                            _this.updateCache(params.updateCache);
+                                        }
+                                    } else {
+                                        if (params.failed) {
+                                            params.failed(res, _dialog);
+                                        } else {
+                                            $.jqcNotification({
+                                                type: 'error',
+                                                title: '操作失败。',
+                                                content: res.msg
+                                            });
+                                        }
+                                    }
+                                });
+                            }
                         }, 20);
                     })
                 });
