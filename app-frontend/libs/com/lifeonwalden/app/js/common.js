@@ -708,23 +708,37 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         loadingTxt = loadingTxt || true;
                     }
                     setTimeout(function () {
-                        var _data = $.formUtil.fetch(_template);
-                        if (!params.isInsert) {
-                            _data = Object.assign({}, params.defaultData, _data);
-                        }
-                        if (params.check && !params.check(_data)) {
-                            return;
-                        }
+                        // 提交操作队列
                         var submit_queue = [];
-                        params.beforeSubmit && submit_queue.push(function (next) {
+                        // 获取数据之前执行
+                        params.beforeFetchData && submit_queue.push(function (next) {
+                            params.beforeFetchData(_template, next);
+                        });
+                        // 获取数据
+                        submit_queue.push(function fetchData(next) {
+                            var _data = $.formUtil.fetch(_template);
+                            if (!params.isInsert) {
+                                _data = Object.assign({}, params.defaultData, _data);
+                            }
+                            if (params.check && !params.check(_data)) {
+                                return;
+                            }
+                            next(_data);
+                        });
+                        // 提交数据之前执行
+                        params.beforeSubmit && submit_queue.push(function (next, _data) {
                             params.beforeSubmit(_data, _template, next);
                         });
-                        submit_queue.push(submit);
+                        // 提交数据
+                        submit_queue.push(function (next, _data) {
+                            submit(_data, next)
+                        });
+                        // 提交数据之后执行
                         params.afterSubmit && submit_queue.push(function (next, res, success, failded) {
                             params.afterSubmit(res, success, failded);
                         });
                         queue(submit_queue);
-                        function submit(next) {
+                        function submit(_data, next) {
                             _this.requestPost(params.api, _data, loadingTxt).then(res => {
                                 // 异步回调
                                 function success() {
@@ -960,23 +974,37 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                             loadingTxt = loadingTxt || true;
                         }
                         setTimeout(function () {
-                            var _data = $.formUtil.fetch(_template);
-                            if (!params.isInsert) {
-                                _data = Object.assign({}, params.defaultData, _data);
-                            }
-                            if (params.check && !params.check(_data)) {
-                                return;
-                            }
+                            // 提交操作队列
                             var submit_queue = [];
-                            params.beforeSubmit && submit_queue.push(function (next) {
+                            // 获取数据之前执行
+                            params.beforeFetchData && submit_queue.push(function (next) {
+                                params.beforeFetchData(_template, next);
+                            });
+                            // 获取数据
+                            submit_queue.push(function fetchData(next) {
+                                var _data = $.formUtil.fetch(_template);
+                                if (!params.isInsert) {
+                                    _data = Object.assign({}, params.defaultData, _data);
+                                }
+                                if (params.check && !params.check(_data)) {
+                                    return;
+                                }
+                                next(_data);
+                            });
+                            // 提交数据之前执行
+                            params.beforeSubmit && submit_queue.push(function (next, _data) {
                                 params.beforeSubmit(_data, _template, next);
                             });
-                            submit_queue.push(submit);
+                            // 提交数据
+                            submit_queue.push(function (next, _data) {
+                                submit(_data, next)
+                            });
+                            // 提交数据之后执行
                             params.afterSubmit && submit_queue.push(function (next, res, success, failded) {
                                 params.afterSubmit(res, success, failded);
                             });
                             queue(submit_queue);
-                            function submit(next) {
+                            function submit(_data, next) {
                                 _this.requestPost(params.api, _data, loadingTxt).then(res => {
                                     // 异步回调
                                     function success() {
