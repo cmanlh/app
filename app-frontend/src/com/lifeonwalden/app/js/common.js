@@ -680,8 +680,8 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 _this.mixinFormat.forEach(format => {
                     format(_template);
                 });
-                // storage.format(_template);
                 setTimeout(function () {
+                    _dialog.content.scrollTop(0);
                     params.afterRender && params.afterRender(_template, _dialog);
                     if (params.defaultData) {
                         $.formUtil.fill(_template, params.defaultData);
