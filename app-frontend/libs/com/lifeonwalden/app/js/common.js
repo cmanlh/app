@@ -680,8 +680,8 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 _this.mixinFormat.forEach(format => {
                     format(_template);
                 });
-                // storage.format(_template);
                 setTimeout(function () {
+                    _dialog.content.scrollTop(0);
                     params.afterRender && params.afterRender(_template, _dialog);
                     if (params.defaultData) {
                         $.formUtil.fill(_template, params.defaultData);
@@ -712,7 +712,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         var submit_queue = [];
                         // 获取数据之前执行
                         params.beforeFetchData && submit_queue.push(function (next) {
-                            params.beforeFetchData(_template, next);
+                            params.beforeFetchData(_template, next, _dialog, type);
                         });
                         // 获取数据
                         submit_queue.push(function fetchData(next) {
@@ -727,7 +727,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         });
                         // 提交数据之前执行
                         params.beforeSubmit && submit_queue.push(function (next, _data) {
-                            params.beforeSubmit(_data, _template, next);
+                            params.beforeSubmit(_data, _template, next, _dialog, type);
                         });
                         // 提交数据
                         submit_queue.push(function (next, _data) {
@@ -735,7 +735,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         });
                         // 提交数据之后执行
                         params.afterSubmit && submit_queue.push(function (next, res, success, failded) {
-                            params.afterSubmit(res, success, failded);
+                            params.afterSubmit(res, success, failded, _template, _dialog, type);
                         });
                         queue(submit_queue);
                         function submit(_data, next) {

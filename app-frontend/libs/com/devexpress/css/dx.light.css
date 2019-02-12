@@ -125,7 +125,7 @@
     /*border-right: 2px solid #ddd;*/
 }
 .dx-datagrid .dx-datagrid-headers {
-    height: 74px;
+    /* height: 74px; */
     overflow: hidden;
 }
 .dx-datagrid .dx-datagrid-rowsview .dx-data-row td.dx-pointer-events-none.dx-first-cell,
@@ -3062,12 +3062,12 @@
     padding: 7px 9px 8px;
     padding-left: 90px;
 }
-.dx-dropdowneditor.dx-state-hover .dx-dropdowneditor-icon,
-.dx-dropdowneditor.dx-state-active .dx-dropdowneditor-icon {
+.dx-datebox.dx-dropdowneditor.dx-state-hover .dx-dropdowneditor-icon,
+.dx-datebox.dx-dropdowneditor.dx-state-active .dx-dropdowneditor-icon {
     background-image: url('./icons/icon_calendar_active.png');
 }
-.dx-dropdowneditor.dx-dropdowneditor-active .dx-dropdowneditor-icon,
-.dx-dropdowneditor-button.dx-state-active .dx-dropdowneditor-icon {
+.dx-datebox.dx-dropdowneditor.dx-dropdowneditor-active .dx-dropdowneditor-icon,
+.dx-datebox.dx-dropdowneditor-button.dx-state-active .dx-dropdowneditor-icon {
     background-image: url('./icons/icon_calendar_active.png');
 }
 .dx-invalid.dx-dropdowneditor .dx-texteditor-container:after {
@@ -6418,7 +6418,7 @@
     touch-action: pinch-zoom;
 }
 .dx-datagrid-headers .dx-datagrid-content {
-    margin-bottom: 36px;
+    /* margin-bottom: 36px; */
 }
 .dx-datagrid-borders .dx-datagrid-headers .dx-datagrid-table {
     border-bottom-width: 1px;
@@ -7141,6 +7141,9 @@
 .dx-treelist-container .dx-icon-filter-operation-starts-with {
     font: 14px/1 DXIcons;
 }
+.dx-texteditor .dx-dropdowneditor-icon{
+    /* background-image: none!important; */
+}
 .dx-treelist .dx-icon-filter-operation-starts-with:before,
 .dx-treelist-container .dx-icon-filter-operation-starts-with:before {
     content: '\f064';
@@ -7304,6 +7307,7 @@
 }
 .dx-editor-cell.dx-focused .dx-dropdowneditor-icon {
     border-radius: 0;
+    /* background-image: none; */
 }
 .dx-editor-cell.dx-editor-inline-block .dx-highlight-outline::before {
     padding-top: 7px;
@@ -7499,7 +7503,7 @@
     margin-top: 2px;
 }
 .dx-highlight-outline {
-    padding: 7px;
+    padding: 0 7px;
 }
 .dx-treelist-header-panel {
     border-bottom: 1px solid #ddd;
