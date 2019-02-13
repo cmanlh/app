@@ -98,7 +98,7 @@
             "dxDataGrid-groupPanelEmptyText": "Drag a column header here to group by that column",
             "dxDataGrid-noDataText": "数据为空",
             "dxDataGrid-searchPanelPlaceholder": "全表搜索...",
-            "dxDataGrid-filterRowShowAllText": "(All)",
+            "dxDataGrid-filterRowShowAllText": "全部",
             "dxDataGrid-filterRowResetOperationText": "清除过滤",
             "dxDataGrid-filterRowOperationEquals": "等于",
             "dxDataGrid-filterRowOperationNotEquals": "不等于",
