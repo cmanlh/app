@@ -15,6 +15,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['select'])
         .registerComponents(['icon'])
         .registerComponents(['upload'])
+        .registerComponents(['nav'])    // 按需加载
         .registerComponents(['formToolBar', 'formUtil', 'datetimepicker', 'tip', 'msg', 'tab'])
         .registerComponents(['echarts']) //图表
         .registerComponents(['bpmn']) // bpmn2.0
