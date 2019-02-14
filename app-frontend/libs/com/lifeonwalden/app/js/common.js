@@ -578,6 +578,29 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     class: 'custom-row-style'
                 }
             }
+            /**
+             * dxDataGrid表格 行
+             * 1.添加单击事件 onRowClick
+             * 2.添加双击事件 onRowDblClick
+             */
+            var _onRowClick = dxConfig.onRowClick;
+            var _onRowDblClick = dxConfig.onRowDblClick;
+            var clickCount = 0;
+            var timer = null;
+            dxConfig.onRowClick = function (e) {
+                clickCount ++;
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                   if (clickCount < 2) {
+                       console.log('click');
+                       _onRowClick && _onRowClick(e);
+                   } else {
+                       console.log('dblclick')
+                       _onRowDblClick && _onRowDblClick(e);
+                   }
+                   clickCount = 0;
+                }, 300);
+            }
             this._dxDataGrid.dxDataGrid(dxConfig);
             var dx = this.getDxDataGrid();
             // 导出事件绑定
