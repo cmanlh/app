@@ -592,10 +592,8 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 clearTimeout(timer);
                 timer = setTimeout(() => {
                    if (clickCount < 2) {
-                       console.log('click');
                        _onRowClick && _onRowClick(e);
                    } else {
-                       console.log('dblclick')
                        _onRowDblClick && _onRowDblClick(e);
                    }
                    clickCount = 0;
