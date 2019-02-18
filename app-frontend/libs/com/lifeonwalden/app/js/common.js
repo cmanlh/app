@@ -171,7 +171,28 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             }
         });
         /* ********************************************************** */
-
+        // ajax全局提醒
+        $.ajaxSetup({
+            complete: function (xhr, status) {
+                // 登陆已过期
+                if (xhr.responseJSON && xhr.responseJSON.code && xhr.responseJSON.code == 401) {
+                    $.jqcConfirm({
+                        title: '未登录',
+                        content: '您的登录状态已过期,请刷新页面！',
+                        onConfirm: function() {
+                            window.location.reload();
+                        }
+                    });
+                }
+            },
+            // 请求失败
+            error: function (xhr, status, error) {
+                $.jqcNotification({
+                    type: 'error',
+                    title: '服务器连接失败'
+                });
+            }
+        });
         /**
          * 缓存api请求到的数据
          */
