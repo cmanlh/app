@@ -16,15 +16,20 @@
 
 package com.lifeonwalden.app.gateway.auth.filter;
 
+import com.lifeonwalden.app.gateway.bean.Response;
+import com.lifeonwalden.app.util.character.JSON;
 import com.lifeonwalden.app.util.logger.LoggerUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authz.AuthorizationFilter;
+import org.apache.shiro.web.util.WebUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class BaseAuthorizationFilter extends AuthorizationFilter {
     private final static Logger logger = LoggerUtil.getLogger(BaseAuthorizationFilter.class);
@@ -73,5 +78,29 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
 
     protected boolean isPermitted(Subject subject, String uri, HttpServletRequest request) {
         return null != subject.getPrincipal() && subject.isPermitted(uri);
+    }
+
+    @Override
+    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws IOException {
+        Subject subject = this.getSubject(request, response);
+        if (subject.getPrincipal() == null) {
+            this.saveRequestAndRedirectToLogin(request, response);
+        } else {
+            String unauthorizedUrl = this.getUnauthorizedUrl();
+            String ajaxHeader = ((HttpServletRequest) request).getHeader("X-Requested-With");
+            if (StringUtils.isNotEmpty(ajaxHeader) && "XMLHttpRequest".equals(ajaxHeader)) {
+                response.reset();
+                response.setContentType("application/json");
+                response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+                response.getWriter().write(JSON.writeValueAsString(new Response().setCode("401").setMsg("Invalid User.")));
+                response.flushBuffer();
+            } else if (org.apache.shiro.util.StringUtils.hasText(unauthorizedUrl)) {
+                WebUtils.issueRedirect(request, response, unauthorizedUrl);
+            } else {
+                WebUtils.toHttp(response).sendError(401);
+            }
+        }
+
+        return false;
     }
 }
