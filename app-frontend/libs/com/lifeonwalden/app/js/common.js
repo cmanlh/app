@@ -727,6 +727,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     title: params.title || '',
                     content: _template,
                     width: params.width || 1080,
+                    position: params.position || 'auto',
                     afterClose: function () {
                         params.afterClose && params.afterClose();
                         $.each(_template.find('input'), function (index, el) {
