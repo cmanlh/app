@@ -593,6 +593,3 @@ body > div.dialog_container .dialog_body {
     width: 100%;
     background: #fff;
 }
-.jqcDialogContent>.form {
-    max-height: 470px;
-}
