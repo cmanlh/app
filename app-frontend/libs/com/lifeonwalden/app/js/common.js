@@ -171,7 +171,28 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             }
         });
         /* ********************************************************** */
-
+        // ajax全局提醒
+        $.ajaxSetup({
+            complete: function (xhr, status) {
+                // 登陆已过期
+                if (xhr.responseJSON && xhr.responseJSON.code && xhr.responseJSON.code == 401) {
+                    $.jqcConfirm({
+                        title: '未登录',
+                        content: '您的登录状态已过期,请刷新页面！',
+                        onConfirm: function() {
+                            window.location.reload();
+                        }
+                    });
+                }
+            },
+            // 请求失败
+            error: function (xhr, status, error) {
+                $.jqcNotification({
+                    type: 'error',
+                    title: '服务器连接失败'
+                });
+            }
+        });
         /**
          * 缓存api请求到的数据
          */
@@ -237,12 +258,23 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
 
 
         var styleCache = {};
-        $.addForm = function(menu, tab) {
-            var uid = menu.id;
+        var jqcTab = null;
+        $.addForm = function(menu, tab, needReload) {
+            var uid = menu.url;
             var text = menu.text;
+            if (!jqcTab) {
+                jqcTab = tab;
+            }
             // tab内存在
             if (tab.index.has(uid)) {
                 tab.add({ id: uid });
+                if (needReload) {
+                    var panel = tab.index.get(uid).panel;
+                    var root = panel.find('div[data-tabid]');
+                    root.empty();
+                    var _app = $.getFormCache(uid);
+                    _app.mount(root, menu.data);
+                }
                 return;
             }
             var _path = APP_ROOT_PATH.concat(menu.url);
@@ -270,11 +302,18 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 });
                 setTimeout(function() {
                     var panel = tab.index.get(uid).panel;
-                    var root = panel.find('div[data-tabid=' + uid + ']');
-                    $.getFormCache(uid).mount(root, panel);
+                    var root = panel.find('div[data-tabid]');
+                    $.getFormCache(uid).mount(root, menu.data);
                 }, 0);
             }
         };
+        $.openPage = function (formUrl, title, data) {
+            $.addForm({
+                text: title,
+                url: formUrl,
+                data: data
+            }, jqcTab, true);
+        }
         // 缓存新加载的js文件数据
         const formCache = new Map();
         // set cache
@@ -357,7 +396,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             $.setupApp(this);
             $.jqcEvent.emit('setup.app', this);
         };
-        $.App.prototype.mount = function (root) {
+        $.App.prototype.mount = function (root, data) {
             var _this = this;
             this._root = root;
             this.root = root;
@@ -381,13 +420,13 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                         _this.__renderContextMenu();
                     }
                     if (_this.templatePath) {
-                        _this.__getTemplateAndRender();
+                        _this.__getTemplateAndRender(data);
                     } else {
                         if (_this.dxDataGrid) {
                             _this.__renderDxDataGrid();
                         }
                         // 生命周期-渲染之后
-                        _this.__afterRender();
+                        _this.__afterRender(data);
                     }
                 });
             });
@@ -453,7 +492,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             });
             return _pathArr.join('/');
         };
-        $.App.prototype.__getTemplateAndRender = function () {
+        $.App.prototype.__getTemplateAndRender = function (data) {
             var _this = this;
             this.getFile(_this.templatePath).then(res => {
                 var _fakeBox = $('<div>').append($(res));
@@ -472,7 +511,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 if (_this.dxDataGrid) {
                     _this.__renderDxDataGrid();
                 }
-                _this.__afterRender();
+                _this.__afterRender(data);
             });
         };
         $.App.prototype.__renderToolBar = function () {
@@ -578,6 +617,27 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     class: 'custom-row-style'
                 }
             }
+            /**
+             * dxDataGrid表格 行
+             * 1.添加单击事件 onRowClick
+             * 2.添加双击事件 onRowDblClick
+             */
+            var _onRowClick = dxConfig.onRowClick;
+            var _onRowDblClick = dxConfig.onRowDblClick;
+            var clickCount = 0;
+            var timer = null;
+            dxConfig.onRowClick = function (e) {
+                clickCount ++;
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                   if (clickCount < 2) {
+                       _onRowClick && _onRowClick(e);
+                   } else {
+                       _onRowDblClick && _onRowDblClick(e);
+                   }
+                   clickCount = 0;
+                }, 300);
+            }
             this._dxDataGrid.dxDataGrid(dxConfig);
             var dx = this.getDxDataGrid();
             // 导出事件绑定
@@ -625,9 +685,19 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                 });
             }, 0);
         };
-        $.App.prototype.__afterRender = function () {
+        $.App.prototype.__afterRender = function (data) {
             var _this = this;
             var _afterRender = [].concat(this._afterRender);
+            // 带参数渲染
+            _afterRender.splice(-1, 0, function (next) {
+                if (data) {
+                    var search = this.root.find('.toolbar-left');
+                    if (search.length) {
+                        $.formUtil.fill(search, data)
+                    }
+                }
+                next();
+            });
             setTimeout(function () {
                 queue(_afterRender, _this);
                 _this.loading.hide();
@@ -657,6 +727,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     title: params.title || '',
                     content: _template,
                     width: params.width || 1080,
+                    position: params.position || 'auto',
                     afterClose: function () {
                         params.afterClose && params.afterClose();
                         $.each(_template.find('input'), function (index, el) {
