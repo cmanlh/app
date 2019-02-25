@@ -261,6 +261,10 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         var jqcTab = null;
         $.addForm = function(menu, tab, needReload) {
             var uid = menu.url;
+            if (uid.indexOf('http') == 0) {
+                window.open(uid);
+                return;
+            }
             var text = menu.text;
             if (!jqcTab) {
                 jqcTab = tab;
