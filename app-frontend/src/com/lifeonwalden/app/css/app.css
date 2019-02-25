@@ -101,11 +101,13 @@ body {
 }
 
 .jqcTabPanel {
-    position: static!important;
+    /* position: static!important; */
     height: calc(100vh - 90px);
     background: #fff;
     box-sizing: border-box;
     padding: 10px;
+    position: relative;
+    top: 0;
 }
 
 .jqcTabMoreContainer {
