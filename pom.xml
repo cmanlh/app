@@ -181,7 +181,7 @@
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
-<!--            <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.6</version>
@@ -194,26 +194,21 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
     <scm>
         <url>https://gitee.com/lifeonwalden/app</url>
-        <connection>scm:git:http://luhong@git.orientsec.com.cn/scm/~luhong/app.git</connection>
-        <developerConnection>scm:git:http://luhong@git.orientsec.com.cn/scm/~luhong/app.git</developerConnection>
+        <connection>scm:git:git@gitee.com:lifeonwalden/app.git</connection>
+        <developerConnection>scm:git:git@gitee.com:lifeonwalden/app.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
         <repository>
-            <id>local-releases</id>
-            <name>local-releases</name>
-            <url>http://172.16.45.179:8081/artifactory/libs-release-local</url>
+            <id>bintray-cmanlh-maven</id>
+            <name>cmanlh-maven</name>
+            <url>https://api.bintray.com/maven/cmanlh/maven/app/;publish=1</url>
         </repository>
-        <snapshotRepository>
-            <id>local-snapshots</id>
-            <name>local-snapshots</name>
-            <url>http://172.16.45.179:8081/artifactory/libs-snapshot-local</url>
-        </snapshotRepository>
     </distributionManagement>
 </project>
