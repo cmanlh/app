@@ -26,7 +26,13 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['apisBox']));
 
 const COMP_LIB_PATH = 'com.lifeonwalden.jqc';
-
+function queue (funcs, scope) {
+    (function next() {
+        if(funcs.length > 0) {
+            funcs.shift().apply(scope || {}, [next].concat(Array.prototype.slice.call(arguments, 0)));
+        }
+    })();
+};
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
     .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'checkbox', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'tag', 'calendar', 'icon', 'upload', 'notify'])
     // dx组件
@@ -302,6 +308,11 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     beforeDestroy: function () {
                         var inputs = this.panel.find('input');
                         inputs.destroySelectBox();
+                        var _app = formCache.get(uid);
+                        if (_app) {
+                            var _beforeDestroy = [].concat(_app._beforeDestroy);
+                            queue(_beforeDestroy, _app);
+                        }
                     }
                 });
                 setTimeout(function() {
@@ -349,6 +360,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this._afterRender = [];
             this.components = [];
             this._dataSource = [];
+            this._beforeDestroy = [];
             if (params && params.mixins && params.mixins.length) {
                 params.mixins.forEach(mixin => {
                     for (var key in mixin) {
@@ -358,6 +370,8 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                             _this._afterRender.push(mixin[key].bind(_this));
                         } else if (key == 'beforeRender' && typeof mixin[key] == 'function') {
                             _this._beforeRender.push(mixin[key].bind(_this));
+                        } else if (key == 'beforeDestroy' && T.rawType(mixin[key]) == 'function') {
+                            _this._beforeDestroy.push(mixin[key].bind(_this));
                         } else if (key == 'components' && T.rawType(mixin[key]) == 'Array') {
                             _this.components = _this.components.concat(mixin[key]);
                         } else if (key == 'mixins') {
@@ -385,6 +399,9 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             }.bind(this));
             if (params && params.afterRender && typeof params.afterRender == 'function') {
                 this._afterRender.push(params.afterRender);
+            }
+            if (params && params.beforeDestroy && typeof params.beforeDestroy == 'function') {
+                this._beforeDestroy.push(params.beforeDestroy.bind(this));
             }
             _this.queryCallback = params.queryCallback ? params.queryCallback.bind(this) : null;
             this.root = null; //暴露给afterRender的容器根节点
@@ -1203,13 +1220,6 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             }
             app.mount($root);
         }
-        function queue (funcs, scope) {
-            (function next() {
-                if(funcs.length > 0) {
-                    funcs.shift().apply(scope || {}, [next].concat(Array.prototype.slice.call(arguments, 0)));
-                }
-            })();
-        };
         // 单独dialog页面
         if (window.__PAGE_TYPE__ == 'dialog') {
             $.App.prototype.dialog = function (params) {
