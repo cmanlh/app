@@ -83,17 +83,17 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws IOException {
         Subject subject = this.getSubject(request, response);
+        String ajaxHeader = ((HttpServletRequest) request).getHeader("X-Requested-With");
         if (subject.getPrincipal() == null) {
-            this.saveRequestAndRedirectToLogin(request, response);
+            if (StringUtils.isNotEmpty(ajaxHeader) && "XMLHttpRequest".equals(ajaxHeader)) {
+                procesAjaxUnauthorize(response);
+            } else {
+                this.saveRequestAndRedirectToLogin(request, response);
+            }
         } else {
             String unauthorizedUrl = this.getUnauthorizedUrl();
-            String ajaxHeader = ((HttpServletRequest) request).getHeader("X-Requested-With");
             if (StringUtils.isNotEmpty(ajaxHeader) && "XMLHttpRequest".equals(ajaxHeader)) {
-                response.reset();
-                response.setContentType("application/json");
-                response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-                response.getWriter().write(JSON.writeValueAsString(new Response().setCode("401").setMsg("Invalid User.")));
-                response.flushBuffer();
+                procesAjaxUnauthorize(response);
             } else if (org.apache.shiro.util.StringUtils.hasText(unauthorizedUrl)) {
                 WebUtils.issueRedirect(request, response, unauthorizedUrl);
             } else {
@@ -102,5 +102,13 @@ public class BaseAuthorizationFilter extends AuthorizationFilter {
         }
 
         return false;
+    }
+
+    private void procesAjaxUnauthorize(ServletResponse response) throws IOException {
+        response.reset();
+        response.setContentType("application/json");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.getWriter().write(JSON.writeValueAsString(new Response().setCode("401").setMsg("Invalid User.")));
+        response.flushBuffer();
     }
 }
