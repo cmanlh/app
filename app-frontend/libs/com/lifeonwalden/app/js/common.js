@@ -977,6 +977,13 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
                     close: function () {
                         jqcTab.container.find('span[closeid="' + id + '"]').trigger('click');
                         params.afterClose && params.afterClose();
+                        setTimeout(function () {
+                            try {
+                                _this.getDxDataGrid().refresh(true);
+                            } catch (error) {
+
+                            }
+                        }, 1000)
                     }
                 };
 
