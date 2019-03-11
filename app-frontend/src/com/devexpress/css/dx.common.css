@@ -5991,3 +5991,7 @@ input.dx-hidden {
 .dx-deferrendering:not(.dx-pending-rendering) .dx-visible-while-pending-rendering {
   display: none !important;
 }
+
+.dx-datagrid .dx-row-lines.type_0 > td{
+  background-color: #bbb!important;
+}
