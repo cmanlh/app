@@ -690,7 +690,15 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         $.App.prototype.fillDxDataGrid = function (params) {
             var _this = this;
             this.requestGet(_this.dxDataGrid.fetchDataApi, params, '加载中...').then(res => {
-                _this.fillDxDataGridByData(res.result || []);
+                if (res.code != undefined && res.code != 0) {
+                    $.jqcNotification({
+                        type: 'error',
+                        title: '请求失败',
+                        content: res.msg
+                    });
+                } else {
+                    _this.fillDxDataGridByData(res.result || []);
+                }
             });
         };
         $.App.prototype.__renderContextMenu = function () {
