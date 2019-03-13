@@ -682,7 +682,7 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
         $.App.prototype.fillDxDataGridByData = function (data) {
             var _this = this;
             this.dataSource = data || [];
-            this._dxDataGrid && this.getDxDataGrid().option('dataSource', data);
+            this._dxDataGrid && this.getDxDataGrid().option('dataSource', _this.dataSource);
         };
         $.App.prototype.getDxDataGrid = function () {
             return this._dxDataGrid ? this._dxDataGrid.dxDataGrid('instance') : undefined;

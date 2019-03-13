@@ -42,7 +42,10 @@
                 box.text(data.rowIndex + 1);
             },
             allowExporting: false
-        }]
+        }],
+        loadPanel: {
+            enabled: false
+        }
     };
 
     const globalConfig = {
