@@ -16,8 +16,7 @@
 
 package com.lifeonwalden.app.util.character;
 
-import java.nio.ByteBuffer;
-import java.util.Arrays;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class CharUtil {
     private static char[] CHAR_SET = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
@@ -35,46 +34,67 @@ public class CharUtil {
         }
     }
 
-    public static String byteToU64(byte[] buffer) {
+    public static String bytesToU64(byte[] buffer) {
         StringBuilder u64Buffer = new StringBuilder();
         int leftBitLength = (buffer.length * 8) % 32;
         int uint32Count = (int) Math.round(Math.floor(buffer.length / 4));
         if (0 == leftBitLength) {
-            Arrays.stream(ByteBuffer.wrap(buffer).asIntBuffer().array()).forEach(val -> u64Buffer.append("=").append(uintToU64(val)));
+            for (int i = 0; i < uint32Count; i++) {
+                u64Buffer.append("=").append(intByteToU64(ArrayUtils.subarray(buffer, i * 4, i * 4 + 4)));
+            }
         } else {
+            u64Buffer.append("=-".concat(String.valueOf(uint32Count + 2)));
+            if (uint32Count > 0) {
+                for (int i = 0; i < uint32Count; i++) {
+                    u64Buffer.append("=").append(intByteToU64(ArrayUtils.subarray(buffer, i * 4, i * 4 + 4)));
+                }
+            }
 
+            for (int i = uint32Count * 4; i < buffer.length; i++) {
+                u64Buffer.append("=").append(uintToU64(buffer[i]));
+            }
         }
-        return "";
+        return u64Buffer.toString();
     }
 
     public static byte[] u64ToBytes(String u64Text) {
         String[] u64Array = u64Text.split("=");
         if (u64Array[1].indexOf('-') > -1) {
             int uInt8Index = Integer.parseInt(u64Array[1].substring(1));
-            byte[] buffer = new byte[(uInt8Index - 2) * 4];
-            for (int i = 2; i < uInt8Index; i++) {
-                byte[] tmp = u64ToIntByte(u64Array[i]);
+            if (2 == uInt8Index) {
+                byte[] buffer = new byte[u64Array.length - 2];
+                int startIdx = 0;
+                for (int i = 2; i < u64Array.length; i++) {
+                    buffer[startIdx++] = (byte) (u64ToUint(u64Array[i]) & 255);
+                }
 
-                int index = (i - 2) * 4;
-                buffer[index] = tmp[0];
-                buffer[index + 1] = tmp[1];
-                buffer[index + 2] = tmp[2];
-                buffer[index + 3] = tmp[3];
-            }
-            int size = u64Array.length;
-            int uInt8IndexStart = (uInt8Index - 2) * 4;
-            for (int k = uInt8Index; k < size; k++) {
-                buffer[uInt8IndexStart++] = (byte) (u64ToUint(u64Array[k]) & 255);
-            }
+                return buffer;
+            } else {
+                byte[] buffer = new byte[(uInt8Index - 2) * 4];
+                for (int i = 2; i < uInt8Index; i++) {
+                    byte[] tmp = u64ToIntByte(u64Array[i]);
 
-            return buffer;
+                    int index = (i - 2) * 4;
+                    buffer[index] = tmp[0];
+                    buffer[index + 1] = tmp[1];
+                    buffer[index + 2] = tmp[2];
+                    buffer[index + 3] = tmp[3];
+                }
+                int size = u64Array.length;
+                int uInt8IndexStart = (uInt8Index - 2) * 4;
+                for (int k = uInt8Index; k < size; k++) {
+                    buffer[uInt8IndexStart++] = (byte) (u64ToUint(u64Array[k]) & 255);
+                }
+
+                return buffer;
+            }
         } else {
             int size = u64Array.length;
             byte[] buffer = new byte[(size - 1) * 4];
-            for (int i = 2; i < size; i++) {
+            for (int i = 1; i < size; i++) {
                 byte[] tmp = u64ToIntByte(u64Array[i]);
 
-                int index = (i - 2) * 4;
+                int index = (i - 1) * 4;
                 buffer[index] = tmp[0];
                 buffer[index + 1] = tmp[1];
                 buffer[index + 2] = tmp[2];
@@ -86,7 +106,7 @@ public class CharUtil {
     }
 
     public static String textToU64(String text) {
-        StringBuilder buffer = new StringBuilder("=");
+        StringBuilder buffer = new StringBuilder();
         int size = text.length();
 
         for (int i = 0; i < size; i++) {
@@ -151,7 +171,7 @@ public class CharUtil {
         return buffer;
     }
 
-    public static String bytesToU64(byte[] val) {
+    public static String intByteToU64(byte[] val) {
         int codePoint = 0;
         codePoint |= val[0] << 24;
         codePoint |= val[1] << 16;
@@ -166,14 +186,5 @@ public class CharUtil {
         } while (codePoint != 0);
 
         return buffer.toString();
-    }
-
-    public static void main(String[] args) {
-        String u64 = "dtC";
-        System.out.println(bytesToU64(u64ToIntByte(u64)));
-
-        double t = Math.floor(1.8);
-        System.out.println(t);
-        System.out.println(Math.round(t));
     }
 }
