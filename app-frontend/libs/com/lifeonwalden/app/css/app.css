@@ -14,7 +14,8 @@
 
 body {
     position: relative;
-    min-width: 1280px;
+    /*笔记本宽度*/
+    min-width: 1366px;
     background: #f2f2f2;
 }
 
@@ -343,14 +344,19 @@ label.required::before {
     padding: 10px 15px 0 0;
     margin-left: -5px;
 }
+.jqcFormToolBar-newline .toolbar-right .form_group {
+    justify-content: flex-end;
+}
 .jqcFormToolBar-newline .toolbar-right .form_item,
 .jqcFormToolBar-newline .toolbar-right .form_group > div {
     padding: 10px 5px 0 0;
 }
 .jqcFormToolBar-newline .toolbar-right .search_item{
-    flex-grow: 1;
     flex-direction: row-reverse;
     padding: 10px 0 0 0;
+}
+.toolbar-right .search_item input.search{
+    width: 100px;
 }
 .btn {
     box-sizing: border-box;
