@@ -130,6 +130,7 @@ textarea {
     box-shadow: none!important;
     -moz-box-shadow: none!important;
 }
+
 input:hover,
 select:hover,
 textarea:hover {
@@ -137,7 +138,7 @@ textarea:hover {
 }
 textarea {
     padding: 5px 10px;
-    height: 60px;
+    height: 74px;
     resize: none;
 }
 label {
