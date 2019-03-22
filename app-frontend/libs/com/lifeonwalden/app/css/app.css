@@ -553,6 +553,30 @@ hr {
 .fieldset.isLink.active::after{
     transform: rotate(90deg);
 }
+.fieldset .subTitle{
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    position: relative;
+}
+.fieldset .subTitle::before{
+    content: '';
+    position: absolute;
+    width: 90%;
+    height: 1px;
+    background-color: #ccc;
+    top: 50%;
+    left: 50%;
+    margin-left: -45%;
+    z-index: 1;
+}
+.fieldset .subTitle > span{
+    background-color: #fff;
+    position: relative;
+    z-index: 2;
+    padding: 0 20px;
+    color: #444;
+}
 .btn_group .btn_list {
     display: none;
     position: absolute;
@@ -601,4 +625,5 @@ body > div.dialog_container .dialog_body {
     bottom: 0;
     width: 100%;
     background: #fff;
+    z-index: 500;
 }

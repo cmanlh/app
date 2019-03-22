@@ -392,16 +392,15 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.contextmenu = (params && params.contextmenu) ? params.contextmenu : (this.contextmenu || null);
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : (this.dxDataGrid || null);
             this.mixinFormat.push(function (root) {
-                var $textarea = root.find('textarea[editor]');
+                var $textarea = root.find('textarea[editor-title]');
                 $.each($textarea, function (index, el) {
                     var $el = $(el);
-                    console.log($el.attr('off'))
                     if ($el.attr('off') === 'undefined') {
                         return;
                     }
                     new $.jqcTextarea({
                         el: $el,
-                        title: $el.attr('editor-title') || '编辑',
+                        title: $el.attr('editor-title'),
                         placeholder: $el.attr('placeholder'),
                     });
                 })
