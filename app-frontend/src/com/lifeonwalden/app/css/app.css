@@ -259,10 +259,6 @@ label {
     display: flex;
     justify-content: flex-end;
 }
-/*dialog*/
-.jqcDialogContent textarea {
-    height: 50px;
-}
 /*form styte*/
 .form_group {
     flex-shrink: 0;
