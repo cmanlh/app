@@ -287,6 +287,18 @@ label {
     font-size: 12px;
     margin-right: 10px;
 }
+.form.fixed {
+    padding-bottom: 60px;
+}
+.form.fixed .form_btn_box{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 500;
+}
 .form .row > div,
 .form_label {
     display: flex;
