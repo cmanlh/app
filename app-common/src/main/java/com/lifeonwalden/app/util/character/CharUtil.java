@@ -173,10 +173,10 @@ public class CharUtil {
 
     public static String intByteToU64(byte[] val) {
         int codePoint = 0;
-        codePoint |= val[0] << 24;
-        codePoint |= val[1] << 16;
-        codePoint |= val[2] << 8;
-        codePoint |= val[3];
+        codePoint |= (val[0] & 255) << 24;
+        codePoint |= (val[1] & 255) << 16;
+        codePoint |= (val[2] & 255) << 8;
+        codePoint |= val[3] & 255;
 
         StringBuilder buffer = new StringBuilder();
         int mask = 63;
