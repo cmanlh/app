@@ -14,21 +14,63 @@
  *    limitations under the License.
  */
 
-package com.lifeonwalden.app.util.encrypt;
+package com.lifeonwalden.app.util.crypt;
 
-import javax.crypto.KeyGenerator;
+import com.lifeonwalden.app.util.character.CharUtil;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.GCMParameterSpec;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public interface Aes {
-    static String generateKey(String algorithm, int size) {
+    static String encrypt(String key, String iv, String plainText) {
         try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(algorithm);
-            keyGenerator.init(size);
-            return Base64.getEncoder().encodeToString(keyGenerator.generateKey().getEncoded());
+            Cipher cipher = Cipher.getInstance("AES/GCM/PKCS5Padding");
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(96, CharUtil.u64ToBytes(iv));
+            cipher.init(Cipher.ENCRYPT_MODE, KeyTool.decode("AES", key), gcmParameterSpec);
+
+            return Base64.getEncoder().encodeToString(cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new RuntimeException(e);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        } catch (BadPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalBlockSizeException e) {
+            throw new RuntimeException(e);
         }
-        return null;
+    }
+
+    static String decrypt(String key, String iv, String encryptedText) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/GCM/PKCS5Padding");
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(96, CharUtil.u64ToBytes(iv));
+            cipher.init(Cipher.DECRYPT_MODE, KeyTool.decode("AES", key), gcmParameterSpec);
+
+            return new String(cipher.doFinal(Base64.getDecoder().decode(encryptedText)), StandardCharsets.UTF_8);
+        } catch (NoSuchPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        } catch (BadPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalBlockSizeException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
