@@ -32,11 +32,12 @@ import java.util.Base64;
 public interface Aes {
     static String encrypt(String key, String iv, String plainText) {
         try {
-            Cipher cipher = Cipher.getInstance("AES/GCM/PKCS5Padding");
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(96, CharUtil.u64ToBytes(iv));
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            byte[] ivArray = CharUtil.u64ToBytes(iv);
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(ivArray.length * 8, ivArray);
             cipher.init(Cipher.ENCRYPT_MODE, KeyTool.decode("AES", key), gcmParameterSpec);
 
-            return Base64.getEncoder().encodeToString(cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8)));
+            return CharUtil.bytesToU64(cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchPaddingException e) {
             throw new RuntimeException(e);
         } catch (InvalidAlgorithmParameterException e) {
@@ -54,11 +55,12 @@ public interface Aes {
 
     static String decrypt(String key, String iv, String encryptedText) {
         try {
-            Cipher cipher = Cipher.getInstance("AES/GCM/PKCS5Padding");
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(96, CharUtil.u64ToBytes(iv));
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            byte[] ivArray = CharUtil.u64ToBytes(iv);
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(ivArray.length * 8, ivArray);
             cipher.init(Cipher.DECRYPT_MODE, KeyTool.decode("AES", key), gcmParameterSpec);
 
-            return new String(cipher.doFinal(Base64.getDecoder().decode(encryptedText)), StandardCharsets.UTF_8);
+            return new String(cipher.doFinal(CharUtil.u64ToBytes(encryptedText)), StandardCharsets.UTF_8);
         } catch (NoSuchPaddingException e) {
             throw new RuntimeException(e);
         } catch (InvalidAlgorithmParameterException e) {

@@ -70,7 +70,7 @@ public class CharUtil {
 
                 return buffer;
             } else {
-                byte[] buffer = new byte[(uInt8Index - 2) * 4];
+                byte[] buffer = new byte[(uInt8Index - 2) * 4 + u64Array.length - uInt8Index];
                 for (int i = 2; i < uInt8Index; i++) {
                     byte[] tmp = u64ToIntByte(u64Array[i]);
 
