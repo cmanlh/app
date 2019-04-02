@@ -23,6 +23,7 @@ $JqcLoader.registerModule($JqcLoader.newModule('com.jquery', LIB_ROOT_PATH).regi
         .registerComponents(['jsoneditor']) //json编辑器图表
         .registerComponents(['editor']) //富文本编辑器
         .registerComponents(['checkbox'])
+        .registerComponents(['textarea'])
         .registerComponents(['apisBox']));
 
 const COMP_LIB_PATH = 'com.lifeonwalden.jqc';
@@ -34,7 +35,7 @@ function queue (funcs, scope) {
     })();
 };
 $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
-    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'checkbox', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'tag', 'calendar', 'icon', 'upload', 'notify'])
+    .importComponents('com.lifeonwalden.jqc', ['select', 'asyncSelect', 'confirm', 'checkbox', 'textarea', 'event', 'menuTree', 'formUtil', 'msg', 'tab', 'dialog', 'formToolBar', 'contextmenu', 'toolkit', 'loading','layoutHelper', 'notification', 'tag', 'calendar', 'icon', 'upload', 'notify'])
     // dx组件
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/jszip.js'))
     .importScript(LIB_ROOT_PATH.concat('com/devexpress/dx.web.debug.js'))
@@ -390,6 +391,20 @@ $JqcLoader.importComponents('com.jquery', ['jquery', 'keycode', 'version'])
             this.stylePath = (params && params.stylePath) ? params.stylePath : (this.stylePath || null); //模板文件相对路径
             this.contextmenu = (params && params.contextmenu) ? params.contextmenu : (this.contextmenu || null);
             this.dxDataGrid = (params && params.dxDataGrid) ? params.dxDataGrid : (this.dxDataGrid || null);
+            this.mixinFormat.push(function (root) {
+                var $textarea = root.find('textarea[editor-title]');
+                $.each($textarea, function (index, el) {
+                    var $el = $(el);
+                    if ($el.attr('off') === 'undefined') {
+                        return;
+                    }
+                    new $.jqcTextarea({
+                        el: $el,
+                        title: $el.attr('editor-title'),
+                        placeholder: $el.attr('placeholder'),
+                    });
+                })
+            });
             if (params && params.beforeRender && typeof params.beforeRender == 'function') {
                 this._beforeRender.push(params.beforeRender);
             }
