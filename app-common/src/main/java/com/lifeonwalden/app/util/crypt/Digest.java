@@ -18,33 +18,28 @@ package com.lifeonwalden.app.util.crypt;
 
 import com.lifeonwalden.app.util.character.CharUtil;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public interface KeyTool {
-
-    static String generateWithEncode(String algorithm, int size) {
-        return CharUtil.bytesToU64(generateKey(algorithm, size).getEncoded());
-    }
-
-    static SecretKey generateKey(String algorithm, int size) {
+public interface Digest {
+    static String digest(String algorithm, String text) {
         try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(algorithm);
-            keyGenerator.init(size);
-
-            return keyGenerator.generateKey();
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
+            return CharUtil.bytesToU64(messageDigest.digest(text.getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
 
-    static String encode(SecretKey key) {
-        return CharUtil.bytesToU64(key.getEncoded());
+    static String digest(String text) {
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
+            return CharUtil.bytesToU64(messageDigest.digest(text.getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    static SecretKey decode(String algorithm, String keyData) {
-        return new SecretKeySpec(CharUtil.u64ToBytes(keyData), algorithm);
-    }
+
 }

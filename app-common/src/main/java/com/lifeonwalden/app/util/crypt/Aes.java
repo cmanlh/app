@@ -17,25 +17,50 @@
 package com.lifeonwalden.app.util.crypt;
 
 import com.lifeonwalden.app.util.character.CharUtil;
+import org.apache.commons.lang3.RandomUtils;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 public interface Aes {
+    static String generateIv() {
+        return CharUtil.bytesToU64(RandomUtils.nextBytes(16));
+    }
+
+    static String generateWithEncode(int size) {
+        return CharUtil.bytesToU64(generateKey(size).getEncoded());
+    }
+
+    static SecretKey generateKey(int size) {
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+            keyGenerator.init(size);
+
+            return keyGenerator.generateKey();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static String encode(SecretKey key) {
+        return CharUtil.bytesToU64(key.getEncoded());
+    }
+
+    static SecretKey decode(String keyData) {
+        return new SecretKeySpec(CharUtil.u64ToBytes(keyData), "AES");
+    }
+
     static String encrypt(String key, String iv, String plainText) {
         try {
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             byte[] ivArray = CharUtil.u64ToBytes(iv);
             GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(ivArray.length * 8, ivArray);
-            cipher.init(Cipher.ENCRYPT_MODE, KeyTool.decode("AES", key), gcmParameterSpec);
+            cipher.init(Cipher.ENCRYPT_MODE, decode(key), gcmParameterSpec);
 
             return CharUtil.bytesToU64(cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchPaddingException e) {
@@ -58,7 +83,7 @@ public interface Aes {
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             byte[] ivArray = CharUtil.u64ToBytes(iv);
             GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(ivArray.length * 8, ivArray);
-            cipher.init(Cipher.DECRYPT_MODE, KeyTool.decode("AES", key), gcmParameterSpec);
+            cipher.init(Cipher.DECRYPT_MODE, decode(key), gcmParameterSpec);
 
             return new String(cipher.doFinal(CharUtil.u64ToBytes(encryptedText)), StandardCharsets.UTF_8);
         } catch (NoSuchPaddingException e) {
