@@ -14,6 +14,7 @@
 
 body {
     position: relative;
+    /*笔记本宽度*/
     min-width: 1280px;
     background: #f2f2f2;
 }
@@ -130,6 +131,7 @@ textarea {
     box-shadow: none!important;
     -moz-box-shadow: none!important;
 }
+
 input:hover,
 select:hover,
 textarea:hover {
@@ -137,7 +139,7 @@ textarea:hover {
 }
 textarea {
     padding: 5px 10px;
-    height: 60px;
+    height: 74px;
     resize: none;
 }
 label {
@@ -257,10 +259,6 @@ label {
     display: flex;
     justify-content: flex-end;
 }
-/*dialog*/
-.jqcDialogContent textarea {
-    height: 50px;
-}
 /*form styte*/
 .form_group {
     flex-shrink: 0;
@@ -288,6 +286,18 @@ label {
     color: #444;
     font-size: 12px;
     margin-right: 10px;
+}
+.form.fixed {
+    padding-bottom: 60px;
+}
+.form.fixed .form_btn_box{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 500;
 }
 .form .row > div,
 .form_label {
@@ -342,14 +352,19 @@ label.required::before {
     padding: 10px 15px 0 0;
     margin-left: -5px;
 }
+.jqcFormToolBar-newline .toolbar-right .form_group {
+    justify-content: flex-end;
+}
 .jqcFormToolBar-newline .toolbar-right .form_item,
 .jqcFormToolBar-newline .toolbar-right .form_group > div {
     padding: 10px 5px 0 0;
 }
 .jqcFormToolBar-newline .toolbar-right .search_item{
-    flex-grow: 1;
     flex-direction: row-reverse;
     padding: 10px 0 0 0;
+}
+.toolbar-right .search_item input.search{
+    width: 100px;
 }
 .btn {
     box-sizing: border-box;
@@ -437,7 +452,12 @@ textarea.large {
     border: 1px solid #C63136;
     background-image: url('./images/icon_pdf_hover.png');
 }
-
+.jqcTabPanel .refresh {
+    width: 30px;
+    height: 30px;
+    background: url('./images/icon_refresh.png') no-repeat center;
+    background-size: 14px;
+}
 .jqcConfirm-btnBox {
     display: flex;
     align-items: center;
@@ -546,6 +566,30 @@ hr {
 .fieldset.isLink.active::after{
     transform: rotate(90deg);
 }
+.fieldset .subTitle{
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    position: relative;
+}
+.fieldset .subTitle::before{
+    content: '';
+    position: absolute;
+    width: 90%;
+    height: 1px;
+    background-color: #ccc;
+    top: 50%;
+    left: 50%;
+    margin-left: -45%;
+    z-index: 1;
+}
+.fieldset .subTitle > span{
+    background-color: #fff;
+    position: relative;
+    z-index: 2;
+    padding: 0 20px;
+    color: #444;
+}
 .btn_group .btn_list {
     display: none;
     position: absolute;
@@ -594,4 +638,5 @@ body > div.dialog_container .dialog_body {
     bottom: 0;
     width: 100%;
     background: #fff;
+    z-index: 500;
 }
